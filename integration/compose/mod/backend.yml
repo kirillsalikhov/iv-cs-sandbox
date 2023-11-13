@@ -1,0 +1,7 @@
+version: "3.7"
+
+services:
+  backend:
+    command: npm run dev-start
+    volumes:
+      - ../../backend:/app
