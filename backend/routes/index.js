@@ -1,0 +1,19 @@
+const Router = require('koa-router');
+const pages = require('./pages');
+const documents = require('./documents');
+
+const router = new Router();
+
+router.get('/', pages.root);
+
+const apiRouter = new Router({
+    prefix: '/api'
+})
+    .get('/documents', documents.index)
+    .get('/documents/:id', documents.show);
+
+
+router.use(apiRouter.routes());
+
+
+module.exports = router;
