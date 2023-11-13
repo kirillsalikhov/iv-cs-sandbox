@@ -1,0 +1,11 @@
+{
+  "name": "bakcned-sandbox-server",
+  "version": "0.0.1",
+  "description": "Simple server that returns env var for each request",
+  "engines": {
+    "node": ">=16.0.0"
+  },
+  "dependencies": {
+    "koa": "^2.14.2"
+  }
+}
