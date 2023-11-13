@@ -1,0 +1,41 @@
+<!doctype html>
+<html>
+<head>
+    <title>Industrial erp construction demo</title>
+</head>
+<body>
+<script type="module">
+    import * as IV from '@wg/industrial-viewer';
+    import WofDB from '@wg/objects-db';
+
+    const db = new WofDB();
+    const iv = new IV.IndustrialViewer(document.body);
+
+    const loader = iv.addFeature(IV.LoaderFeature);
+    const orbit = iv.addFeature(IV.OrbitFeature);
+    const navCube = iv.addFeature(IV.NavigationCubeFeature);
+    const moveCamera = iv.addFeature(IV.MoveCameraFeature);
+
+    async function start() {
+        await iv.init();
+    }
+
+    start().catch((e) => {
+        console.log(e);
+    });
+</script>
+
+<style>
+    html, body {
+        height: 100%;
+        margin: 0;
+    }
+
+    canvas {
+        display: block;
+        height: 100%;
+        width: 100%;
+    }
+</style>
+</body>
+</html>

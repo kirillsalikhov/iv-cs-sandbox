@@ -1,0 +1,17 @@
+{
+  "name": "iv-erp-construction-demo",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "author": "",
+  "license": "ISC",
+  "devDependencies": {
+    "@wg/industrial-viewer": "^8.0.7",
+    "@wg/objects-db": "^8.0.7",
+    "fflate": "^0.8.1",
+    "vite": "^4.5.0"
+  }
+}
