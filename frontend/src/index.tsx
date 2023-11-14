@@ -9,6 +9,7 @@ function App(): ReactElement {
     const vref = useMemo(() => createRef<Viewer>(), []);
     const [hierarchyData, setHierarchyData] = useState<HierarchyData[]>([]);
     const [hierarchyLoaded, setHierarchyLoaded] = useState<boolean>(false);
+    const [selectedId, setSelectedId] = useState<number>(-1);
 
     useEffect(() => {
         const { current: viewer } = vref;
@@ -20,12 +21,20 @@ function App(): ReactElement {
                     setHierarchyLoaded(true);
                 });
         }
+
+        window.select = (id) => {
+            setSelectedId(id);
+        }
     }, []);
 
     return (
         <>
             <Viewer ref={vref}/>
-            {hierarchyLoaded && <Hierarchy data={hierarchyData} />}
+            {hierarchyLoaded && <Hierarchy data={hierarchyData}
+                                           selectedId={selectedId}
+                                           onSelectNode={(id) => {
+                                               setSelectedId(id);
+                                           }}/>}
         </>
     )
 }
