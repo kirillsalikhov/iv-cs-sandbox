@@ -1,3 +1,3 @@
 exports.root = async (ctx) => {
-    ctx.body = "Root page";
+    return ctx.render('layout');
 }
