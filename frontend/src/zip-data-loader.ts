@@ -1,8 +1,8 @@
 import { unzip, Unzipped } from 'fflate';
-import { DataLoader, DataLoaderResult, ProgressWatcher, ResponseTypeNames } from '@wge/core';
+import type { DataLoader, DataLoaderResult, ProgressWatcher, ResponseTypeNames } from '@wge/core';
 
 export const zipDataLoader = (zipFileURL: string): DataLoader => {
-    let willLoadZip = null;
+    let willLoadZip: Promise<Unzipped> | null = null;
     const loadZip = (progressWatcher?: ProgressWatcher): Promise<Unzipped> => {
         if (willLoadZip) {
             return willLoadZip;

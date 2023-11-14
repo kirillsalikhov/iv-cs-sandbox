@@ -4,14 +4,24 @@
   "description": "",
   "main": "index.js",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "start": "vite --config vite.config.js"
   },
   "author": "",
   "license": "ISC",
+  "dependencies": {
+    "react": "^18.2.0",
+    "react-dom": "^18.2.0"
+  },
   "devDependencies": {
-    "@wg/industrial-viewer": "^8.0.7",
-    "@wg/objects-db": "^8.0.7",
+    "@types/react": "^18.2.15",
+    "@types/react-dom": "^18.2.7",
+    "@vitejs/plugin-react": "^4.0.3",
+    "@wg/industrial-viewer": "^8.0.8",
+    "@wg/objects-db": "^8.0.8",
+    "@wge/core": "^0.11.0",
     "fflate": "^0.8.1",
+    "typescript": "^5.2.2",
     "vite": "^4.5.0"
   }
 }
