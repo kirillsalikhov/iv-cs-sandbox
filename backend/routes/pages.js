@@ -1,3 +1,5 @@
+const { layoutVars } = require('../utils/viewHelpers');
+
 exports.root = async (ctx) => {
-    return ctx.render('layout');
+    return ctx.render('layout', layoutVars());
 }
