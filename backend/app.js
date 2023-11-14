@@ -1,12 +1,13 @@
 const Koa = require('koa');
+const bodyParser = require('koa-bodyparser');
+
+const router = require('./routes');
 
 const port = 3050;
 
 const app = new Koa()
-
-app.use(async ctx => {
-        ctx.body = `Page`;
-    });
+    .use(bodyParser())
+    .use(router.routes());
 
 const server = app.listen(port, () => {
     console.log(`Ready to receive requests on ${port}`);
