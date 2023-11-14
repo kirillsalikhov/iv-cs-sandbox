@@ -13,6 +13,7 @@ function App(): ReactElement {
     const [hierarchyData, setHierarchyData] = useState<HierarchyData[]>([]);
     const [hierarchyLoaded, setHierarchyLoaded] = useState<boolean>(false);
     const [selectedId, setSelectedId] = useState<number>(-1);
+    const [allowMoveCamera, setAllowMoveCamera] = useState(true);
     const [details, setDetails] = useState<ObjectInfo | null>(null);
 
     //note: this is an ugly workaround for react-arborist triggering onSelect even when the select is caused by changing selection prop.
@@ -47,7 +48,12 @@ function App(): ReactElement {
                     onClickObject={(id) => {
                         internalState.current.muteArboristOnSelect = true;
                         setSelectedId(id);
+                        setAllowMoveCamera(false);
+                        setTimeout(() => {
+                            internalState.current.muteArboristOnSelect = false;
+                        }, 0);
                     }}
+                    allowMoveCamera={allowMoveCamera}
                     ref={vref}/>
             {
                 hierarchyLoaded &&
@@ -55,11 +61,8 @@ function App(): ReactElement {
                     data={hierarchyData}
                     selectedId={selectedId}
                     onSelectNode={(id) => {
-                        if (internalState.current.muteArboristOnSelect) {
-                            if (id === selectedId) {
-                                internalState.current.muteArboristOnSelect = false;
-                            }
-                        } else {
+                        if (!internalState.current.muteArboristOnSelect) {
+                            setAllowMoveCamera(true);
                             setSelectedId(id);
                         }
                     }}

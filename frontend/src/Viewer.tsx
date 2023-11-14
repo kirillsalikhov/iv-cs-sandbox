@@ -19,6 +19,7 @@ export interface ViewerAPI {
 export interface ViewerProps {
     onClickObject?: (id: number) => void;
     selectedId?: number;
+    allowMoveCamera: boolean;
 }
 
 export class Viewer extends Component<ViewerProps> implements ViewerAPI {
@@ -36,7 +37,16 @@ export class Viewer extends Component<ViewerProps> implements ViewerAPI {
                 color: '#ff0000',
                 ids: this.meshIds.has(selectedId) ? [selectedId] : []
             }
-        ])
+        ]);
+        this.moveCameraToSelection();
+    }
+
+    async moveCameraToSelection(): Promise<void> {
+        if (!this.meshIds) return;
+        let { selectedId = -1, allowMoveCamera } = this.props;
+        if (this.meshIds.has(selectedId) && allowMoveCamera) {
+            await this.iv.getFeature(MoveCameraFeature).toObjects([selectedId], 400);
+        }
     }
 
     async componentDidMount(): Promise<void> {
@@ -46,6 +56,9 @@ export class Viewer extends Component<ViewerProps> implements ViewerAPI {
 
         const db = new WofDB();
         const iv = new IndustrialViewer(this.container.current);
+        iv.setCameraProjection({
+            yfov: Math.PI / 180 * 24
+        })
 
         iv.addFeature(LoaderFeature);
         iv.addFeature(OrbitFeature);

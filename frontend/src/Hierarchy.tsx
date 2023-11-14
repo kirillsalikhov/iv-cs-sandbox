@@ -11,7 +11,7 @@ function Node({ node, style }: NodeRendererProps<HierarchyData>): ReactNode {
                 ? <div className={'h-8 w-8 align-middle leading-8'}></div>
                 : <button className={`h-8 w-8 text-center align-middle leading-8 ${openClass}`} onClick={() => node.toggle()}>{'>'}</button>}
             <div className={'flex-1 h-8 leading-8 select-none'}>
-                {node.data.originalName}
+                {node.data.originalName ?? '<empty name>'}
             </div>
         </div>
     );
