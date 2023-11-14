@@ -15,5 +15,11 @@ export default defineConfig({
                 '.gltf': 'dataurl'
             }
         }
-    }
+    },
+    build: {
+        manifest: true,
+        rollupOptions: {
+            input: './src/index.tsx',
+        },
+    },
 });

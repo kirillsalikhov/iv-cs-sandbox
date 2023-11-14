@@ -1,3 +1,5 @@
+const { layoutVars } = require('../utils/viewHelpers');
+
 exports.root = async (ctx) => {
-    ctx.body = "Root page";
+    return ctx.render('layout', layoutVars({appEntry: 'src/index.tsx'}));
 }
