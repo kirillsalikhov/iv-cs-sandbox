@@ -9,7 +9,7 @@ interface DBRecord {
 export interface HierarchyData {
     _id: number;
     originalName: string;
-    children: HierarchyData[];
+    children?: HierarchyData[];
 }
 
 export const createHierarchyData = async (db: WofDB): Promise<HierarchyData[]> => {
@@ -32,10 +32,16 @@ export const createHierarchyData = async (db: WofDB): Promise<HierarchyData[]> =
 
     function getBranch(id: number): HierarchyData {
         const obj = objectById[id];
-        return {
-            ...obj,
-            children: obj.children ? obj.children.map(getBranch) : []
+        const result: HierarchyData = {
+            _id: obj._id,
+            originalName: obj.originalName
+        };
+
+        if (obj.children !== undefined) {
+            result.children = obj.children.map(getBranch);
         }
+
+        return result;
     }
 
     return [...rootIds].map(getBranch);
