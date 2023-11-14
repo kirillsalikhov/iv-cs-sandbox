@@ -11,7 +11,9 @@
   "devDependencies": {
     "@wg/industrial-viewer": "^8.0.7",
     "@wg/objects-db": "^8.0.7",
+    "@wge/core": "^0.11.0",
     "fflate": "^0.8.1",
+    "typescript": "^5.2.2",
     "vite": "^4.5.0"
   }
 }
