@@ -1,6 +1,6 @@
 import WofDB from '@wg/objects-db';
 import { IndustrialViewer, LoaderFeature, MoveCameraFeature, NavigationCubeFeature, OrbitFeature } from '@wg/industrial-viewer';
-import { zipDataLoader } from '../zip-data-loader';
+import { zipDataLoader } from './zip-data-loader.ts';
 import { Component, createRef, ReactNode } from 'react';
 
 export interface ViewerAPI {
