@@ -20,7 +20,10 @@
     "@wg/industrial-viewer": "^8.0.8",
     "@wg/objects-db": "^8.0.8",
     "@wge/core": "^0.11.0",
+    "autoprefixer": "^10.4.16",
     "fflate": "^0.8.1",
+    "postcss": "^8.4.31",
+    "tailwindcss": "^3.3.5",
     "typescript": "^5.2.2",
     "vite": "^4.5.0"
   }

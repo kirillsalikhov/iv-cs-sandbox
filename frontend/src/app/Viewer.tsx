@@ -1,15 +1,15 @@
 import WofDB from '@wg/objects-db';
-import React from 'react';
 import { IndustrialViewer, LoaderFeature, MoveCameraFeature, NavigationCubeFeature, OrbitFeature } from '@wg/industrial-viewer';
 import { zipDataLoader } from '../zip-data-loader';
+import { Component, createRef, ReactNode } from 'react';
 
 export interface ViewerAPI {
     iv: IndustrialViewer;
     db: WofDB;
 }
 
-export class Viewer extends React.Component implements ViewerAPI {
-    public container = React.createRef<HTMLDivElement>();
+export class Viewer extends Component implements ViewerAPI {
+    public container = createRef<HTMLDivElement>();
     public iv!: IndustrialViewer;
     public db!: WofDB;
 
@@ -50,9 +50,9 @@ export class Viewer extends React.Component implements ViewerAPI {
         await moveCamera.toObjects(null);
     }
 
-    render(): React.ReactNode {
+    render(): ReactNode {
         return (
-            <div className='viewer-root' ref={this.container}></div>
+            <div className='w-full h-full' ref={this.container}></div>
         );
     }
 }
