@@ -4,4 +4,4 @@ services:
   backend:
     command: npm run dev
     volumes:
-      - ../../backend:/app
+      - ../../backend:/backend

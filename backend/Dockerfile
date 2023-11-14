@@ -1,7 +1,7 @@
 FROM node:16-bullseye-slim
 
-RUN mkdir -p /app
-WORKDIR /app
+RUN mkdir -p /backend
+WORKDIR /backend
 
 COPY package* ./
 RUN npm ci

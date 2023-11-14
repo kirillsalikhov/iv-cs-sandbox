@@ -3,5 +3,12 @@ version: "3.7"
 services:
   backend:
     environment:
-      VITE_DEV_HOST: http://localhost:5173
+      VITE_DEV_HOST: ${VITE_DEV_HOST}
+
+  frontend:
+    command: npm run start -- --host
+    ports:
+      - "5173:5173"
+    volumes:
+      - ../../frontend:/frontend
 
