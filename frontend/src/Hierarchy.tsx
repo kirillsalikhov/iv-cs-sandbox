@@ -26,19 +26,29 @@ export interface HierarchyProps {
 export function Hierarchy({data, selectedId, onSelectNode}: HierarchyProps): ReactNode {
     const hierarchyElementRef = useRef<HTMLDivElement>(null);
     const [height, setHeight] = useState(0);
+    const [width, setWidth] = useState(0);
 
     useLayoutEffect(() => {
         const el = (hierarchyElementRef.current as HTMLDivElement);
         setHeight(el.offsetHeight);
+        setWidth(el.offsetWidth);
+
+        const observer = new ResizeObserver(() => {
+            setHeight(el.offsetHeight);
+            setWidth(el.offsetWidth);
+        });
+
+        observer.observe(el);
     }, []);
 
     return (
-        <div className={'absolute inset-y-16 left-16 w-1/4 border bg-white bg-opacity-50'} ref={hierarchyElementRef}>
+        <div className={'absolute inset-y-16 left-16 w-1/4 border bg-white bg-opacity-75'} ref={hierarchyElementRef}>
             <Tree
                 data={data}
                 idAccessor={(node) => node._id.toString()}
                 disableMultiSelection={true}
                 disableEdit={true}
+                width={width}
                 height={height}
                 selection={selectedId.toString()}
                 onSelect={onSelectNode && ((nodes): void => {
