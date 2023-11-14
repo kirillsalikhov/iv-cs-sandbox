@@ -6,7 +6,7 @@ WORKDIR /app
 COPY package* ./
 RUN npm ci
 
-COPY app.js ./
+COPY . .
 
 CMD ["node", "app.js"]
 
