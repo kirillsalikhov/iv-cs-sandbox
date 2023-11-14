@@ -1,8 +1,9 @@
 import {ReactNode} from "react";
 
+export interface ObjectProps { [key: string]: number | string | boolean; }
 export interface ObjectInfo {
     name: string;
-    properties: { [key: string]: number | string; }
+    properties: ObjectProps;
 }
 
 export interface ObjectDetailsProps {

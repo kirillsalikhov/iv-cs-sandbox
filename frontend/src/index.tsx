@@ -4,6 +4,7 @@ import { createRoot } from 'react-dom/client';
 import { Hierarchy } from './Hierarchy.tsx';
 import { createHierarchyData, HierarchyData } from './hierarchy-data.ts';
 import { ObjectDetails, ObjectInfo } from './ObjectDetails.tsx';
+import { getObjectDetails } from './object-details.ts';
 
 import './index.css';
 
@@ -12,6 +13,7 @@ function App(): ReactElement {
     const [hierarchyData, setHierarchyData] = useState<HierarchyData[]>([]);
     const [hierarchyLoaded, setHierarchyLoaded] = useState<boolean>(false);
     const [selectedId, setSelectedId] = useState<number>(-1);
+    const [details, setDetails] = useState<ObjectInfo | null>(null);
 
     useEffect(() => {
         const { current: viewer } = vref;
@@ -29,15 +31,15 @@ function App(): ReactElement {
         }
     }, []);
 
-    const details: ObjectInfo = {
-        name: 'UFO',
-        properties: {
-            speed: 3000,
-            radius: 25,
-            message: 'hello',
-            color: 'silver'
+    useEffect(() => {
+        const viewer = vref.current;
+        if (!hierarchyLoaded || viewer === null) { return; }
+        if (selectedId >= 0) {
+            getObjectDetails(selectedId, viewer.db).then((data) => setDetails(data));
+        } else {
+            setDetails(null);
         }
-    };
+    }, [selectedId, hierarchyLoaded])
 
     return (
         <>
@@ -52,7 +54,7 @@ function App(): ReactElement {
                     }}
                 />
             }
-            <ObjectDetails info={details}/>
+            {details && <ObjectDetails info={details}/>}
         </>
     )
 }
