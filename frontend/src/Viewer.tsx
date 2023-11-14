@@ -1,5 +1,13 @@
 import WofDB from '@wg/objects-db';
-import { IndustrialViewer, LoaderFeature, MoveCameraFeature, NavigationCubeFeature, OrbitFeature } from '@wg/industrial-viewer';
+import {
+    ColorFeature, HoverFeature,
+    IndustrialViewer,
+    LoaderFeature,
+    MoveCameraFeature,
+    NavigationCubeFeature,
+    OrbitFeature,
+    IVPointerEvent
+} from '@wg/industrial-viewer';
 import { zipDataLoader } from './zip-data-loader.ts';
 import { Component, createRef, ReactNode } from 'react';
 
@@ -8,10 +16,28 @@ export interface ViewerAPI {
     db: WofDB;
 }
 
-export class Viewer extends Component implements ViewerAPI {
+export interface ViewerProps {
+    onClickObject?: (id: number) => void;
+    selectedId?: number;
+}
+
+export class Viewer extends Component<ViewerProps> implements ViewerAPI {
     public container = createRef<HTMLDivElement>();
     public iv!: IndustrialViewer;
     public db!: WofDB;
+
+    meshIds!: Set<number>;
+
+    updateSelection(): void {
+        if (!this.meshIds) return;
+        const { selectedId = -1 } = this.props;
+        this.iv.getFeature(ColorFeature).color([
+            {
+                color: '#ff0000',
+                ids: this.meshIds.has(selectedId) ? [selectedId] : []
+            }
+        ])
+    }
 
     async componentDidMount(): Promise<void> {
         if (this.container.current === null) {
@@ -25,11 +51,19 @@ export class Viewer extends Component implements ViewerAPI {
         iv.addFeature(OrbitFeature);
         iv.addFeature(NavigationCubeFeature);
         iv.addFeature(MoveCameraFeature);
+        iv.addFeature(ColorFeature);
+        iv.addFeature(HoverFeature);
 
         await iv.init();
 
         this.iv = iv;
         this.db = db;
+
+        iv.addEventListener('click', (e: IVPointerEvent): void => {
+            if (this.props.onClickObject) {
+                this.props.onClickObject(e.id ?? -1);
+            }
+        });
     }
 
     async load(zipURL: string): Promise<void> {
@@ -48,6 +82,12 @@ export class Viewer extends Component implements ViewerAPI {
         const moveCamera = this.iv.getFeature(MoveCameraFeature);
         await moveCamera.toPosition(defaultCameraPosition);
         await moveCamera.toObjects(null);
+        this.meshIds = new Set(this.iv.getObjects());
+        this.updateSelection();
+    }
+
+    componentDidUpdate(): void {
+        this.updateSelection();
     }
 
     render(): ReactNode {

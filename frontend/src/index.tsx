@@ -1,4 +1,4 @@
-import { createRef, ReactElement, useEffect, useMemo, useState } from 'react';
+import { createRef, ReactElement, useEffect, useMemo, useRef, useState } from 'react';
 import { Viewer } from './Viewer.tsx';
 import { createRoot } from 'react-dom/client';
 import './index.css';
@@ -11,6 +11,10 @@ function App(): ReactElement {
     const [hierarchyLoaded, setHierarchyLoaded] = useState<boolean>(false);
     const [selectedId, setSelectedId] = useState<number>(-1);
 
+    //note: this is an ugly workaround for react-arborist triggering onSelect even when the select is caused by changing selection prop.
+    //      other virtualized trees likely don't need this hack
+    const internalState = useRef({muteArboristOnSelect: false});
+
     useEffect(() => {
         const { current: viewer } = vref;
         if (viewer !== null) {
@@ -21,19 +25,26 @@ function App(): ReactElement {
                     setHierarchyLoaded(true);
                 });
         }
-
-        window.select = (id) => {
-            setSelectedId(id);
-        }
     }, []);
 
     return (
         <>
-            <Viewer ref={vref}/>
+            <Viewer selectedId={selectedId}
+                    onClickObject={(id) => {
+                        internalState.current.muteArboristOnSelect = true;
+                        setSelectedId(id);
+                    }}
+                    ref={vref}/>
             {hierarchyLoaded && <Hierarchy data={hierarchyData}
                                            selectedId={selectedId}
                                            onSelectNode={(id) => {
-                                               setSelectedId(id);
+                                               if (internalState.current.muteArboristOnSelect) {
+                                                   if (id === selectedId) {
+                                                       internalState.current.muteArboristOnSelect = false;
+                                                   }
+                                               } else {
+                                                   setSelectedId(id);
+                                               }
                                            }}/>}
         </>
     )

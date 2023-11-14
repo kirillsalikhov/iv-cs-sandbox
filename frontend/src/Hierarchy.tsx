@@ -1,5 +1,5 @@
-import { ReactNode, useLayoutEffect, useRef, useState } from "react";
-import { NodeRendererProps, Tree } from "react-arborist";
+import { ReactNode, useLayoutEffect, useMemo, useRef, useState } from "react";
+import { NodeApi, NodeRendererProps, Tree } from "react-arborist";
 import { HierarchyData } from './hierarchy-data.ts';
 
 function Node({ node, style }: NodeRendererProps<HierarchyData>): ReactNode {
@@ -41,23 +41,28 @@ export function Hierarchy({data, selectedId, onSelectNode}: HierarchyProps): Rea
         observer.observe(el);
     }, []);
 
+    const selectHandler = useMemo(() => onSelectNode && ((nodes: NodeApi<HierarchyData>[]): void => {
+        onSelectNode(
+            nodes.length > 0
+                ? nodes[0].data._id
+                : -1
+        );
+    }), [onSelectNode]);
+
+    const idAccessor = useMemo(() => (node: HierarchyData): string => node._id.toString(), []);
+
     return (
         <div className={'absolute inset-y-16 left-16 w-1/4 border bg-white bg-opacity-75'} ref={hierarchyElementRef}>
             <Tree
                 data={data}
-                idAccessor={(node) => node._id.toString()}
+                idAccessor={idAccessor}
                 disableMultiSelection={true}
                 disableEdit={true}
                 width={width}
                 height={height}
+                openByDefault={false}
                 selection={selectedId.toString()}
-                onSelect={onSelectNode && ((nodes): void => {
-                    onSelectNode(
-                        nodes.length > 0
-                            ? nodes[0].data._id
-                            : -1
-                    );
-                })}
+                onSelect={selectHandler}
                 rowHeight={36}>
                 {Node}
             </Tree>
