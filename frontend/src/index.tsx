@@ -1,9 +1,11 @@
 import { createRef, ReactElement, useEffect, useMemo, useState } from 'react';
 import { Viewer } from './Viewer.tsx';
 import { createRoot } from 'react-dom/client';
-import './index.css';
 import { Hierarchy } from './Hierarchy.tsx';
 import { createHierarchyData, HierarchyData } from './hierarchy-data.ts';
+import { ObjectDetails, ObjectInfo } from './ObjectDetails.tsx';
+
+import './index.css';
 
 function App(): ReactElement {
     const vref = useMemo(() => createRef<Viewer>(), []);
@@ -27,14 +29,30 @@ function App(): ReactElement {
         }
     }, []);
 
+    const details: ObjectInfo = {
+        name: 'UFO',
+        properties: {
+            speed: 3000,
+            radius: 25,
+            message: 'hello',
+            color: 'silver'
+        }
+    };
+
     return (
         <>
             <Viewer ref={vref}/>
-            {hierarchyLoaded && <Hierarchy data={hierarchyData}
-                                           selectedId={selectedId}
-                                           onSelectNode={(id) => {
-                                               setSelectedId(id);
-                                           }}/>}
+            {
+                hierarchyLoaded &&
+                <Hierarchy
+                    data={hierarchyData}
+                    selectedId={selectedId}
+                    onSelectNode={(id) => {
+                        setSelectedId(id);
+                    }}
+                />
+            }
+            <ObjectDetails info={details}/>
         </>
     )
 }
