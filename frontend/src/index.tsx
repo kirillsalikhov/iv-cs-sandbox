@@ -18,7 +18,7 @@ function App(): ReactElement {
     useEffect(() => {
         const { current: viewer } = vref;
         if (viewer !== null) {
-            viewer.load(new URL('./simple.zip', import.meta.url).toString())
+            viewer.load('/simple.zip')
                 .then(() => createHierarchyData(viewer.db))
                 .then((data) => {
                     setHierarchyData(data);
