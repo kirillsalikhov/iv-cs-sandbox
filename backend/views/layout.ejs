@@ -4,6 +4,9 @@
         <title>IV CS sandbox</title>
         <% if (vite.devHost) { %>
             <%- include('partials/vite-dev-server') -%>
+        <% } else { %>
+            <script type="module" src="<%= vite.manifest[appEntry].file %>"></script>
+            <link rel="stylesheet" href="<%= vite.manifest[appEntry].css %>">
         <% } %>
 
     </head>
