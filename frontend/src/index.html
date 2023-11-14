@@ -2,55 +2,27 @@
 <html>
 <head>
     <title>Industrial erp construction demo</title>
+    <style>
+        html, body {
+            height: 100%;
+            margin: 0;
+        }
+
+        canvas {
+            display: block;
+            height: 100%;
+            width: 100%;
+        }
+
+        .viewer-root {
+            width: 100%;
+            height: 100%;
+        }
+    </style>
 </head>
 <body>
 <script type="module">
-    import * as IV from '@wg/industrial-viewer';
-    import WofDB from '@wg/objects-db';
-    import {zipDataLoader} from './zip-data-loader';
-
-    const db = new WofDB();
-    const iv = new IV.IndustrialViewer(document.body);
-
-    const loader = iv.addFeature(IV.LoaderFeature);
-    const orbit = iv.addFeature(IV.OrbitFeature);
-    const navCube = iv.addFeature(IV.NavigationCubeFeature);
-    const moveCamera = iv.addFeature(IV.MoveCameraFeature);
-
-    const defaultCameraPosition = { position: { x: 1064, y: 487, z: -647 }, target: { x: 443, y: 0, z: -43 } };
-
-    async function start() {
-        await iv.init();
-        const dataLoader = zipDataLoader(new URL('./simple.zip', import.meta.url).toString());
-        const {response: wofBlob} = await dataLoader('objects.wof', 'blob');
-        const wofBlobURL = URL.createObjectURL(wofBlob);
-        await db.load(wofBlobURL);
-
-        iv.setDataLoader(dataLoader);
-        await loader.load('model.wmd');
-
-        await moveCamera.toPosition(defaultCameraPosition);
-        await moveCamera.toObjects(null);
-
-        console.log(await db.request([0]));
-    }
-
-    start().catch((e) => {
-        console.log(e);
-    });
+    import './app/index';
 </script>
-
-<style>
-    html, body {
-        height: 100%;
-        margin: 0;
-    }
-
-    canvas {
-        display: block;
-        height: 100%;
-        width: 100%;
-    }
-</style>
 </body>
 </html>
