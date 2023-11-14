@@ -1,7 +1,7 @@
 import React from 'react';
-import ReactDOM from 'react-dom';
 import { ReactElement } from 'react';
 import { Viewer } from './Viewer';
+import { createRoot } from 'react-dom/client';
 
 function App(): ReactElement {
     const vref = React.useMemo(() => React.createRef<Viewer>(), []);
@@ -18,4 +18,5 @@ function App(): ReactElement {
     )
 }
 
-ReactDOM.render(<App />, document.body);
+const reactRoot = createRoot(document.getElementById('react-root') as HTMLDivElement);
+reactRoot.render(<App />);
