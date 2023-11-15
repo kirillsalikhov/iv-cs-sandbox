@@ -1,12 +1,15 @@
 import WofDB from '@wg/objects-db';
 import {
-    ColorFeature, HoverFeature,
+    CameraProjectionType,
+    ColorFeature,
+    HoverFeature,
     IndustrialViewer,
+    IVPointerEvent,
     LoaderFeature,
     MoveCameraFeature,
+    MoveCameraState,
     NavigationCubeFeature,
-    OrbitFeature,
-    IVPointerEvent
+    OrbitFeature
 } from '@wg/industrial-viewer';
 import { zipDataLoader } from '../data/zip-data-loader.ts';
 import { Component, createRef, ReactNode } from 'react';
@@ -28,6 +31,7 @@ export class Viewer extends Component<ViewerProps> implements ViewerAPI {
     public db!: WofDB;
 
     meshIds!: Set<number>;
+    homePosition: MoveCameraState | null = null;
 
     updateSelection(): void {
         if (!this.meshIds) return;
@@ -49,6 +53,26 @@ export class Viewer extends Component<ViewerProps> implements ViewerAPI {
         }
     }
 
+    async moveCameraToHomePosition(duration: number = 400): Promise<void> {
+        if (this.homePosition === null) {
+            throw new Error(`no home position`);
+        }
+        await this.iv.getFeature(MoveCameraFeature).toPosition({
+            position: this.homePosition.position,
+            target: this.homePosition.target
+        }, duration);
+    }
+
+    toggleCameraProjection(): CameraProjectionType {
+        const oldProjectionType = this.iv.getCameraProjection().type;
+        const newProjectionType = oldProjectionType === CameraProjectionType.ORTHOGRAPHIC
+            ? CameraProjectionType.PERSPECTIVE
+            : CameraProjectionType.ORTHOGRAPHIC;
+        this.iv.setCameraProjection({ type: newProjectionType });
+
+        return newProjectionType;
+    }
+
     async componentDidMount(): Promise<void> {
         if (this.container.current === null) {
             throw new Error();
@@ -62,7 +86,10 @@ export class Viewer extends Component<ViewerProps> implements ViewerAPI {
 
         iv.addFeature(LoaderFeature);
         iv.addFeature(OrbitFeature);
-        iv.addFeature(NavigationCubeFeature);
+        iv.addFeature(NavigationCubeFeature, {
+            xOffset: '32px',
+            yOffset: '4px'
+        });
         iv.addFeature(MoveCameraFeature);
         iv.addFeature(ColorFeature);
         iv.addFeature(HoverFeature);
@@ -97,6 +124,8 @@ export class Viewer extends Component<ViewerProps> implements ViewerAPI {
         await moveCamera.toObjects(null);
         this.meshIds = new Set(this.iv.getObjects());
         this.updateSelection();
+
+        this.homePosition = moveCamera.getOptions();
     }
 
     componentDidUpdate(): void {

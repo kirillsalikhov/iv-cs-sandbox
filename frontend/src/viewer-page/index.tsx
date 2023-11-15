@@ -7,6 +7,8 @@ import { ObjectDetails, ObjectInfo } from './ObjectDetails.tsx';
 import { getObjectDetails } from '../data/object-details.ts';
 
 import '../index.css';
+import { Camera } from '@wge/core';
+import { CameraButtons } from './CameraButtons.tsx';
 
 function App(): ReactElement {
     const vref = useMemo(() => createRef<Viewer>(), []);
@@ -69,6 +71,7 @@ function App(): ReactElement {
                 />
             }
             {details && <ObjectDetails info={details}/>}
+            {hierarchyLoaded && <CameraButtons viewerRef={vref}></CameraButtons>}
         </>
     )
 }
