@@ -3,7 +3,7 @@ import { Viewer } from './Viewer.tsx';
 import { createRoot } from 'react-dom/client';
 import { Hierarchy } from './Hierarchy.tsx';
 import { createHierarchyData, HierarchyData } from '../data/hierarchy-data.ts';
-import { ObjectDetails, ObjectInfo } from './ObjectDetails.tsx';
+import { ObjectDetails, ObjectDetailsProps } from './ObjectDetails.tsx';
 import { getObjectDetails } from '../data/object-details.ts';
 
 import '../index.css';
@@ -14,7 +14,7 @@ function App(): ReactElement {
     const [hierarchyLoaded, setHierarchyLoaded] = useState<boolean>(false);
     const [selectedId, setSelectedId] = useState<number>(-1);
     const [allowMoveCamera, setAllowMoveCamera] = useState(true);
-    const [details, setDetails] = useState<ObjectInfo | null>(null);
+    const [details, setDetails] = useState<ObjectDetailsProps | null>(null);
 
     //note: this is an ugly workaround for react-arborist triggering onSelect even when the select is caused by changing selection prop.
     //      other virtualized trees likely don't need this hack
@@ -68,7 +68,7 @@ function App(): ReactElement {
                     }}
                 />
             }
-            {details && <ObjectDetails info={details}/>}
+            {details && <ObjectDetails title={details.title} properties={details.properties}/>}
         </>
     )
 }

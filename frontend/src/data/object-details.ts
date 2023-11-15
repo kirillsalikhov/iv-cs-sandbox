@@ -1,20 +1,32 @@
 import WofDB from '@wg/objects-db';
-import { ObjectInfo, ObjectProps } from '../viewer-page/ObjectDetails.tsx';
+import { ObjectDetailsProps, ObjectProperty } from '../viewer-page/ObjectDetails';
 
 const exceptions = ['_id', 'children'];
+function isObject(v: unknown): boolean {
+    return typeof v === 'object' && v !== null && !Array.isArray(v);
+};
 
-export async function getObjectDetails(id: number, db: WofDB): Promise<ObjectInfo> {
+function gatherObjectProps(source: object): ObjectProperty[] {
+    const props: ObjectProperty[] = [];
+
+    for (const [name, val] of Object.entries(source)) {
+        if (exceptions.includes(name)) { continue; }
+        if (isObject(val)) {
+            props.push({ type: 'group', name, children: gatherObjectProps(val) });
+        } else {
+            props.push({ type: 'value', name, value: JSON.stringify(val, null, 4) })
+        }
+    }
+
+    return props;
+}
+
+export async function getObjectDetails(id: number, db: WofDB): Promise<ObjectDetailsProps> {
     const response = await db.request([id]);
-    const { Name: name, ...props } = response[0];
+    const { Name, ...restProps } = response[0];
+    const properties = gatherObjectProps(restProps);
 
-    const properties: ObjectProps = {};
-    for (const [n, v] of Object.entries(props)) {
-        if (exceptions.includes(n)) { continue; }
-        properties[n] = JSON.stringify(v);
-    }
+    properties.sort((p) => p.type === 'group' ? 1 : -1);
 
-    return {
-        name: String(name),
-        properties
-    }
+    return { title: String(Name), properties };
 }
