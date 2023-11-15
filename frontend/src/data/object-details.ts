@@ -1,4 +1,4 @@
-import WofDB from '@wg/objects-db';
+import WofDB from '@wge/objects-db';
 import { ObjectDetailsProps, ObjectProperty } from '../viewer-page/ObjectDetails';
 
 const exceptions = ['_id', 'children'];

@@ -1,4 +1,4 @@
-import WofDB from '@wg/objects-db';
+import WofDB from '@wge/objects-db';
 
 interface DBRecord {
     _id: number;

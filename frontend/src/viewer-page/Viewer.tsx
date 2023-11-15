@@ -1,4 +1,4 @@
-import WofDB from '@wg/objects-db';
+import WofDB from '@wge/objects-db';
 import {
     CameraProjectionType,
     ColorFeature,
@@ -10,7 +10,7 @@ import {
     MoveCameraState,
     NavigationCubeFeature,
     OrbitFeature
-} from '@wg/industrial-viewer';
+} from '@wge/industrial-viewer';
 import { zipDataLoader } from '../data/zip-data-loader.ts';
 import { Component, createRef, ReactNode } from 'react';
 
