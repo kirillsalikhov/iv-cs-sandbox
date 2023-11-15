@@ -8,7 +8,7 @@ services:
     ports:
       - "3050:3050"
     volumes:
-      - db_data:/app/db/data
+      - db_data:/backend/db/data
       - web_static:/backend/static:ro
 
   frontend:

@@ -6,3 +6,4 @@ services:
     volumes:
       - ../../backend:/backend
       - /backend/node_modules
+      - db_data:/backend/db/data
