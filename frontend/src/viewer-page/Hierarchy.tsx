@@ -1,6 +1,6 @@
 import { ReactNode, useLayoutEffect, useMemo, useRef, useState } from "react";
 import { NodeApi, NodeRendererProps, Tree } from "react-arborist";
-import { HierarchyData } from './hierarchy-data.ts';
+import { HierarchyData } from '../data/hierarchy-data.ts';
 
 function Node({ node, style }: NodeRendererProps<HierarchyData>): ReactNode {
     const openClass = node.isOpen ? 'rotate-90' : 'rotate-0';

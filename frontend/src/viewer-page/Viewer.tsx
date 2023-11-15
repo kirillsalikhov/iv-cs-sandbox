@@ -8,7 +8,7 @@ import {
     OrbitFeature,
     IVPointerEvent
 } from '@wg/industrial-viewer';
-import { zipDataLoader } from './zip-data-loader.ts';
+import { zipDataLoader } from '../data/zip-data-loader.ts';
 import { Component, createRef, ReactNode } from 'react';
 
 export interface ViewerAPI {

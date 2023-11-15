@@ -1,5 +1,5 @@
 import WofDB from '@wg/objects-db';
-import { ObjectInfo, ObjectProps } from './ObjectDetails';
+import { ObjectInfo, ObjectProps } from '../viewer-page/ObjectDetails.tsx';
 
 const exceptions = ['_id', 'children'];
 

@@ -2,11 +2,11 @@ import { createRef, ReactElement, useEffect, useMemo, useRef, useState } from 'r
 import { Viewer } from './Viewer.tsx';
 import { createRoot } from 'react-dom/client';
 import { Hierarchy } from './Hierarchy.tsx';
-import { createHierarchyData, HierarchyData } from './hierarchy-data.ts';
+import { createHierarchyData, HierarchyData } from '../data/hierarchy-data.ts';
 import { ObjectDetails, ObjectInfo } from './ObjectDetails.tsx';
-import { getObjectDetails } from './object-details.ts';
+import { getObjectDetails } from '../data/object-details.ts';
 
-import './index.css';
+import '../index.css';
 
 function App(): ReactElement {
     const vref = useMemo(() => createRef<Viewer>(), []);
