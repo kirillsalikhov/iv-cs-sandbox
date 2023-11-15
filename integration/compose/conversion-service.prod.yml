@@ -60,10 +60,10 @@ services:
       mc mb local/wg-bucket
       mc ilm import local/wg-bucket < /root/.mc/lifecycle.json
   cs_postgres:
+    image: postgres:12-alpine
     environment:
       POSTGRES_USER: ${CS_DB_USER}
       POSTGRES_PASSWORD: ${CS_DB_PASS}
-    image: postgres:12-alpine
     volumes:
       - cs_postgres_data:/var/lib/postgresql/data
   fbx2gltf:
