@@ -5,6 +5,7 @@ import { Hierarchy } from './Hierarchy.tsx';
 import { createHierarchyData, HierarchyData } from '../data/hierarchy-data.ts';
 import { ObjectDetails, ObjectDetailsProps } from './ObjectDetails.tsx';
 import { getObjectDetails } from '../data/object-details.ts';
+import { CameraButtons } from './CameraButtons.tsx';
 
 import '../index.css';
 
@@ -69,6 +70,7 @@ function App(): ReactElement {
                 />
             }
             {details && <ObjectDetails title={details.title} properties={details.properties}/>}
+            {hierarchyLoaded && <CameraButtons viewerRef={vref}></CameraButtons>}
         </>
     )
 }
