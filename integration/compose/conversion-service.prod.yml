@@ -117,10 +117,10 @@ services:
     image: docker.webgears3d.com/cs-on-premise/unzip2folder:2.1.2-utils3.1.1
   ifc_convert:
     <<: *converter
-    image: docker.webgears3d.com/converters/ifc_convert:1.0.1-utils3.1.1
+    image: docker.webgears3d.com/cs-on-premise/ifc_convert:1.0.1-utils3.1.1
   post_ifc_convert:
     <<: *converter
-    image: docker.webgears3d.com/converters/post_ifc_convert:1.0.1-utils3.1.1
+    image: docker.webgears3d.com/cs-on-premise/post_ifc_convert:1.0.1-utils3.1.1
 
 volumes:
   minio_data:
