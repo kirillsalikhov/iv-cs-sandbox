@@ -1,6 +1,6 @@
 ## Setup
 
-1. Rename integration/compose/sample.env to .env and fill vars
+1. Copy integration/compose/sample.env to .env and fill vars
 2. Run integration/bin/setup.sh
 
 ## Run

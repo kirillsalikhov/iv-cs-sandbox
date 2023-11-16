@@ -5,6 +5,25 @@ const S3Client = require('../../utils/S3Client');
 
 const seedFile = (name) => path.join(__dirname, '../seed-files', name);
 
+const docsData = [
+    {
+        name: "Wellness center Sama.ifc",
+        status: "finished",
+        ifcFile: seedFile("Wellness center Sama.ifc"),
+        zipFile: seedFile("Wellness center Sama.zip")
+    },
+    {
+        name: "failed.ifc",
+        status: "failed",
+        ifcFile: seedFile("failed.ifc")
+    },
+    {
+        name: "inProgress.ifc",
+        status: "inProgress",
+        ifcFile: seedFile("inProgress.ifc")
+    },
+]
+
 /**
  * @param { import("knex").Knex } knex
  * @returns { Promise<void> }
@@ -12,25 +31,6 @@ const seedFile = (name) => path.join(__dirname, '../seed-files', name);
 exports.seed = async function (knex) {
     // Deletes ALL existing entries
     await knex('documents').del();
-
-    const docsData = [
-        {
-            name: "Wellness center Sama.ifc",
-            status: "finished",
-            ifcFile: "Wellness center Sama.ifc",
-            zipFile: "Wellness center Sama.zip"
-        },
-        {
-            name: "failed.ifc",
-            status: "failed",
-            ifcFile: "failed.ifc"
-        },
-        {
-            name: "inProgress.ifc",
-            status: "inProgress",
-            ifcFile: "inProgress.ifc"
-        },
-    ]
 
     return Promise.all(docsData.map((data) => {
         const docPromisses = [];
@@ -47,14 +47,14 @@ exports.seed = async function (knex) {
             docPromisses.push(
                 S3Client.uploadFile(
                     doc.source_file,
-                    seedFile(data.ifcFile)));
+                    data.ifcFile));
         }
         if (data.zipFile) {
             doc.view_file = uuid();
             docPromisses.push(
                 S3Client.uploadFile(
                     doc.view_file,
-                    seedFile(data.zipFile)));
+                    data.zipFile));
         }
 
         docPromisses.push(knex('documents').insert(doc));
