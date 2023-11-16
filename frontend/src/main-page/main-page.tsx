@@ -1,4 +1,5 @@
-import { DocumentData, documents } from '../data/documents';
+import { useEffect, useState } from 'react';
+import { DocumentData, loadDocuments } from '../data/documents';
 
 export interface DocumentCardProps {
     document: DocumentData;
@@ -42,6 +43,12 @@ function DocumentCard({ document: { name, status } }: DocumentCardProps) {
 }
 
 export function MainPage() {
+    const [documents, setDocuments] = useState<DocumentData[]>([]);
+
+    useEffect(() => {
+        loadDocuments().then((result) => setDocuments(result));
+    }, []);
+
     return (
         <div className="bg-white h-screen">
             <div className="container m-auto max-w-screen-2xl grid grid-cols-12">
