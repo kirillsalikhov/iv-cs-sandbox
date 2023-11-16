@@ -1,7 +1,7 @@
 export interface DocumentData {
     id: number;
     name: string;
-    status: string;
+    status: 'failed' | 'inProgress' | 'finished';
 }
 
 export const documents: DocumentData[] = [
