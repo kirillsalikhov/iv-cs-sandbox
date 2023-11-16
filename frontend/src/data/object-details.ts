@@ -41,8 +41,8 @@ function gatherObjectProps(source: object): { values: ObjectPropertyValue[]; gro
 
 export async function getObjectDetails(id: number, db: WofDB): Promise<ObjectDetailsProps> {
     const response = await db.request([id]);
-    const { Name, ...restProps } = response[0];
+    const { originalName, ...restProps } = response[0];
     const { values, groups } = gatherObjectProps(restProps);
 
-    return { title: String(Name), values, groups };
+    return { title: String(originalName), values, groups };
 }
