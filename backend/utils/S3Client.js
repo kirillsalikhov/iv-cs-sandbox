@@ -22,7 +22,7 @@ class S3Client {
     }
 
     async signForViewer(key) {
-
+        return this.client.presignedGetObject(this.bucket, key, expireViewer);
     }
 
     async signForDownload(key, filename){

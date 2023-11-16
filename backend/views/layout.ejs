@@ -9,6 +9,12 @@
             <link rel="stylesheet" href="/<%= vite.manifest['index.css'].file %>">
         <% } %>
 
+        <% if (forBrowser) { %>
+            <script type="application/javascript">
+                window.forBrowser = JSON.parse('<%- JSON.stringify(forBrowser) %>');
+            </script>
+        <% } %>
+
     </head>
     <body>
         <div id="react-root"></div>
