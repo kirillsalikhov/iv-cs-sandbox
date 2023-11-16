@@ -5,6 +5,15 @@ const config = {
     vite: {
         devHost: process.env.VITE_DEV_HOST || '',
         manifest: {}
+    },
+    minio: {
+        endPoint: process.env.MINIO_HOST,
+        accessKey: process.env.MINIO_ROOT_USER,
+        secretKey: process.env.MINIO_ROOT_PASSWORD,
+        port: 10000,
+        useSSL: false,
+
+        bucket: 'default-bucket'
     }
 }
 
