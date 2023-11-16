@@ -12,6 +12,10 @@ class S3Client {
     async uploadFile(key, localPath) {
         return this.client.fPutObject(this.bucket, key, localPath);
     }
+
+    async removeObjects(keys) {
+        return this.client.removeObjects(this.bucket, keys);
+    }
 }
 
 module.exports =  new S3Client(config.minio);

@@ -11,7 +11,8 @@ const apiRouter = new Router({
     prefix: '/api'
 })
     .get('/documents', documents.index)
-    .get('/documents/:id', documents.show);
+    .get('/documents/:id', documents.show)
+    .delete('/documents/:id', documents.remove);
 
 
 router.use(apiRouter.routes());
