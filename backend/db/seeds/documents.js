@@ -30,7 +30,10 @@ const docsData = [
  */
 exports.seed = async function (knex) {
     // Deletes ALL existing entries
-    await knex('documents').del();
+    await Promise.all([
+        knex('documents').del(),
+        S3Client.removeAllObjects()
+    ]);
 
     return Promise.all(docsData.map((data) => {
         const docPromisses = [];
