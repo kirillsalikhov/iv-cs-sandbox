@@ -1,7 +1,7 @@
 import WofDB from '@wge/objects-db';
 import { ObjectDetailsProps, ObjectPropertyGroup, ObjectPropertyValue } from '../viewer-page/ObjectDetails';
 
-const exceptions = ['_id', 'children'];
+const fieldsToIgnore = ['_id', 'children'];
 function isObject(v: unknown): boolean {
     return typeof v === 'object' && v !== null && !Array.isArray(v);
 };
@@ -10,7 +10,7 @@ function getPlainChildList(parent: string, content: object, depth: number = 0): 
     const children: ObjectPropertyValue[] = [];
 
     for (const [child, val] of Object.entries(content)) {
-        if (exceptions.includes(child)) { continue; }
+        if (fieldsToIgnore.includes(child)) { continue; }
 
         const name = depth ? `${parent} ${child}` : child;
         if (isObject(val)) {
@@ -28,7 +28,7 @@ function gatherObjectProps(source: object): { values: ObjectPropertyValue[]; gro
     const groups: ObjectPropertyGroup[] = [];
 
     for (const [name, val] of Object.entries(source)) {
-        if (exceptions.includes(name)) { continue; }
+        if (fieldsToIgnore.includes(name)) { continue; }
         if (isObject(val)) {
             groups.push({ name, children: getPlainChildList(name, val) })
         } else {

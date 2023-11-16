@@ -1,10 +1,10 @@
-import { MutableRefObject, useState } from 'react';
+import { RefObject, useState } from 'react';
 import { iconCameraOrthographic, iconCameraPerspective, iconHome } from './camera-svg-icons.ts';
 import { Viewer } from './Viewer.tsx';
 import { CameraProjectionType } from '@wge/industrial-viewer';
 
 export interface CameraButtonsProps {
-    viewerRef: MutableRefObject<Viewer>;
+    viewerRef: RefObject<Viewer>;
 }
 
 export function CameraButtons({viewerRef}: CameraButtonsProps) {
