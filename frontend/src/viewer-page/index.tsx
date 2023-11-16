@@ -69,7 +69,7 @@ function App(): ReactElement {
                     }}
                 />
             }
-            {details && <ObjectDetails title={details.title} properties={details.properties}/>}
+            {details && <ObjectDetails {...details}/>}
             {hierarchyLoaded && <CameraButtons viewerRef={vref}></CameraButtons>}
         </>
     )
