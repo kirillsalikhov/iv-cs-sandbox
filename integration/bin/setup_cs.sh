@@ -13,6 +13,6 @@ sleep 3
 docker compose ${compose_files} -p sandbox run --user "$(id -u):$(id -g)" \
     -e NODE_ENV=development manager node ./scripts/setup.js --drop
 docker compose ${compose_files} -p sandbox run --user "$(id -u):$(id -g)" \
-    -e NODE_ENV=production manager sandbox ./scripts/setup.js --drop
+    -e NODE_ENV=production manager node ./scripts/setup.js --drop
 
-docker compose ${compose_files} -p sandboxf down
+docker compose ${compose_files} -p sandbox down
