@@ -5,6 +5,7 @@ const documents = require('./documents');
 const router = new Router();
 
 router.get('/', pages.root);
+router.get('/:id/viewer', pages.viewer);
 
 const apiRouter = new Router({
     prefix: '/api'

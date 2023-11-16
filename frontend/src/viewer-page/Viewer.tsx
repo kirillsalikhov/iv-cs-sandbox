@@ -1,7 +1,7 @@
-import WofDB from '@wg/objects-db';
+import WofDB from '@wge/objects-db';
 import {
     CameraProjectionType,
-    ColorFeature,
+    ColorFeature, EnvironmentFeature,
     HoverFeature,
     IndustrialViewer,
     IVPointerEvent,
@@ -10,7 +10,7 @@ import {
     MoveCameraState,
     NavigationCubeFeature,
     OrbitFeature
-} from '@wg/industrial-viewer';
+} from '@wge/industrial-viewer';
 import { zipDataLoader } from '../data/zip-data-loader.ts';
 import { Component, createRef, ReactNode } from 'react';
 
@@ -93,6 +93,7 @@ export class Viewer extends Component<ViewerProps> implements ViewerAPI {
         iv.addFeature(MoveCameraFeature);
         iv.addFeature(ColorFeature);
         iv.addFeature(HoverFeature);
+        const envFeature = iv.addFeature(EnvironmentFeature);
 
         await iv.init();
 
@@ -103,6 +104,19 @@ export class Viewer extends Component<ViewerProps> implements ViewerAPI {
             if (this.props.onClickObject) {
                 this.props.onClickObject(e.id ?? -1);
             }
+        });
+
+        const parkingTextureId = envFeature.createTextureID('wenv', '/parking.wenv');
+        await envFeature.getTextureLoadedPromise(parkingTextureId)
+
+        envFeature.setOptions({
+            ibl: parkingTextureId
+        });
+        iv.setCameraEV100({
+            aperture: 6.4,
+            shutterSpeed: 0.008,
+            ISO: 100,
+            expComp: 0
         });
     }
 

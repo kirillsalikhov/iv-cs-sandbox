@@ -5,6 +5,10 @@ const config = {
     vite: {
         devHost: process.env.VITE_DEV_HOST || '',
         manifest: {}
+        entries: {
+            main: 'src/main-page/index.tsx',
+            viewer: 'src/viewer-page/index.tsx'
+        }
     },
     minio: {
         endPoint: process.env.MINIO_HOST,

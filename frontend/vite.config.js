@@ -19,7 +19,10 @@ export default defineConfig({
     build: {
         manifest: true,
         rollupOptions: {
-            input: './src/main-page/index.tsx',
+            input: [
+                './src/main-page/index.tsx',
+                './src/viewer-page/index.tsx'
+            ]
         },
     },
 });

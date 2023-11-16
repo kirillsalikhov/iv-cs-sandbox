@@ -1,32 +1,48 @@
-import WofDB from '@wg/objects-db';
-import { ObjectDetailsProps, ObjectProperty } from '../viewer-page/ObjectDetails';
+import WofDB from '@wge/objects-db';
+import { ObjectDetailsProps, ObjectPropertyGroup, ObjectPropertyValue } from '../viewer-page/ObjectDetails';
 
-const exceptions = ['_id', 'children'];
+const fieldsToIgnore = ['_id', 'children'];
 function isObject(v: unknown): boolean {
     return typeof v === 'object' && v !== null && !Array.isArray(v);
 };
 
-function gatherObjectProps(source: object): ObjectProperty[] {
-    const props: ObjectProperty[] = [];
+function getPlainChildList(parent: string, content: object, depth: number = 0): ObjectPropertyValue[] {
+    const children: ObjectPropertyValue[] = [];
 
-    for (const [name, val] of Object.entries(source)) {
-        if (exceptions.includes(name)) { continue; }
+    for (const [child, val] of Object.entries(content)) {
+        if (fieldsToIgnore.includes(child)) { continue; }
+
+        const name = depth ? `${parent} ${child}` : child;
         if (isObject(val)) {
-            props.push({ type: 'group', name, children: gatherObjectProps(val) });
+            children.push(...getPlainChildList(name, val, depth + 1));
         } else {
-            props.push({ type: 'value', name, value: JSON.stringify(val, null, 4) })
+            children.push({ name, value: JSON.stringify(val, null, 4) });
         }
     }
 
-    return props;
+    return children;
+}
+
+function gatherObjectProps(source: object): { values: ObjectPropertyValue[]; groups: ObjectPropertyGroup[] } {
+    const values: ObjectPropertyValue[] = [];
+    const groups: ObjectPropertyGroup[] = [];
+
+    for (const [name, val] of Object.entries(source)) {
+        if (fieldsToIgnore.includes(name)) { continue; }
+        if (isObject(val)) {
+            groups.push({ name, children: getPlainChildList(name, val) })
+        } else {
+            values.push({ name, value: JSON.stringify(val, null, 4) })
+        }
+    }
+
+    return { values, groups };
 }
 
 export async function getObjectDetails(id: number, db: WofDB): Promise<ObjectDetailsProps> {
     const response = await db.request([id]);
-    const { Name, ...restProps } = response[0];
-    const properties = gatherObjectProps(restProps);
+    const { originalName, ...restProps } = response[0];
+    const { values, groups } = gatherObjectProps(restProps);
 
-    properties.sort((p) => p.type === 'group' ? 1 : -1);
-
-    return { title: String(Name), properties };
+    return { title: String(originalName), values, groups };
 }
