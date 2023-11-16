@@ -1,31 +1,44 @@
+import { DocumentData, loadDocuments } from '../data/documents.js';
 import { useEffect, useState } from 'react';
-import { DocumentData, loadDocuments } from '../data/documents';
+
+const Upload = () => {
+    return (
+        <div className="col-span-full h-min m-4 bg-white rounded border border-gray-200 p-4 md:col-span-4 md:order-last md:mr-8">
+            <div className="block mb-6 font-medium text-lg">Add file</div>
+            <input className="block w-full h-10 mb-4 p-1 items-center text-gray-500 rounded border border-gray-300 cursor-pointer bg-gray-50 hover:bg-gray-100 focus:outline-none" id="file_input" type="file">
+            </input>
+            <select
+                className="block w-full h-10 mb-6 py-1.5 px-2 rounded border border-gray-300 cursor-pointer bg-gray-50 hover:bg-gray-100 focus:outline-none "
+                defaultValue="IFC to WMD">
+                <option>IFC to WMD options </option>
+                <option>IFC to WMD </option>
+            </select>
+            <button
+                type="button"
+                className="w-full h-10 rounded bg-blue-700 hover:bg-blue-600 px-2.5 py-1.5 text-white focus-outline-none"
+            >
+                Convert
+            </button>
+        </div>
+    )
+}
 
 export interface DocumentCardProps {
     document: DocumentData;
-}
-
-const statusBadges = {
-    failed: 'rounded-md bg-red-50 px-2 py-1 text-xs font-medium text-red-700 ring-1 ring-inset ring-red-600/10',
-    inProgress: 'rounded-md bg-gray-50 px-2 py-1 text-xs font-medium text-gray-600 not-italic ring-1 ring-inset ring-gray-500/10 ',
-    finished: 'hidden',
-}
-const docStyles = {
-    failed: 'text-red-900',
-    inProgress: 'text-gray-500 italic',
-    finished: 'font-medium'
 }
 
 function classNames(...classes: (string | null | undefined | false)[]) {
     return classes.filter(Boolean).join(' ')
 }
 
-function DocumentCard({ document: { name, status } }: DocumentCardProps) {
+
+function DocumentCard(props: DocumentCardProps) {
+    const document = props.document;
     return (
         <div className="flex items-center p-4 gap-4 hover:bg-gray-50 cursor-pointer">
             <div className="flex w-full h-6 gap-2 ">
-                <div className={classNames(statusBadges[status], 'flex-none sm:order-last')}>{status}</div>
-                <div className={classNames(docStyles[status], 'flex-grow overflow-hidden text-ellipsis ')}>{name}</div>
+                <div className={classNames(`badge--${document.status}`, 'flex-none sm:order-last')}>{document.status}</div>
+                <div className={classNames(`docStyle--${document.status}`, 'flex-grow overflow-hidden text-ellipsis ')}>{document.name}</div>
             </div>
             <button type="button" title="Download source file" className="flex flex-none items-center rounded bg-white hover:bg-gray-100 text-gray-400 text-sm hover:text-gray-800 leading-5 p-2.5 gap-1">
                 <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor" className="w-5 h-5">
@@ -52,61 +65,25 @@ export function MainPage() {
     return (
         <div className="bg-white h-screen">
             <div className="container m-auto max-w-screen-2xl grid grid-cols-12">
-                {/* Upload panel */}
-                <div className="col-span-full h-min m-4 bg-white rounded border border-gray-200 p-4 md:col-span-4 md:order-last md:mr-8">
-                    <div className="block mb-6 font-medium text-lg">Add file</div>
-                    <input className="block w-full h-10 mb-4 p-1 items-center text-gray-500 rounded border border-gray-300 cursor-pointer bg-gray-50 hover:bg-gray-100 focus:outline-none" id="file_input" type="file">
-                    </input>
-                    <select
-                        className="block w-full h-10 mb-6 py-1.5 px-2 rounded border border-gray-300 cursor-pointer bg-gray-50 hover:bg-gray-100 focus:outline-none "
-                        defaultValue="IFC to WMD">
-                        <option>IFC to WMD options </option>
-                        <option>IFC to WMD </option>
-                    </select>
-                    <button
-                        type="button"
-                        className="w-full h-10 rounded bg-blue-700 hover:bg-blue-600 px-2.5 py-1.5 text-white focus-outline-none"
-                    >
-                        Convert
-                    </button>
+
+
+                {/* Heading */}
+                <div className="col-span-full m-4 md:m-8">
+                    <h1>Root page (delete this heading)</h1>
                 </div>
+
+
+                {/* Upload panel */}
+                <Upload />
 
 
                 {/* Documents */}
                 <div className="col-span-full min-w-fit m-4 bg-white rounded border border-gray-200 md:col-span-8 md:ml-8 ">
-                    <div className="h-[18rem] overflow-y-scroll divide-y divide-gray-200 md:p-4">
+                    <div className="divide-y divide-gray-200 md:p-4">
                         {documents.map((document) => <DocumentCard key={document.id} document={document} />)}
-                    </div>
-
-
-                    {/* Pagination */}
-                    <div className="flex border-t border-gray-300 p-4"
-                         aria-label="Pagination"
-                    >
-                        <div className="flex w-full items-center gap-4 justify-between md:justify-end">
-                            <div className="hidden text-xs text-gray-700 md:block ">
-                                1-10 of 20
-                            </div>
-                            <a
-                                href="#"
-                                className="relative inline-flex items-center rounded-md bg-white p-2.5 text-sm font-semibold text-gray-700 ring-1 ring-inset ring-gray-200 hover:bg-gray-100"
-                            >
-                                <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor" className="w-5 h-5">
-                                    <path strokeLinecap="round" strokeLinejoin="round" d="M15.75 19.5L8.25 12l7.5-7.5" />
-                                </svg>
-                            </a>
-                            <a
-                                href="#"
-                                className="relative inline-flex items-center rounded-md bg-white p-2.5 text-sm font-semibold text-gray-700 ring-1 ring-inset ring-gray-200 hover:bg-gray-100"
-                            >
-                                <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor" className="w-5 h-5">
-                                    <path strokeLinecap="round" strokeLinejoin="round" d="M8.25 4.5l7.5 7.5-7.5 7.5" />
-                                </svg>
-                            </a>
-                        </div>
                     </div>
                 </div>
             </div>
         </div>
-    );
+    )
 }
