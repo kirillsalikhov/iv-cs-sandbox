@@ -12,6 +12,7 @@ const apiRouter = new Router({
 })
     .get('/documents', documents.index)
     .get('/documents/:id', documents.show)
+    .get('/documents/:id/source', documents.sourceDownload)
     .delete('/documents/:id', documents.remove);
 
 
