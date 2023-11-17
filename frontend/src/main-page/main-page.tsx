@@ -1,5 +1,5 @@
-import { DocumentData, loadDocuments } from '../data/documents.js';
-import { useEffect, useState } from 'react';
+import { DocumentData, DocumentsAPI } from '../data/documents.js';
+import { useCallback, useEffect, useMemo, useState } from 'react';
 
 const Upload = () => {
     return (
@@ -25,28 +25,39 @@ const Upload = () => {
 
 export interface DocumentCardProps {
     document: DocumentData;
+    link: string;
+    onDelete: (id: number) => void;
+    onDownload: (id: number) => void;
 }
 
 function classNames(...classes: (string | null | undefined | false)[]) {
     return classes.filter(Boolean).join(' ')
 }
 
-
-function DocumentCard(props: DocumentCardProps) {
-    const document = props.document;
+function DocumentCard({ document, link, onDelete, onDownload }: DocumentCardProps) {
     return (
         <div className="flex items-center p-4 gap-4 hover:bg-gray-50 cursor-pointer">
             <div className="flex w-full h-6 gap-2 ">
                 <div className={classNames(`badge--${document.status}`, 'flex-none sm:order-last')}>{document.status}</div>
-                <div className={classNames(`docStyle--${document.status}`, 'flex-grow overflow-hidden text-ellipsis ')}>{document.name}</div>
+                <a className={classNames(`docStyle--${document.status}`, 'flex-grow overflow-hidden text-ellipsis ')} href={link}>{document.name}</a>
             </div>
-            <button type="button" title="Download source file" className="flex flex-none items-center rounded bg-white hover:bg-gray-100 text-gray-400 text-sm hover:text-gray-800 leading-5 p-2.5 gap-1">
+            <button
+                type="button"
+                title="Download source file"
+                className="flex flex-none items-center rounded bg-white hover:bg-gray-100 text-gray-400 text-sm hover:text-gray-800 leading-5 p-2.5 gap-1"
+                onClick={() => onDownload(document.id)}
+            >
                 <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor" className="w-5 h-5">
                     <path strokeLinecap="round" strokeLinejoin="round" d="M3 16.5v2.25A2.25 2.25 0 005.25 21h13.5A2.25 2.25 0 0021 18.75V16.5M16.5 12L12 16.5m0 0L7.5 12m4.5 4.5V3" />
                 </svg>
                 <div className="hidden sm:block">Source</div>
             </button>
-            <button type="button" title="Delete file" className="flex-none items-center rounded bg-white hover:bg-gray-100 text-gray-400 hover:text-gray-800 leading-5 p-2.5">
+            <button
+                type="button"
+                title="Delete file"
+                className="flex-none items-center rounded bg-white hover:bg-gray-100 text-gray-400 hover:text-gray-800 leading-5 p-2.5"
+                onClick={() => onDelete(document.id)}
+            >
                 <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor" className="w-5 h-5">
                     <path strokeLinecap="round" strokeLinejoin="round" d="M14.74 9l-.346 9m-4.788 0L9.26 9m9.968-3.21c.342.052.682.107 1.022.166m-1.022-.165L18.16 19.673a2.25 2.25 0 01-2.244 2.077H8.084a2.25 2.25 0 01-2.244-2.077L4.772 5.79m14.456 0a48.108 48.108 0 00-3.478-.397m-12 .562c.34-.059.68-.114 1.022-.165m0 0a48.11 48.11 0 013.478-.397m7.5 0v-.916c0-1.18-.91-2.164-2.09-2.201a51.964 51.964 0 00-3.32 0c-1.18.037-2.09 1.022-2.09 2.201v.916m7.5 0a48.667 48.667 0 00-7.5 0" />
                 </svg>
@@ -57,9 +68,19 @@ function DocumentCard(props: DocumentCardProps) {
 
 export function MainPage() {
     const [documents, setDocuments] = useState<DocumentData[]>([]);
+    const documentsAPI = useMemo(() => new DocumentsAPI(), []);
 
     useEffect(() => {
-        loadDocuments().then((result) => setDocuments(result));
+        setDocuments(documentsAPI.list);
+    }, []);
+
+    const onDelete = useCallback(async (id: number) => {
+        await documentsAPI.delete(id);
+        setDocuments(documentsAPI.list);
+    }, []);
+
+    const onDownload = useCallback(async (id: number) => {
+        await documentsAPI.download(id);
     }, []);
 
     return (
@@ -80,7 +101,15 @@ export function MainPage() {
                 {/* Documents */}
                 <div className="col-span-full min-w-fit m-4 bg-white rounded border border-gray-200 md:col-span-8 md:ml-8 ">
                     <div className="divide-y divide-gray-200 md:p-4">
-                        {documents.map((document) => <DocumentCard key={document.id} document={document} />)}
+                        {documents.map((document) => (
+                            <DocumentCard
+                                key={document.id}
+                                link={documentsAPI.getLink(document.id)}
+                                document={document}
+                                onDelete={onDelete}
+                                onDownload={onDownload}
+                            />
+                        ))}
                     </div>
                 </div>
             </div>
