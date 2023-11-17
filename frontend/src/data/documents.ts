@@ -33,11 +33,11 @@ export async function getDocuments(): Promise<DocumentData[] | null> {
     }
 }
 
-export function download(name: string, ext: string, data: string): void {
+export function download(name: string, data: string): void {
     const a = document.createElement('a');
     const file = new Blob([data], { type : 'plain/text' });
     a.href = URL.createObjectURL(file);
-    a.download = `${name}.${ext}`;
+    a.download = name;
     a.click();
 }
 
