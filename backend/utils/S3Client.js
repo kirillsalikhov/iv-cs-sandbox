@@ -2,6 +2,8 @@ const Minio = require('minio');
 
 const config = require('../config');
 
+const expireDirectUpload = 5*60 // 5 min
+
 const expireDownload = 5*60; // 5 min
 const expireViewer = 5*60 // 5 min
 const expireConversion = 5*60*60 // 5 hour
@@ -15,6 +17,10 @@ class S3Client {
 
     async uploadFile(key, localPath) {
         return this.client.fPutObject(this.bucket, key, localPath);
+    }
+
+    async signForDirectUpload(key) {
+        return this.client.presignedPutObject(this.bucket, key, expireDirectUpload);
     }
 
     async signForConversion(key) {
