@@ -26,5 +26,7 @@ load_env
 minio_setup
 
 docker compose ${compose_files} -p ${project} run backend npm run setup
+# this is need as backend is run under node, not root
+docker compose ${compose_files} -p ${project} run backend chown -R node:node /backend/db/data/
 
 docker compose ${compose_files} -p ${project} down
