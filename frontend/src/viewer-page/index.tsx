@@ -6,6 +6,7 @@ import { createHierarchyData, HierarchyData } from '../data/hierarchy-data.ts';
 import { ObjectDetails, ObjectDetailsProps } from './ObjectDetails.tsx';
 import { getObjectDetails } from '../data/object-details.ts';
 import { CameraButtons } from './CameraButtons.tsx';
+import { getModelURL } from '../data/models.ts';
 
 import '../index.css';
 
@@ -24,7 +25,7 @@ function App(): ReactElement {
     useEffect(() => {
         const { current: viewer } = vref;
         if (viewer !== null) {
-            viewer.load('/simple.zip')
+            viewer.load(getModelURL())
                 .then(() => createHierarchyData(viewer.db))
                 .then((data) => {
                     setHierarchyData(data);
