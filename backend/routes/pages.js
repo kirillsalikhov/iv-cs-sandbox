@@ -20,7 +20,7 @@ exports.viewer = async (ctx) => {
     if (!document.view_file) {
         createNotFoundError(`View file not found for document with id: ${document.id}`)
     }
-    const modelUrl = await S3Client.signForDownload(document.view_file);
+    const modelUrl = await S3Client.signForViewer(document.view_file);
 
     return ctx.render('layout', layoutVars({
         appEntry: entries.viewer,

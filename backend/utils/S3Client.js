@@ -37,6 +37,20 @@ class S3Client {
         return this.client.removeObjects(this.bucket, keys);
     }
 
+    async removeAllObjects() {
+
+        const objectKeys = await new Promise((resolve, reject) => {
+            const keys = [];
+            const stream = this.client.listObjects(this.bucket, '');
+
+            stream.on('data', obj => keys.push(obj.name));
+            stream.on('error', reject);
+            stream.on('end', () => {
+                resolve(keys);
+            });
+        });
+        return this.removeObjects(objectKeys);
+    }
 
 }
 
