@@ -3,11 +3,21 @@
 1. Copy integration/compose/sample.env to .env and fill vars
 2. Run integration/bin/setup.sh
 
+### Setup for Conversion service
+
+```
+integration/bin/setup_cs.sh
+```
 ## Run
 
-Inside integration folder
+Inside /integration folder
+backend + frontend
 ```
 bin/main.sh up
+```
+backend + frontend + conversion service
+```
+bin/main.sh --mod=c up
 ```
 
 ## Dev

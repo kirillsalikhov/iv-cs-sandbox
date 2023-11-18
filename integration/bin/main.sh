@@ -5,12 +5,13 @@ Script usage:
   bin/main.sh [--mod=MOD_LETTERS] {up|down|stop|other docker-compose cmd}
 
 MOD_LETTERS:
-  b - backend : backend
-  f - frontend : frontend
+  b - backend : backend development mode
+  f - frontend : frontend development mode
+  c - conversion service
 Examples:
   main.sh up // all container in prod mode
 
-  // start certain containers in dev mode
+  // modify behavior
   main.sh --mod=b up // backend
   ----
 "
@@ -48,6 +49,10 @@ do
         f)
             echo "MOD frontend : frontend in dev mode"
             dev_compose+=" -f ../compose/mod/frontend.yml"
+        ;;
+        c)
+            echo "MOD conversion service"
+            dev_compose+=" -f ../compose/mod/conversion-service.prod.yml"
         ;;
     esac
 done
