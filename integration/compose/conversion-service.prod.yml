@@ -1,0 +1,127 @@
+version: "3.7"
+x-storage: &storage
+  storage: "${STORAGE:-fs}"
+x-minio-config: &minio-config
+  MINIO_END_POINT: $MINIO_END_POINT
+  MINIO_EXTERNAL_END_POINT: $MINIO_EXTERNAL_END_POINT
+  MINIO_EXTERNAL_PORT: $MINIO_EXTERNAL_PORT
+  MINIO_PORT: $MINIO_PORT
+  MINIO_USE_SSL: $MINIO_USE_SSL
+  MINIO_ACCESS_KEY: $MINIO_ACCESS_KEY
+  MINIO_SECRET_KEY: $MINIO_SECRET_KEY
+x-converter: &converter
+  environment:
+    << : [*storage, *minio-config]
+    TIMEOUT: "${TIMEOUT:-30}"
+  restart: on-failure
+  deploy:
+    replicas: 2
+    mode: replicated
+services:
+  manager:
+    image: docker.webgears3d.com/cs-on-premise/conversion-manager:5.9.1
+    restart: on-failure
+    depends_on:
+      - rabbitmq
+    environment:
+      << : [*storage, *minio-config]
+      DB_USER: ${CS_DB_USER}
+      DB_PASS: ${CS_DB_PASS}
+      DB_HOST: ${CS_DB_HOST}
+      DB_NAME: ${CS_DB_NAME}
+      NODE_ENV: production
+    ports:
+      - 3000:3000
+  rabbitmq:
+    image: rabbitmq:3
+    restart: on-failure
+    logging:
+      driver: none
+  minio:
+    image: minio/minio:RELEASE.2020-10-12T21-53-21Z
+    ports:
+      - 9000:9000
+    environment:
+      <<: *minio-config
+    command: minio server /data/minio/
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:9000/minio/health/live"]
+      interval: 30s
+      timeout: 20s
+      retries: 3
+    volumes:
+      - minio_data:/data
+  mc:
+    image: docker.webgears3d.com/store/mc:v1
+    command:
+    - /bin/bash
+    - -c
+    - |
+      mc mb local/wg-bucket
+      mc ilm import local/wg-bucket < /root/.mc/lifecycle.json
+  cs_postgres:
+    image: postgres:12-alpine
+    environment:
+      POSTGRES_USER: ${CS_DB_USER}
+      POSTGRES_PASSWORD: ${CS_DB_PASS}
+    volumes:
+      - cs_postgres_data:/var/lib/postgresql/data
+  fbx2gltf:
+    <<: *converter
+    image: docker.webgears3d.com/cs-on-premise/fbx2gltf:2.1.3-utils3.1.1
+  wg-edge-exporter:
+    <<: *converter
+    image: docker.webgears3d.com/cs-on-premise/wg-edge-exporter:2.1.0-utils3.1.1
+  gltfMerge:
+    <<: *converter
+    image: docker.webgears3d.com/cs-on-premise/gltf_merge:2.1.1-utils3.1.1
+  gltf2glb:
+    <<: *converter
+    image: docker.webgears3d.com/cs-on-premise/gltf2glb:2.1.0-utils3.1.1
+  wgasset2web:
+    <<: *converter
+    image: docker.webgears3d.com/cs-on-premise/wgasset2web:2.1.0-utils3.1.1
+  model2industrial:
+    <<: *converter
+    image: docker.webgears3d.com/cs-on-premise/model2industrial:2.1.0-utils3.1.1
+  gltf2wmd:
+    <<: *converter
+    image: docker.webgears3d.com/cs-on-premise/gltf2wmd:2.4.0-utils3.1.1
+  objects2wof:
+    <<: *converter
+    image: docker.webgears3d.com/cs-on-premise/objects2wof:2.1.2-utils3.1.1
+  project2extras:
+    <<: *converter
+    image: docker.webgears3d.com/cs-on-premise/project2extras:2.1.0-utils3.1.1
+  manifest-creator:
+    <<: *converter
+    image: docker.webgears3d.com/cs-on-premise/manifest-creator:2.1.2-utils3.1.1
+  dwfx2wbp:
+    <<: *converter
+    image: docker.webgears3d.com/cs-on-premise/dwfx2wbp:2.1.0-utils3.1.1
+  optimizer:
+    <<: *converter
+    image: docker.webgears3d.com/cs-on-premise/optimizer:2.2.0-utils3.1.1
+    volumes:
+      - type: bind
+        source: ./license.lic
+        target: /app/autoinstancer/license.lic
+  gltf-exchange-converter:
+    <<: *converter
+    image: docker.webgears3d.com/cs-on-premise/gltf-exchange-converter:2.1.30-utils3.1.1
+  post-fbx2gltf:
+    <<: *converter
+    image: docker.webgears3d.com/cs-on-premise/post-fbx2gltf:3.0.1-utils3.1.1
+  unzip2folder:
+    <<: *converter
+    image: docker.webgears3d.com/cs-on-premise/unzip2folder:2.1.2-utils3.1.1
+  ifc_convert:
+    <<: *converter
+    image: docker.webgears3d.com/cs-on-premise/ifc_convert:1.0.1-utils3.1.1
+  post_ifc_convert:
+    <<: *converter
+    image: docker.webgears3d.com/cs-on-premise/post_ifc_convert:1.0.1-utils3.1.1
+
+volumes:
+  minio_data:
+  cs_postgres_data:
