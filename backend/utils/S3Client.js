@@ -1,4 +1,5 @@
 const Minio = require('minio');
+const axios = require('axios');
 
 const config = require('../config');
 
@@ -17,6 +18,11 @@ class S3Client {
 
     async uploadFile(key, localPath) {
         return this.client.fPutObject(this.bucket, key, localPath);
+    }
+
+    async uploadUrl(key, url) {
+        const response = await axios({method: 'get', url, responseType: 'stream'});
+        return await this.client.putObject(this.bucket, key, response.data);
     }
 
     async signForDirectUpload(key) {
