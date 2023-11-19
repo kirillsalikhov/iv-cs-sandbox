@@ -17,6 +17,12 @@ class CSClient {
         })
         return data;
     }
+
+    async getResultZipUrl(jobId){
+        const { data } = await this.client.get(
+            `/jobs/${jobId}/zip??filter=iv&use_external_host=false`);
+        return data[0].url;
+    }
 }
 
 module.exports = new CSClient(config.conversion);
