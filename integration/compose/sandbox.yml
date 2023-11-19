@@ -9,6 +9,8 @@ services:
       MINIO_ROOT_USER: ${SANDBOX__MINIO_ROOT_USER}
       MINIO_ROOT_PASSWORD: ${SANDBOX__MINIO_ROOT_PASSWORD}
       MINIO_HOST: ${SANDBOX_MINIO_HOST}
+      CS_HOST: ${SANDBOX_CS_HOST}
+      HOST: ${SANDBOX_HOST}
     volumes:
       - db_data:/backend/db/data
       - web_static:/backend/static:ro
