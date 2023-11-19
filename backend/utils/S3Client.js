@@ -24,7 +24,7 @@ class S3Client {
     }
 
     async signForConversion(key) {
-
+        return this.client.presignedGetObject(this.bucket, key, expireConversion);
     }
 
     async signForViewer(key) {
@@ -57,7 +57,6 @@ class S3Client {
         });
         return this.removeObjects(objectKeys);
     }
-
 }
 
 module.exports = new S3Client(config.minio);
