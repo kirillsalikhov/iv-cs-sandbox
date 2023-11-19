@@ -1,3 +1,5 @@
+const {v4: uuid} = require('uuid');
+
 const S3Client = require("../utils/S3Client");
 const CSClient = require('../utils/CSClient');
 const db = require('../db');
@@ -33,6 +35,12 @@ const createDocument = async (params) => {
     return data[0].id;
 }
 
+const updateDocument = async (id, params) => {
+    return db(documentTable)
+        .where({ id })
+        .update({...params, ...{updated_at: Date.now()}});
+}
+
 exports.createConversion = async ({fileKey, fileName, conversionType}) => {
     const documentId = await createDocument({name: fileName, source_file: fileKey});
 
@@ -46,4 +54,15 @@ exports.createConversion = async ({fileKey, fileName, conversionType}) => {
         completeHook);
 
     return {documentId, jobId: job.id};
+}
+
+exports.completeConversion = async (documentId, jobId, status ) => {
+    if (status === "finished") {
+        const view_file = uuid();
+        const resultFileUrl = await CSClient.getResultZipUrl(jobId);
+        await S3Client.uploadUrl(view_file, resultFileUrl);
+        await updateDocument(documentId, {view_file, status:"finished"});
+    } else {
+        await updateDocument(documentId, {status:"failed"});
+    }
 }
