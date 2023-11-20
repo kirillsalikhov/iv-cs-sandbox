@@ -4,6 +4,7 @@ const { removeDocument, createConversion, completeConversion } = require('../ser
 const S3Client = require('../utils/S3Client');
 const { createNotFoundError } = require('../middlewares/errors');
 const { validateConvert } = require('./_validation');
+const { createdEvent, updatedEvent, deletedEvent } = require('../utils/channel');
 
 
 exports.index = async (ctx) => {
@@ -25,7 +26,9 @@ exports.sourceDownload = async (ctx) => {
 }
 
 exports.remove = async (ctx) => {
-    await removeDocument(ctx.params.id);
+    const documentId = ctx.params.id;
+    await removeDocument(documentId);
+    deletedEvent(documentId)
     ctx.status = 204;
 }
 
@@ -36,6 +39,8 @@ exports.convert = async (ctx) => {
     const { documentId, jobId } = await createConversion(conversionParams);
 
     console.log(`Conversion job ${jobId} for document ${documentId} created`);
+
+    createdEvent(documentId);
 
     ctx.body = documentId;
 }
@@ -55,6 +60,8 @@ exports.conversionComplete = async (ctx) => {
     }
     const {job_id, status} = ctx.request.body;
     await completeConversion(documentId, job_id, status);
+
+    updatedEvent(documentId);
 
     ctx.status = 204;
 }

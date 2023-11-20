@@ -1,12 +1,25 @@
 const Router = require('koa-router');
+const { createSession } = require('better-sse');
+
 const pages = require('./pages');
 const documents = require('./documents');
 const files = require('./files');
+
+const { documentChannel } = require('../utils/channel');
 
 const router = new Router();
 
 router.get('/', pages.root);
 router.get('/:id/viewer', pages.viewer);
+
+router.get('/sse', async (ctx, next) => {
+    ctx.respond = false;
+
+    const session = await createSession(ctx.req, ctx.res);
+    documentChannel.register(session);
+
+    return next();
+});
 
 const apiRouter = new Router({
     prefix: '/api'
