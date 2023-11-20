@@ -4,7 +4,7 @@ import { createRoot } from 'react-dom/client';
 import { Hierarchy } from './Hierarchy.tsx';
 import { createHierarchyData, HierarchyData } from '../data/hierarchy-data.ts';
 import { AttributesExpand, AttributesPopup, ObjectDetailsProps } from './Attributes.tsx';
-import { getObjectDetails } from '../data/object-details.ts';
+import { getObjectAttributes } from '../data/attributes.ts';
 import { CameraButtons } from './CameraButtons.tsx';
 import { getModelURL } from '../data/models.ts';
 
@@ -39,13 +39,13 @@ function App(): ReactElement {
         const viewer = vref.current;
         if (!hierarchyLoaded || viewer === null) { return; }
         if (selectedId >= 0) {
-            getObjectDetails(selectedId, viewer.db).then((data) => setDetails(data));
+            getObjectAttributes(selectedId, viewer.db).then((data) => setDetails(data));
         } else {
             setDetails(null);
         }
     }, [selectedId, hierarchyLoaded])
 
-    const handleViewerClickObject = useCallback((id) => {
+    const handleViewerClickObject = useCallback((id: number) => {
         internalState.current.muteArboristOnSelect = true;
         setSelectedId(id);
         setAllowMoveCamera(false);
