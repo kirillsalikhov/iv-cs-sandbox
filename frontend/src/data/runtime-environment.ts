@@ -8,5 +8,5 @@ export interface ForBrowser {
 }
 
 declare global {
-    var forBrowser: ForBrowser | undefined;
+    const forBrowser: ForBrowser | undefined;
 }

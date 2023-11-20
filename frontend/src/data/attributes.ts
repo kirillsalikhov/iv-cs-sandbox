@@ -4,7 +4,7 @@ import { ObjectDetailsProps, ObjectPropertyGroup, ObjectPropertyValue } from '..
 const fieldsToIgnore = ['_id', 'children'];
 function isObject(v: unknown): boolean {
     return typeof v === 'object' && v !== null && !Array.isArray(v);
-};
+}
 
 function getPlainChildList(parent: string, content: object, depth: number = 0): ObjectPropertyValue[] {
     const children: ObjectPropertyValue[] = [];

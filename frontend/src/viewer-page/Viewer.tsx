@@ -46,7 +46,7 @@ export class Viewer extends Component<ViewerProps> implements ViewerAPI {
 
     async moveCameraToSelection(): Promise<void> {
         if (!this.meshIds) return;
-        let { selectedId = -1, allowMoveCamera } = this.props;
+        const { selectedId = -1, allowMoveCamera } = this.props;
         if (this.meshIds.has(selectedId) && allowMoveCamera) {
             await this.iv.getFeature(MoveCameraFeature).toObjects([selectedId], 400);
         }
@@ -109,7 +109,7 @@ export class Viewer extends Component<ViewerProps> implements ViewerAPI {
         //      without it, some combinations of development and production modes of backend & frontend don't work
         const url = '/parking.wenv';
         const parkingTextureId = envFeature.createTextureID('wenv', new URL(url, import.meta.url).toString());
-        await envFeature.getTextureLoadedPromise(parkingTextureId)
+        await envFeature.getTextureLoadedPromise(parkingTextureId);
 
         envFeature.setOptions({
             ibl: parkingTextureId

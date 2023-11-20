@@ -1,8 +1,6 @@
 import { MouseEventHandler, ReactNode } from 'react';
 import { Accordion } from './Accordion';
 
-export type ObjectProperty = ObjectPropertyValue | ObjectPropertyGroup;
-
 export interface ObjectPropertyValue {
     name: string;
     value: number | string | boolean;

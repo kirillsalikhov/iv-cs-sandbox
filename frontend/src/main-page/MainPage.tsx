@@ -33,7 +33,7 @@ function Upload({ api }: { api: DocumentsAPI }) {
         await api.convert(file, conversionType);
         setUploading(false);
         resetFileInput();
-    }, [file, conversionType]);
+    }, [file, conversionType, api, isUploading]);
 
     return (
         <div className="col-span-full h-min m-4 bg-white rounded border border-gray-200 p-4 md:col-span-4 md:order-last md:mr-8">
@@ -119,10 +119,10 @@ export function MainPage() {
         documentsAPI.onUpdateDocuments = () => {
             setDocuments(documentsAPI.list);
         }
-    }, []);
+    }, [documentsAPI]);
 
-    const onDelete = useCallback((id: number) => documentsAPI.delete(id), []);
-    const onDownload = useCallback((id: number) => documentsAPI.download(id), []);
+    const onDelete = useCallback((id: number) => documentsAPI.delete(id), [documentsAPI]);
+    const onDownload = useCallback((id: number) => documentsAPI.download(id), [documentsAPI]);
 
     return (
         <div className="bg-white h-screen">
