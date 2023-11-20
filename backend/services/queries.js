@@ -4,7 +4,7 @@ const {createNotFoundError} = require('../middlewares/errors');
 const documentTable = 'documents';
 
 exports.getAllDocuments = async () => {
-    return db(documentTable);
+    return db(documentTable).orderBy('id', 'desc');
 }
 
 exports.getDocument = async (id) => {
