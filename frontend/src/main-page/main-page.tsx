@@ -1,21 +1,50 @@
 import { DocumentData, DocumentsAPI } from '../data/documents.js';
-import { useCallback, useEffect, useMemo, useState } from 'react';
+import { ChangeEvent, useCallback, useEffect, useMemo, useState } from 'react';
+import { ConvertationType, sendConvertionRequest } from '../data/form.js';
 
-const Upload = () => {
+function Upload() {
+    const [conversionType, setConversionType] = useState<ConvertationType>(ConvertationType.Cad2WMDOpt);
+    const [file, setFile] = useState<File>();
+
+    const onChangeSelect = useCallback((event: ChangeEvent<HTMLSelectElement>) => {
+        setConversionType(event.target.value as ConvertationType);
+    }, []);
+
+    const onChangeFile = useCallback(async (event: ChangeEvent<HTMLInputElement>) => {
+        const { files } = event.target;
+        if (files !== null) {
+            setFile(files[0]);
+        }
+    }, []);
+
+    const onClickConversion = useCallback(async () => {
+        if (file) {
+            await sendConvertionRequest(file, conversionType);
+        }
+    }, [file, conversionType]);
+
     return (
         <div className="col-span-full h-min m-4 bg-white rounded border border-gray-200 p-4 md:col-span-4 md:order-last md:mr-8">
             <div className="block mb-6 font-medium text-lg">Add file</div>
-            <input className="block w-full h-10 mb-4 p-1 items-center text-gray-500 rounded border border-gray-300 cursor-pointer bg-gray-50 hover:bg-gray-100 focus:outline-none" id="file_input" type="file">
+            <input
+                className="block w-full h-10 mb-4 p-1 items-center text-gray-500 rounded border border-gray-300 cursor-pointer bg-gray-50 hover:bg-gray-100 focus:outline-none"
+                id="file_input"
+                type="file"
+                onChange={onChangeFile}
+            >
             </input>
             <select
                 className="block w-full h-10 mb-6 py-1.5 px-2 rounded border border-gray-300 cursor-pointer bg-gray-50 hover:bg-gray-100 focus:outline-none "
-                defaultValue="IFC to WMD">
-                <option>IFC to WMD options </option>
-                <option>IFC to WMD </option>
+                defaultValue={conversionType}
+                onChange={onChangeSelect}
+            >
+                <option value={ConvertationType.Cad2WMDOpt}>IFC to WMD options </option>
+                <option value={ConvertationType.Cad2WMD}>IFC to WMD </option>
             </select>
             <button
                 type="button"
                 className="w-full h-10 rounded bg-blue-700 hover:bg-blue-600 px-2.5 py-1.5 text-white focus-outline-none"
+                onClick={onClickConversion}
             >
                 Convert
             </button>
