@@ -5,7 +5,7 @@
   "main": "index.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
-    "start": "vite --config vite.config.js",
+    "dev": "vite --config vite.config.js",
     "build": "vite build",
     "prod:move-assets": "rm -rf ./static/dist && cp -r dist ./static/dist"
   },
@@ -13,7 +13,6 @@
   "license": "ISC",
   "dependencies": {
     "@wge/core": "^0.12.0",
-    "@wge/industrial-viewer": "^8.0.9",
     "@wge/objects-db": "^8.0.9",
     "react": "^18.2.0",
     "react-dom": "^18.2.0"
@@ -22,6 +21,7 @@
     "@types/react": "^18.2.15",
     "@types/react-dom": "^18.2.7",
     "@vitejs/plugin-react": "^4.0.3",
+    "@wge/industrial-viewer": "^8.0.10",
     "autoprefixer": "^10.4.16",
     "axios": "^1.6.2",
     "fflate": "^0.8.1",
