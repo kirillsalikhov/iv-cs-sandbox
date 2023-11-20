@@ -131,10 +131,8 @@ export class Viewer extends Component<ViewerProps> implements ViewerAPI {
         await this.db.load(wofBlobURL);
         await loader.load('model.wmd');
 
-        const defaultCameraPosition = { position: { x: 1064, y: 487, z: -647 }, target: { x: 443, y: 0, z: -43 } };
         const moveCamera = this.iv.getFeature(MoveCameraFeature);
-        await moveCamera.toPosition(defaultCameraPosition);
-        await moveCamera.toObjects(null);
+        await moveCamera.toModel();
         this.meshIds = new Set(this.iv.getObjects());
         this.updateSelection();
 
