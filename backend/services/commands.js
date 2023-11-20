@@ -21,8 +21,6 @@ exports.removeDocument = async (id) => {
 }
 
 const createDocument = async (params) => {
-    // TODO add validation
-    // name, extension, source_file
     const data = await db(documentTable)
         .returning('id')
         .insert({
