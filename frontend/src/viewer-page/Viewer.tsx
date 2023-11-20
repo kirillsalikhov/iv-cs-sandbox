@@ -105,7 +105,10 @@ export class Viewer extends Component<ViewerProps> implements ViewerAPI {
             }
         });
 
-        const parkingTextureId = envFeature.createTextureID('wenv', '/parking.wenv');
+        //NOTE: do not inline this constant. It is here to trick Vite not to transform new URL(...)
+        //      without it, some combinations of development and production modes of backend & frontend don't work
+        const url = '/parking.wenv';
+        const parkingTextureId = envFeature.createTextureID('wenv', new URL(url, import.meta.url).toString());
         await envFeature.getTextureLoadedPromise(parkingTextureId)
 
         envFeature.setOptions({
