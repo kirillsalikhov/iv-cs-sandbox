@@ -13,11 +13,18 @@ const documentsStub: DocumentData[] = [
     {id: 4, name: 'file-4.ifc', status: 'inProgress'},
 ];
 
+export enum ConversionType {
+    IFC_2_WMD_Optimized = 'ifc2wmdOpt',
+    IFC_2_WMD = 'ifc2wmd'
+}
+
 export class DocumentsAPI {
     static readonly DOCUMENTS_URL = '/api/documents';
 
     private _documents: Map<number, DocumentData>;
     private _serverIsAvailable: boolean;
+
+    onUpdateDocuments = () => undefined;
 
     constructor() {
         const documents = new Map();
@@ -52,6 +59,24 @@ export class DocumentsAPI {
         return '#';
     }
 
+    async convert(file: File, type: ConversionType): Promise<void> {
+        if (!this._serverIsAvailable) {
+            return;
+        }
+
+        const url = await this._getLoadingURL();
+        await axios.put(url, file);
+
+        const form = {
+            fileKey: this._getKeyFromURL(url),
+            fileName: file.name,
+            conversionType: type
+        };
+
+        await axios.post('/api/documents/convert', form);
+        await this._syncDocuments();
+    }
+
     async delete(id: number): Promise<void> {
         if (!this._serverIsAvailable) {
             this._documents.delete(id);
@@ -77,6 +102,14 @@ export class DocumentsAPI {
         if (source !== null) {
             this._saveOnDisk(document.name, source);
         }
+    }
+
+    private _getKeyFromURL(url: string): string {
+        return new URL(url).pathname.split('/')[2];
+    }
+
+    private async _getLoadingURL(): Promise<string> {
+        return (await axios.post('api/files/create-upload')).data as string;
     }
 
     private _saveOnDisk(name: string, data: string): void {
@@ -111,6 +144,8 @@ export class DocumentsAPI {
             for (const doc of documents) {
                 this._documents.set(doc.id, doc);
             }
+
+            this.onUpdateDocuments();
         }
     }
 }

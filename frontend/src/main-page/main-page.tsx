@@ -1,13 +1,22 @@
-import { DocumentData, DocumentsAPI } from '../data/documents.js';
-import { ChangeEvent, useCallback, useEffect, useMemo, useState } from 'react';
-import { ConvertationType, sendConvertionRequest } from '../data/form.js';
+import { ConversionType, DocumentData, DocumentsAPI } from '../data/documents.js';
+import { ChangeEvent, useCallback, useEffect, useMemo, useRef, useState } from 'react';
 
-function Upload() {
-    const [conversionType, setConversionType] = useState<ConvertationType>(ConvertationType.Cad2WMDOpt);
-    const [file, setFile] = useState<File>();
+function Upload({ api }: { api: DocumentsAPI }) {
+    const [conversionType, setConversionType] = useState<ConversionType>(ConversionType.IFC_2_WMD);
+    const [isUploading, setUploading] = useState<boolean>(false);
+    const [file, setFile] = useState<File | null>(null);
+    const inputRef = useRef<HTMLInputElement>(null);
+
+    const resetFileInput = () => {
+        const { current: fileInput } = inputRef;
+        if (fileInput !== null) {
+            fileInput.value = '';
+            setFile(null);
+        }
+    }
 
     const onChangeSelect = useCallback((event: ChangeEvent<HTMLSelectElement>) => {
-        setConversionType(event.target.value as ConvertationType);
+        setConversionType(event.target.value as ConversionType);
     }, []);
 
     const onChangeFile = useCallback(async (event: ChangeEvent<HTMLInputElement>) => {
@@ -18,9 +27,12 @@ function Upload() {
     }, []);
 
     const onClickConversion = useCallback(async () => {
-        if (file) {
-            await sendConvertionRequest(file, conversionType);
-        }
+        if (file === null || isUploading) { return; }
+
+        setUploading(true);
+        await api.convert(file, conversionType);
+        setUploading(false);
+        resetFileInput();
     }, [file, conversionType]);
 
     return (
@@ -31,6 +43,7 @@ function Upload() {
                 id="file_input"
                 type="file"
                 onChange={onChangeFile}
+                ref={inputRef}
             >
             </input>
             <select
@@ -38,15 +51,17 @@ function Upload() {
                 defaultValue={conversionType}
                 onChange={onChangeSelect}
             >
-                <option value={ConvertationType.Cad2WMDOpt}>IFC to WMD options </option>
-                <option value={ConvertationType.Cad2WMD}>IFC to WMD </option>
+                <option value={ConversionType.IFC_2_WMD_Optimized}>IFC to WMD options </option>
+                <option value={ConversionType.IFC_2_WMD}>IFC to WMD </option>
             </select>
             <button
                 type="button"
                 className="w-full h-10 rounded bg-blue-700 hover:bg-blue-600 px-2.5 py-1.5 text-white focus-outline-none"
+                disabled={isUploading}
                 onClick={onClickConversion}
+                style={{ opacity: isUploading ? 0.5 : 1 }}
             >
-                Convert
+                {isUploading ? 'Uploading...' : 'Convert'}
             </button>
         </div>
     )
@@ -101,16 +116,13 @@ export function MainPage() {
 
     useEffect(() => {
         setDocuments(documentsAPI.list);
+        documentsAPI.onUpdateDocuments = () => {
+            setDocuments(documentsAPI.list);
+        }
     }, []);
 
-    const onDelete = useCallback(async (id: number) => {
-        await documentsAPI.delete(id);
-        setDocuments(documentsAPI.list);
-    }, []);
-
-    const onDownload = useCallback(async (id: number) => {
-        await documentsAPI.download(id);
-    }, []);
+    const onDelete = useCallback((id: number) => documentsAPI.delete(id), []);
+    const onDownload = useCallback((id: number) => documentsAPI.download(id), []);
 
     return (
         <div className="bg-white h-screen">
@@ -124,7 +136,7 @@ export function MainPage() {
 
 
                 {/* Upload panel */}
-                <Upload />
+                <Upload api={documentsAPI} />
 
 
                 {/* Documents */}
