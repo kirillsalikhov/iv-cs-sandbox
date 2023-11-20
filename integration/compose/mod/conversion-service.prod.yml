@@ -19,7 +19,7 @@ x-converter: &converter
     mode: replicated
 services:
   manager:
-    image: docker.webgears3d.com/cs-on-premise/conversion-manager:5.9.1
+    image: docker.webgears3d.com/cs-on-premise/conversion-manager:5.9.2
     restart: on-failure
     depends_on:
       - rabbitmq
@@ -52,7 +52,7 @@ services:
     volumes:
       - minio_data:/data
   mc:
-    image: docker.webgears3d.com/store/mc:v1
+    image: docker.webgears3d.com/cs-on-premise/mc:v1
     command:
     - /bin/bash
     - -c

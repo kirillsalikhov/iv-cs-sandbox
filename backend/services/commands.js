@@ -47,7 +47,7 @@ exports.createConversion = async ({fileKey, fileName, conversionType}) => {
     const fileUrl = await S3Client.signForConversion(fileKey);
 
     const completeHook = `${config.host}/api/documents/${documentId}/conversion-complete`;
-    // TODO add validation on convertionType
+
     const job = await CSClient.createConversion(
         fileUrl,
         conversionType,
