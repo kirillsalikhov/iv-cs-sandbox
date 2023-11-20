@@ -121,7 +121,7 @@ export class Viewer extends Component<ViewerProps> implements ViewerAPI {
     }
 
     async load(zipURL: string): Promise<void> {
-        const dataLoader = zipDataLoader(new URL(zipURL, import.meta.url).toString());
+        const dataLoader = zipDataLoader(zipURL);
         const { response: wofBlob } = await dataLoader('objects.wof', 'blob');
         const wofBlobURL = URL.createObjectURL(wofBlob);
 

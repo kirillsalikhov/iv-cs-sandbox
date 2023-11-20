@@ -53,7 +53,7 @@ function App(): ReactElement {
                         setAllowMoveCamera(false);
                         setTimeout(() => {
                             internalState.current.muteArboristOnSelect = false;
-                        }, 0);
+                        }, 10);
                     }}
                     allowMoveCamera={allowMoveCamera}
                     ref={vref}/>

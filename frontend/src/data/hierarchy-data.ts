@@ -37,7 +37,7 @@ export const createHierarchyData = async (db: WofDB): Promise<HierarchyData[]> =
             originalName: obj.originalName
         };
 
-        if (obj.children !== undefined) {
+        if (obj.children !== undefined && obj.children.length !== 0) {
             result.children = obj.children.map(getBranch);
         }
 
