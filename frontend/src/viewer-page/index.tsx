@@ -3,7 +3,7 @@ import { Viewer } from './Viewer.tsx';
 import { createRoot } from 'react-dom/client';
 import { Hierarchy } from './Hierarchy.tsx';
 import { createHierarchyData, HierarchyData } from '../data/hierarchy-data.ts';
-import { ObjectDetails, ObjectDetailsProps } from './ObjectDetails.tsx';
+import { AttributesPopup, ObjectDetailsProps } from './Attributes.tsx';
 import { getObjectDetails } from '../data/object-details.ts';
 import { CameraButtons } from './CameraButtons.tsx';
 import { getModelURL } from '../data/models.ts';
@@ -70,7 +70,9 @@ function App(): ReactElement {
                     }}
                 />
             }
-            {details && <ObjectDetails {...details}/>}
+            {details && <AttributesPopup {...details} onClickClose={() => {
+                setDetails(null);
+            }}/>}
             {hierarchyLoaded && <CameraButtons viewerRef={vref}></CameraButtons>}
         </>
     )

@@ -6,7 +6,7 @@ function Node({ node, style }: NodeRendererProps<HierarchyData>): ReactNode {
     const openClass = node.isOpen ? 'rotate-90' : 'rotate-0';
     const selectedClass = node.isSelected ? 'bg-gray-100' : '';
     return (
-        <div style={style} className={`flex h-10 align-middle text-gray-700 leading-10 hover:bg-gray-100 ${selectedClass}`}>
+        <div style={style} className={`flex h-10 align-middle text-sm text-gray-700 leading-10 hover:bg-gray-100 ${selectedClass}`}>
             {node.isLeaf
                 ? <div className={'h-10 w-10 align-middle leading-10'}></div>
                 : <button className={`h-10 w-10 align-middle leading-10 text-gray-500 hover:text-black hover:shadow-xs ${openClass}`}
@@ -18,7 +18,7 @@ function Node({ node, style }: NodeRendererProps<HierarchyData>): ReactNode {
                     }
                 </button>
             }
-            <div className={'flex-1 h-10 leading-10 hover:bg-gray-100 select-none'}>
+            <div className={'flex-1 pr-2 py-2 leading-6 truncate hover:bg-gray-100 select-none'}>
                 {node.data.originalName || '<empty name>'}
             </div>
         </div>
@@ -60,7 +60,7 @@ export function Hierarchy({data, selectedId, onSelectNode}: HierarchyProps): Rea
     const idAccessor = useMemo(() => (node: HierarchyData): string => node._id.toString(), []);
 
     return (
-        <div className={'absolute inset-y-4 left-4 w-1/4 border border-gray-100 rounded shadow-xl bg-white'} ref={hierarchyElementRef}>
+        <div className={'absolute inset-y-4 left-4 w-1/4 min-w-[20rem] rounded shadow-[rgba(0,0,0,0.1)_0px_0px_8px_4px]  bg-white '} ref={hierarchyElementRef}>
             <Tree
                 data={data}
                 idAccessor={idAccessor}
@@ -71,7 +71,7 @@ export function Hierarchy({data, selectedId, onSelectNode}: HierarchyProps): Rea
                 openByDefault={false}
                 selection={selectedId.toString()}
                 onSelect={selectHandler}
-                rowHeight={36}>
+                rowHeight={40}>
                 {Node}
             </Tree>
         </div>

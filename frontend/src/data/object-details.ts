@@ -1,5 +1,5 @@
 import WofDB from '@wge/objects-db';
-import { ObjectDetailsProps, ObjectPropertyGroup, ObjectPropertyValue } from '../viewer-page/ObjectDetails';
+import { ObjectDetailsProps, ObjectPropertyGroup, ObjectPropertyValue } from '../viewer-page/Attributes.tsx';
 
 const fieldsToIgnore = ['_id', 'children'];
 function isObject(v: unknown): boolean {
