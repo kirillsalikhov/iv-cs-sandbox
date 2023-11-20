@@ -1,7 +1,10 @@
+const Joi = require('joi');
 const { getAllDocuments, getDocument  } = require('../services/queries');
 const { removeDocument, createConversion, completeConversion } = require('../services/commands');
 const S3Client = require('../utils/S3Client');
 const { createNotFoundError } = require('../middlewares/errors');
+const { validateConvert } = require('./_validation');
+
 
 exports.index = async (ctx) => {
     ctx.body = await getAllDocuments();
@@ -27,12 +30,9 @@ exports.remove = async (ctx) => {
 }
 
 exports.convert = async (ctx) => {
-    // TODO validation
-    // TODO validate extentsion
-    // TODO validate requiredFields
-    // TODO validate select
-
     const conversionParams = ctx.request.body;
+    validateConvert(conversionParams);
+
     const { documentId, jobId } = await createConversion(conversionParams);
 
     console.log(`Conversion job ${jobId} for document ${documentId} created`);
