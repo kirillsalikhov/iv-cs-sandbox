@@ -1,5 +1,5 @@
 const { getAllDocuments, getDocument  } = require('../services/queries');
-const { removeDocument } = require('../services/commands');
+const { removeDocument, createConversion, completeConversion } = require('../services/commands');
 const S3Client = require('../utils/S3Client');
 const { createNotFoundError } = require('../middlewares/errors');
 
@@ -23,5 +23,38 @@ exports.sourceDownload = async (ctx) => {
 
 exports.remove = async (ctx) => {
     await removeDocument(ctx.params.id);
+    ctx.status = 204;
+}
+
+exports.convert = async (ctx) => {
+    // TODO validation
+    // TODO validate extentsion
+    // TODO validate requiredFields
+    // TODO validate select
+
+    const conversionParams = ctx.request.body;
+    const { documentId, jobId } = await createConversion(conversionParams);
+
+    console.log(`Conversion job ${jobId} for document ${documentId} created`);
+
+    ctx.body = documentId;
+}
+
+exports.conversionComplete = async (ctx) => {
+    const documentId = ctx.params.id;
+    try {
+        await getDocument(documentId);
+    } catch (e) {
+        if (e.name === 'NotFoundError') {
+            console.log(`Conversion is complete, but document ${documentId} has most likely already been deleted`);
+            ctx.status = 204;
+            return;
+        } else {
+            throw e;
+        }
+    }
+    const {job_id, status} = ctx.request.body;
+    await completeConversion(documentId, job_id, status);
+
     ctx.status = 204;
 }

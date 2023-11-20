@@ -15,6 +15,8 @@ const apiRouter = new Router({
     .get('/documents', documents.index)
     .get('/documents/:id', documents.show)
     .get('/documents/:id/source', documents.sourceDownload)
+    .post('/documents/convert', documents.convert)
+    .post('/documents/:id/conversion-complete', documents.conversionComplete)
     .delete('/documents/:id', documents.remove)
     // files
     .post('/files/create-upload', files.createDirectUpload);

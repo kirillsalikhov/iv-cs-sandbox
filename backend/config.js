@@ -18,7 +18,11 @@ const config = {
         useSSL: false,
 
         bucket: 'default-bucket'
-    }
+    },
+    conversion: {
+        host: process.env.CS_HOST
+    },
+    host: process.env.HOST
 }
 
 if (!config.vite.devHost) {

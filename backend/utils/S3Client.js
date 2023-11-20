@@ -1,4 +1,5 @@
 const Minio = require('minio');
+const axios = require('axios');
 
 const config = require('../config');
 
@@ -19,12 +20,17 @@ class S3Client {
         return this.client.fPutObject(this.bucket, key, localPath);
     }
 
+    async uploadUrl(key, url) {
+        const response = await axios({method: 'get', url, responseType: 'stream'});
+        return await this.client.putObject(this.bucket, key, response.data);
+    }
+
     async signForDirectUpload(key) {
         return this.client.presignedPutObject(this.bucket, key, expireDirectUpload);
     }
 
     async signForConversion(key) {
-
+        return this.client.presignedGetObject(this.bucket, key, expireConversion);
     }
 
     async signForViewer(key) {
@@ -57,7 +63,6 @@ class S3Client {
         });
         return this.removeObjects(objectKeys);
     }
-
 }
 
 module.exports = new S3Client(config.minio);
