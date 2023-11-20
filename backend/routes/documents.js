@@ -1,4 +1,3 @@
-const Joi = require('joi');
 const { getAllDocuments, getDocument  } = require('../services/queries');
 const { removeDocument, createConversion, completeConversion } = require('../services/commands');
 const S3Client = require('../utils/S3Client');
