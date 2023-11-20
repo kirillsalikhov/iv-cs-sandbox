@@ -38,7 +38,7 @@ export class Viewer extends Component<ViewerProps> implements ViewerAPI {
         const { selectedId = -1 } = this.props;
         this.iv.getFeature(ColorFeature).color([
             {
-                color: '#ff0000',
+                color: '#3A55F9',
                 ids: this.meshIds.has(selectedId) ? [selectedId] : []
             }
         ]);
@@ -121,7 +121,7 @@ export class Viewer extends Component<ViewerProps> implements ViewerAPI {
     }
 
     async load(zipURL: string): Promise<void> {
-        const dataLoader = zipDataLoader(new URL(zipURL, import.meta.url).toString());
+        const dataLoader = zipDataLoader(zipURL);
         const { response: wofBlob } = await dataLoader('objects.wof', 'blob');
         const wofBlobURL = URL.createObjectURL(wofBlob);
 
