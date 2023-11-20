@@ -1,9 +1,9 @@
-import { createRef, ReactElement, useEffect, useMemo, useRef, useState } from 'react';
+import { createRef, ReactElement, useCallback, useEffect, useMemo, useRef, useState } from 'react';
 import { Viewer } from './Viewer.tsx';
 import { createRoot } from 'react-dom/client';
 import { Hierarchy } from './Hierarchy.tsx';
 import { createHierarchyData, HierarchyData } from '../data/hierarchy-data.ts';
-import { AttributesPopup, ObjectDetailsProps } from './Attributes.tsx';
+import { AttributesExpand, AttributesPopup, ObjectDetailsProps } from './Attributes.tsx';
 import { getObjectDetails } from '../data/object-details.ts';
 import { CameraButtons } from './CameraButtons.tsx';
 import { getModelURL } from '../data/models.ts';
@@ -17,6 +17,7 @@ function App(): ReactElement {
     const [selectedId, setSelectedId] = useState<number>(-1);
     const [allowMoveCamera, setAllowMoveCamera] = useState(true);
     const [details, setDetails] = useState<ObjectDetailsProps | null>(null);
+    const [detailsExpanded, setDetailsExpanded] = useState(true);
 
     //note: this is an ugly workaround for react-arborist triggering onSelect even when the select is caused by changing selection prop.
     //      other virtualized trees likely don't need this hack
@@ -44,19 +45,21 @@ function App(): ReactElement {
         }
     }, [selectedId, hierarchyLoaded])
 
+    const handleViewerClickObject = useCallback((id) => {
+        internalState.current.muteArboristOnSelect = true;
+        setSelectedId(id);
+        setAllowMoveCamera(false);
+        setTimeout(() => {
+            internalState.current.muteArboristOnSelect = false;
+        }, 10);
+    }, []);
+
     return (
         <>
             <Viewer selectedId={selectedId}
-                    onClickObject={(id) => {
-                        internalState.current.muteArboristOnSelect = true;
-                        setSelectedId(id);
-                        setAllowMoveCamera(false);
-                        setTimeout(() => {
-                            internalState.current.muteArboristOnSelect = false;
-                        }, 10);
-                    }}
+                    onClickObject={handleViewerClickObject}
                     allowMoveCamera={allowMoveCamera}
-                    ref={vref}/>
+                    ref={vref} />
             {
                 hierarchyLoaded &&
                 <Hierarchy
@@ -66,13 +69,16 @@ function App(): ReactElement {
                         if (!internalState.current.muteArboristOnSelect) {
                             setAllowMoveCamera(true);
                             setSelectedId(id);
+                            vref.current?.moveCameraToSelection();
                         }
                     }}
                 />
             }
-            {details && <AttributesPopup {...details} onClickClose={() => {
-                setDetails(null);
-            }}/>}
+            {details && (
+                detailsExpanded
+                    ? <AttributesPopup {...details} onClickClose={() => setDetailsExpanded(false)} />
+                    : <AttributesExpand onClick={() => setDetailsExpanded(true)} />
+            )}
             {hierarchyLoaded && <CameraButtons viewerRef={vref}></CameraButtons>}
         </>
     )

@@ -42,7 +42,6 @@ export class Viewer extends Component<ViewerProps> implements ViewerAPI {
                 ids: this.meshIds.has(selectedId) ? [selectedId] : []
             }
         ]);
-        this.moveCameraToSelection();
     }
 
     async moveCameraToSelection(): Promise<void> {
