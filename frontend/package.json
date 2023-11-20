@@ -5,7 +5,7 @@
   "main": "index.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
-    "start": "vite --config vite.config.js",
+    "dev": "vite --config vite.config.js",
     "build": "vite build",
     "prod:move-assets": "rm -rf ./static/dist && cp -r dist ./static/dist"
   },
