@@ -1,11 +1,28 @@
 .accordion {
-    @apply grid border-t border-gray-200;
+    @apply 
+        grid 
+        border-t 
+        border-gray-200;
 }
 
 .accordion__title {
-    @apply flex justify-between items-center pl-4 h-10 text-sm text-gray-600 hover:text-black font-medium leading-6 bg-gray-100  cursor-pointer;
+    @apply 
+        flex 
+        h-10 
+        cursor-pointer 
+        items-center 
+        justify-between 
+        bg-gray-100 
+        pl-4 
+        text-sm 
+        font-medium 
+        leading-6 
+        text-gray-600  
+        hover:text-black;
 }
 
 .accordion__content {
-    @apply w-full break-words;
+    @apply 
+        w-full 
+        break-words;
 }

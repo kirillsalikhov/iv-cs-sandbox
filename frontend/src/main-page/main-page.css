@@ -1,55 +1,152 @@
 .main-page {
-    @apply bg-white h-screen;
+    @apply
+        h-screen
+        bg-white;
 }
 
 .main-page__container {
-    @apply container m-auto max-w-screen-2xl grid grid-cols-12;
+    @apply 
+        container 
+        m-auto 
+        grid 
+        max-w-screen-2xl 
+        grid-cols-12;
 }
 
 .main-page__upload {
-    @apply col-span-full h-min m-4 bg-white rounded border border-gray-200 p-4 md:col-span-4 md:order-last md:mr-8;
+    @apply 
+        col-span-full 
+        m-4 
+        h-min 
+        rounded 
+        border 
+        border-gray-200 
+        bg-white 
+        p-4 md:order-last 
+        md:col-span-4 
+        md:mr-8;
 }
 
 .main-page__documents {
-    @apply col-span-full min-w-fit m-4 bg-white rounded border border-gray-200 md:col-span-8 md:ml-8;
+    @apply 
+        col-span-full 
+        m-4 
+        min-w-fit 
+        rounded 
+        border 
+        border-gray-200 
+        bg-white 
+        md:col-span-8 
+        md:ml-8;
 }
 
 .upload__title {
-    @apply mb-6 font-medium text-lg;
+    @apply 
+        mb-6 
+        text-lg 
+        font-medium;
 }
 
 .upload__input {
-    @apply block w-full h-10 mb-4 p-1 items-center text-gray-500 rounded border border-gray-300 cursor-pointer bg-gray-50 hover:bg-gray-100 focus:outline-none;
+    @apply 
+        mb-4 
+        block 
+        h-10 
+        w-full 
+        cursor-pointer 
+        items-center 
+        rounded 
+        border 
+        border-gray-300 
+        bg-gray-50 
+        p-1 
+        text-gray-500 
+        hover:bg-gray-100 
+        focus:outline-none;
 }
 
 .upload__select {
-    @apply block w-full h-10 mb-6 py-1.5 px-2 rounded border border-gray-300 cursor-pointer bg-gray-50 hover:bg-gray-100 focus:outline-none;
+    @apply 
+        mb-6 
+        block 
+        h-10 
+        w-full 
+        cursor-pointer 
+        rounded 
+        border 
+        border-gray-300 
+        bg-gray-50 
+        px-2 
+        py-1.5 
+        hover:bg-gray-100 
+        focus:outline-none;
 }
 
 .upload__button {
-    @apply w-full h-10 rounded bg-blue-700 hover:bg-blue-600 px-2.5 py-1.5 text-white focus:outline-none;
+    @apply 
+        h-10 
+        w-full 
+        rounded 
+        bg-blue-700 
+        px-2.5 py-1.5 
+        text-white 
+        hover:bg-blue-600 
+        focus:outline-none;
 }
 
 
 
 .document-card {
-    @apply flex items-center p-4 gap-4 hover:bg-gray-50 cursor-pointer;
+    @apply 
+        flex 
+        cursor-pointer 
+        items-center 
+        gap-4 
+        p-4 
+        hover:bg-gray-50;
 }
 
 .document-card__name-and-badge {
-    @apply flex w-full h-6 gap-2;
+    @apply 
+        flex 
+        h-6 
+        w-full 
+        gap-2;
 }
 
 .document-card__badge {
-    @apply flex-none sm:order-last;
+    @apply 
+        flex-none 
+        sm:order-last;
 }
 
 .document-card__badge--failed {
-    @apply rounded-md bg-red-50 px-2 py-1 text-xs font-medium text-red-700 ring-1 ring-inset ring-red-600/10
+    @apply 
+        rounded-md 
+        bg-red-50 
+        px-2 
+        py-1 
+        text-xs 
+        font-medium 
+        text-red-700 
+        ring-1 
+        ring-inset 
+        ring-red-600/10
 }
 
 .document-card__badge--inProgress {
-    @apply rounded-md bg-gray-50 px-2 py-1 text-xs font-medium text-gray-600 not-italic ring-1 ring-inset ring-gray-500/10
+    @apply 
+        rounded-md 
+        bg-gray-50 
+        px-2 
+        py-1 
+        text-xs 
+        font-medium 
+        not-italic 
+        text-gray-600 
+        ring-1 
+        ring-inset 
+        ring-gray-500/10
 }
 
 .document-card__badge--finished {
@@ -58,7 +155,10 @@
 
 
 .document-card__name {
-    @apply flex-grow overflow-hidden text-ellipsis;
+    @apply 
+        flex-grow 
+        overflow-hidden 
+        text-ellipsis;
 }
 
 .document-card__name--failed {
@@ -75,7 +175,19 @@
 
 
 .document-card__source-button {
-    @apply flex flex-none items-center rounded bg-white hover:bg-gray-100 text-gray-400 text-sm hover:text-gray-800 leading-5 p-2.5 gap-1;
+    @apply 
+        flex 
+        flex-none 
+        items-center 
+        rounded 
+        bg-white 
+        hover:bg-gray-100 
+        text-gray-400 
+        text-sm 
+        hover:text-gray-800 
+        leading-5 
+        p-2.5 
+        gap-1;
 }
 
 .document-card__source-button-text {
@@ -83,5 +195,14 @@
 }
 
 .document-card__delete-button {
-    @apply flex-none items-center rounded bg-white hover:bg-gray-100 text-gray-400 hover:text-gray-800 leading-5 p-2.5;
+    @apply 
+        flex-none 
+        items-center 
+        rounded 
+        bg-white 
+        p-2.5 
+        leading-5 
+        text-gray-400 
+        hover:bg-gray-100 
+        hover:text-gray-800;
 }

@@ -1,19 +1,43 @@
 .hierarchy {
-    @apply absolute flex flex-col inset-y-4 left-4 w-1/4 min-w-[20rem] rounded shadow-[rgba(0,0,0,0.1)_0px_0px_8px_4px] bg-white;
+    @apply 
+        absolute 
+        inset-y-4 
+        left-4 
+        flex 
+        w-1/4 
+        min-w-[20rem] 
+        flex-col 
+        rounded 
+        bg-white 
+        shadow-[rgba(0,0,0,0.1)_0px_0px_8px_4px];
 }
 
 .hierarchy__title-row {
-    @apply flex items-center justify-between pl-4 border-b border-gray-300;
+    @apply 
+        flex 
+        items-center 
+        justify-between 
+        border-b 
+        border-gray-300 pl-4;
 }
 
 .hierarchy__content {
-    @apply flex-1 min-h-0;
+    @apply 
+        min-h-0 
+        flex-1;
 }
 
 
 
 .hierarchy-node {
-    @apply flex h-10 align-middle text-sm text-gray-700 leading-10 hover:bg-gray-100;
+    @apply 
+        flex 
+        h-10 
+        align-middle 
+        text-sm 
+        leading-10 
+        text-gray-700 
+        hover:bg-gray-100;
 }
 
 .hierarchy-node--selected {
@@ -21,11 +45,24 @@
 }
 
 .hierarchy-node__title {
-    @apply flex-1 pr-2 py-2 leading-6 truncate hover:bg-gray-100 select-none;
+    @apply 
+        flex-1 
+        select-none 
+        truncate 
+        py-2 
+        pr-2 
+        leading-6 
+        hover:bg-gray-100;
 }
 
 
 
 .hierarchy-expand {
-    @apply absolute top-4 left-4 rounded shadow-[rgba(0,0,0,0.1)_0px_0px_8px_4px] bg-white;
+    @apply 
+        absolute 
+        left-4 
+        top-4 
+        rounded 
+        bg-white 
+        shadow-[rgba(0,0,0,0.1)_0px_0px_8px_4px];
 }
