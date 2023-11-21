@@ -69,33 +69,33 @@ function Upload({ api }: { api: DocumentsAPI }) {
 
 export interface DocumentCardProps {
     document: DocumentData;
-    link: string;
     onDelete: (id: number) => void;
-    onDownload: (id: number) => void;
 }
 
 function classNames(...classes: (string | null | undefined | false)[]) {
     return classes.filter(Boolean).join(' ')
 }
 
-function DocumentCard({ document, link, onDelete, onDownload }: DocumentCardProps) {
+function DocumentCard({ document, onDelete }: DocumentCardProps) {
     return (
         <div className="flex items-center p-4 gap-4 hover:bg-gray-50 cursor-pointer">
             <div className="flex w-full h-6 gap-2 ">
                 <div className={classNames(`badge--${document.status}`, 'flex-none sm:order-last')}>{document.status}</div>
-                <a className={classNames(`docStyle--${document.status}`, 'flex-grow overflow-hidden text-ellipsis ')} href={link}>{document.name}</a>
+                <a
+                    className={classNames(`docStyle--${document.status}`, 'flex-grow overflow-hidden text-ellipsis ')}
+                    href={document.viewerLink}
+                >{document.name}</a>
             </div>
-            <button
-                type="button"
+            <a
                 title="Download source file"
                 className="flex flex-none items-center rounded bg-white hover:bg-gray-100 text-gray-400 text-sm hover:text-gray-800 leading-5 p-2.5 gap-1"
-                onClick={() => onDownload(document.id)}
+                href={document.sourceLink}
             >
                 <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor" className="w-5 h-5">
                     <path strokeLinecap="round" strokeLinejoin="round" d="M3 16.5v2.25A2.25 2.25 0 005.25 21h13.5A2.25 2.25 0 0021 18.75V16.5M16.5 12L12 16.5m0 0L7.5 12m4.5 4.5V3" />
                 </svg>
                 <div className="hidden sm:block">Source</div>
-            </button>
+            </a>
             <button
                 type="button"
                 title="Delete file"
@@ -122,7 +122,6 @@ export function MainPage() {
     }, [documentsAPI]);
 
     const onDelete = useCallback((id: number) => documentsAPI.delete(id), [documentsAPI]);
-    const onDownload = useCallback((id: number) => documentsAPI.download(id), [documentsAPI]);
 
     return (
         <div className="bg-white h-screen">
@@ -143,13 +142,7 @@ export function MainPage() {
                 <div className="col-span-full min-w-fit m-4 bg-white rounded border border-gray-200 md:col-span-8 md:ml-8 ">
                     <div className="divide-y divide-gray-200 md:p-4">
                         {documents.map((document) => (
-                            <DocumentCard
-                                key={document.id}
-                                link={documentsAPI.getLink(document.id)}
-                                document={document}
-                                onDelete={onDelete}
-                                onDownload={onDownload}
-                            />
+                            <DocumentCard key={document.id} document={document} onDelete={onDelete} />
                         ))}
                     </div>
                 </div>

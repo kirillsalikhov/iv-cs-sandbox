@@ -1,13 +1,18 @@
 import axios from 'axios';
 
-export interface DocumentData {
+export interface DocumentInput {
     id: number;
     name: string;
     status: 'failed' | 'inProgress' | 'finished';
     created_at: number;
 }
 
-const documentsStub: DocumentData[] = [
+export interface DocumentData extends DocumentInput {
+    viewerLink: string;
+    sourceLink: string;
+}
+
+const documentsStub: DocumentInput[] = [
     { id: 1, name: 'file-1.ifc', status: 'finished', created_at: 0 },
     { id: 2, name: 'file-2.ifc', status: 'finished', created_at: 0 },
     { id: 3, name: 'file-3-failed.ifc', status: 'failed', created_at: 0 },
@@ -22,7 +27,7 @@ export enum ConversionType {
 declare global {
     interface Window {
         forBrowser?: {
-            documents: DocumentData[];
+            documents: DocumentInput[];
             modelUrl: string;
         }
     }
@@ -39,10 +44,10 @@ export class DocumentsAPI {
     onUpdateDocuments = () => undefined;
 
     constructor() {
-        const documents = new Map();
+        const documents = new Map<number, DocumentData>();
 
         let serverIsAvailable = false;
-        let docList: DocumentData[] = [];
+        let docList: DocumentInput[] = [];
         if (window.forBrowser === undefined) {
             docList = documentsStub;
             console.warn('Your browser is offline');
@@ -52,7 +57,7 @@ export class DocumentsAPI {
         }
 
         for (const doc of docList) {
-            documents.set(doc.id, doc);
+            documents.set(doc.id, this._prepareDocument(doc));
         }
 
         this._documents = documents;
@@ -65,29 +70,8 @@ export class DocumentsAPI {
         this._sse = sse;
     }
 
-    private _onUpdateDocument = async (event: MessageEvent) => {
-        const id = Number(JSON.parse(event.data).id);
-        const document = (await axios.get(`${DocumentsAPI.DOCUMENTS_URL}/${id}`)).data;
-        this._documents.set(id, document);
-        this.onUpdateDocuments();
-    }
-
-    private _onDeleteDocument = async (event: MessageEvent) => {
-        const id = Number(JSON.parse(event.data).id);
-        this._documents.delete(id);
-        this.onUpdateDocuments();
-    }
-
     get list(): DocumentData[] {
         return [...this._documents.values()].sort((p, n) => n.created_at - p.created_at);
-    }
-
-    getLink(id: number): string {
-        const document = this._documents.get(id);
-        if (document !== undefined && document.status === 'finished') {
-            return `${id}/viewer`;
-        }
-        return '#';
     }
 
     async convert(file: File, type: ConversionType): Promise<void> {
@@ -120,17 +104,24 @@ export class DocumentsAPI {
         }
     }
 
-    async download(id: number): Promise<void> {
-        const document = this._documents.get(id);
-        if (document === undefined) {
-            alert(`Can't download non-existent document ${id}`);
-            return;
-        }
+    private _onUpdateDocument = async (event: MessageEvent) => {
+        const id = Number(JSON.parse(event.data).id);
+        const docInput = (await axios.get(`${DocumentsAPI.DOCUMENTS_URL}/${id}`)).data as DocumentInput;
+        this._documents.set(id, this._prepareDocument(docInput));
+        this.onUpdateDocuments();
+    }
 
-        const source = await this._getSource(id);
-        if (source !== null) {
-            this._saveOnDisk(document.name, source);
-        }
+    private _onDeleteDocument = async (event: MessageEvent) => {
+        const id = Number(JSON.parse(event.data).id);
+        this._documents.delete(id);
+        this.onUpdateDocuments();
+    }
+
+    private _prepareDocument(input: DocumentInput): DocumentData {
+        const viewerLink = input.status === 'finished' ? `${input.id}/viewer`: '#';
+        const sourceLink = `${DocumentsAPI.DOCUMENTS_URL}/${input.id}/source`;
+
+        return { ...input, viewerLink, sourceLink };
     }
 
     private _getKeyFromURL(url: string): string {
@@ -139,28 +130,5 @@ export class DocumentsAPI {
 
     private async _getLoadingURL(): Promise<string> {
         return (await axios.post(`${DocumentsAPI.FILES_URL}/create-upload`)).data as string;
-    }
-
-    private _saveOnDisk(name: string, data: string): void {
-        const a = document.createElement('a');
-        const file = new Blob([data], { type : 'plain/text' });
-        a.href = URL.createObjectURL(file);
-        a.download = name;
-        a.click();
-    }
-
-    private async _getSource(id: number): Promise<string | null> {
-        if (!this._serverIsAvailable) {
-            alert(`Can't get document source ${id} because of offline`);
-            return null;
-        }
-
-        try {
-            const source = await axios.get(`${DocumentsAPI.DOCUMENTS_URL}/${id}/source`);
-            return source.data as string;
-        } catch (err) {
-            alert(err);
-            return null;
-        }
     }
 }
