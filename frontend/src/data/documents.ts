@@ -39,7 +39,6 @@ export class DocumentsAPI {
 
     private _documents: Map<number, DocumentData>;
     private _serverIsAvailable: boolean;
-    private _sse: EventSource;
 
     onUpdateDocuments = () => undefined;
 
@@ -67,7 +66,6 @@ export class DocumentsAPI {
         sse.addEventListener('document_created', this._onUpdateDocument);
         sse.addEventListener('document_update', this._onUpdateDocument);
         sse.addEventListener('document_delete', this._onDeleteDocument);
-        this._sse = sse;
     }
 
     get list(): DocumentData[] {
