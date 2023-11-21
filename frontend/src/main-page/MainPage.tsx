@@ -51,8 +51,8 @@ function Upload({ api }: { api: DocumentsAPI }) {
                 defaultValue={conversionType}
                 onChange={onChangeSelect}
             >
-                <option value={ConversionType.IFC_2_WMD_Optimized}>IFC to WMD options </option>
-                <option value={ConversionType.IFC_2_WMD}>IFC to WMD </option>
+                <option value={ConversionType.IFC_2_WMD_Optimized}>IFC to WMD optimized</option>
+                <option value={ConversionType.IFC_2_WMD}>IFC to WMD</option>
             </select>
             <button
                 type="button"
