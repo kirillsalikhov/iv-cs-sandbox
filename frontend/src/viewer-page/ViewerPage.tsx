@@ -4,7 +4,7 @@ import { createHierarchyData, HierarchyData } from '../data/hierarchy-data.ts';
 import { AttributesExpand, AttributesPopup, ObjectDetailsProps } from './Attributes.tsx';
 import { getModelURL } from '../data/models.ts';
 import { getObjectAttributes } from '../data/attributes.ts';
-import { Hierarchy } from './Hierarchy.tsx';
+import { HierarchyExpand, Hierarchy } from './Hierarchy.tsx';
 import { CameraButtons } from './CameraButtons.tsx';
 
 export function ViewerPage(): ReactElement {
@@ -15,10 +15,11 @@ export function ViewerPage(): ReactElement {
     const [allowMoveCamera, setAllowMoveCamera] = useState(true);
     const [details, setDetails] = useState<ObjectDetailsProps | null>(null);
     const [detailsExpanded, setDetailsExpanded] = useState(true);
+    const [modelStructureExpanded, setModelStructureExpanded] = useState(window.innerWidth > window.innerHeight);
 
     //note: this is an ugly workaround for react-arborist triggering onSelect even when the select is caused by changing selection prop.
     //      other virtualized trees likely don't need this hack
-    const internalState = useRef({muteArboristOnSelect: false});
+    const internalState = useRef({muteArboristOnSelect: false, unmuteTimeout: -1});
 
     useEffect(() => {
         const { current: viewer } = vref;
@@ -42,13 +43,21 @@ export function ViewerPage(): ReactElement {
         }
     }, [selectedId, hierarchyLoaded])
 
-    const handleViewerClickObject = useCallback((id: number) => {
+    const muteArborist = useCallback(() => {
+        if (internalState.current.unmuteTimeout !== -1) {
+            clearTimeout(internalState.current.unmuteTimeout)
+        }
         internalState.current.muteArboristOnSelect = true;
+        internalState.current.unmuteTimeout = setTimeout(() => {
+            internalState.current.muteArboristOnSelect = false;
+            internalState.current.unmuteTimeout = -1;
+        }, 10);
+    }, [])
+
+    const handleViewerClickObject = useCallback((id: number) => {
+        muteArborist();
         setSelectedId(id);
         setAllowMoveCamera(false);
-        setTimeout(() => {
-            internalState.current.muteArboristOnSelect = false;
-        }, 10);
     }, []);
 
     return (
@@ -57,8 +66,22 @@ export function ViewerPage(): ReactElement {
                     onClickObject={handleViewerClickObject}
                     allowMoveCamera={allowMoveCamera}
                     ref={vref} />
-            {
-                hierarchyLoaded &&
+            { hierarchyLoaded &&
+                <CameraButtons viewerRef={vref}></CameraButtons>
+            }
+            { details && !detailsExpanded &&
+                <AttributesExpand onClick={() => setDetailsExpanded(true)} />
+            }
+            { hierarchyLoaded && !modelStructureExpanded &&
+                <HierarchyExpand onClick={() => {
+                                    muteArborist();
+                                    setModelStructureExpanded(true);
+                                 }} />
+            }
+            { details && detailsExpanded &&
+                <AttributesPopup {...details} onClickClose={() => setDetailsExpanded(false)} />
+            }
+            { hierarchyLoaded && modelStructureExpanded &&
                 <Hierarchy
                     data={hierarchyData}
                     selectedId={selectedId}
@@ -69,14 +92,11 @@ export function ViewerPage(): ReactElement {
                             vref.current?.moveCameraToSelection();
                         }
                     }}
+                    onClickClose={() => {
+                        setModelStructureExpanded(false);
+                    }}
                 />
             }
-            {details && (
-                detailsExpanded
-                    ? <AttributesPopup {...details} onClickClose={() => setDetailsExpanded(false)} />
-                    : <AttributesExpand onClick={() => setDetailsExpanded(true)} />
-            )}
-            {hierarchyLoaded && <CameraButtons viewerRef={vref}></CameraButtons>}
         </>
     )
 }

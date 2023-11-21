@@ -1,5 +1,6 @@
 import { MouseEventHandler, ReactNode } from 'react';
 import { Accordion } from './Accordion';
+import { CloseButton } from './CloseButton.tsx';
 
 export interface ObjectPropertyValue {
     name: string;
@@ -39,16 +40,8 @@ export function AttributesPopup({ title, values, groups, onClickClose }: ObjectD
     return (
         <div className={'absolute w-1/3 right-4 top-4 min-w-[20rem] bg-white rounded shadow-[rgba(0,0,0,0.1)_0px_0px_8px_4px]'}>
             <div className="flex items-center justify-between pl-4 border-b border-gray-300">
-                <h1 className={'text-lg'}>{title}</h1>
-                <button
-                    type="button"
-                    className="relative items-center p-2 text-gray-400 hover:text-gray-500 hover:bg-gray-100 focus:outline-none focus:ring-0"
-                    onClick={onClickClose}
-                >
-                    <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor" className="w-6 h-6">
-                        <path strokeLinecap="round" strokeLinejoin="round" d="M6 18L18 6M6 6l12 12" />
-                    </svg>
-                </button>
+                <h2 className={'text-lg truncate'}>{title}</h2>
+                <CloseButton onClick={onClickClose} />
             </div>
 
             <div className={'max-h-96 overflow-y-scroll'}>

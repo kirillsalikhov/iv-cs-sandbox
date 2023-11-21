@@ -1,6 +1,7 @@
-import { ReactNode, useLayoutEffect, useMemo, useRef, useState } from "react";
+import { MouseEventHandler, ReactNode, useLayoutEffect, useMemo, useRef, useState } from "react";
 import { NodeApi, NodeRendererProps, Tree } from "react-arborist";
 import { HierarchyData } from '../data/hierarchy-data.ts';
+import { CloseButton } from './CloseButton.tsx';
 
 function Node({ node, style }: NodeRendererProps<HierarchyData>): ReactNode {
     const openClass = node.isOpen ? 'rotate-90' : 'rotate-0';
@@ -29,15 +30,19 @@ export interface HierarchyProps {
     data: HierarchyData[];
     selectedId: number;
     onSelectNode?: (id: number) => void;
+    onClickClose?: MouseEventHandler<HTMLButtonElement>;
 }
 
-export function Hierarchy({data, selectedId, onSelectNode}: HierarchyProps): ReactNode {
+export function Hierarchy({data, selectedId, onSelectNode, onClickClose}: HierarchyProps): ReactNode {
     const hierarchyElementRef = useRef<HTMLDivElement>(null);
     const [height, setHeight] = useState(0);
     const [width, setWidth] = useState(0);
 
     useLayoutEffect(() => {
-        const el = (hierarchyElementRef.current as HTMLDivElement);
+        const el = hierarchyElementRef.current;
+        if (el === null) {
+            return;
+        }
         setHeight(el.offsetHeight);
         setWidth(el.offsetWidth);
 
@@ -47,6 +52,10 @@ export function Hierarchy({data, selectedId, onSelectNode}: HierarchyProps): Rea
         });
 
         observer.observe(el);
+
+        return () => {
+            observer.unobserve(el);
+        };
     }, []);
 
     const selectHandler = useMemo(() => onSelectNode && ((nodes: NodeApi<HierarchyData>[]): void => {
@@ -60,20 +69,41 @@ export function Hierarchy({data, selectedId, onSelectNode}: HierarchyProps): Rea
     const idAccessor = useMemo(() => (node: HierarchyData): string => node._id.toString(), []);
 
     return (
-        <div className={'absolute inset-y-4 left-4 w-1/4 min-w-[20rem] rounded shadow-[rgba(0,0,0,0.1)_0px_0px_8px_4px]  bg-white '} ref={hierarchyElementRef}>
-            <Tree
-                data={data}
-                idAccessor={idAccessor}
-                disableMultiSelection={true}
-                disableEdit={true}
-                width={width}
-                height={height}
-                openByDefault={false}
-                selection={selectedId.toString()}
-                onSelect={selectHandler}
-                rowHeight={40}>
-                {Node}
-            </Tree>
+        <div className={'absolute flex flex-col inset-y-4 left-4 w-1/4 min-w-[20rem] rounded shadow-[rgba(0,0,0,0.1)_0px_0px_8px_4px] bg-white'}>
+            <div className={'flex items-center justify-between pl-4 border-b border-gray-300'}>
+                <h2 className={'text-lg'}>Model structure</h2>
+                <CloseButton onClick={onClickClose}/>
+            </div>
+            <div className={'flex-1 min-h-0'} ref={hierarchyElementRef}>
+                <Tree
+                    data={data}
+                    idAccessor={idAccessor}
+                    disableMultiSelection={true}
+                    disableEdit={true}
+                    width={width}
+                    height={height}
+                    openByDefault={false}
+                    selection={selectedId.toString()}
+                    onSelect={selectHandler}
+                    rowHeight={40}>
+                    {Node}
+                </Tree>
+            </div>
         </div>
+    );
+}
+
+export interface ExpandHierarchyButtonProps {
+    onClick?: MouseEventHandler<HTMLButtonElement>;
+}
+
+export function HierarchyExpand({ onClick }:ExpandHierarchyButtonProps) {
+    return (
+        <button className={'absolute top-4 left-4 rounded shadow-[rgba(0,0,0,0.1)_0px_0px_8px_4px] bg-white p-2 text-gray-400 hover:text-gray-500 hover:bg-gray-100 focus:outline-none focus:ring-0'}
+                onClick={onClick}>
+            <svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                <path fillRule="evenodd" clipRule="evenodd" d="M7 9V12H10V13H7V17H10V18H6V13.4444V12.5556V9H7ZM4 5H20V8H4V5ZM11 14V11H18V14H11ZM11 19H18V16H11V19Z" fill="currentColor" />
+            </svg>
+        </button>
     );
 }
