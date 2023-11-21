@@ -3,7 +3,7 @@ cd "$(dirname "$0")"
 
 USER=$DEPLOY_USER
 HOST=$DEPLOY_HOST
-PROJECT="sandbox"
+PROJECT="conversion_service"
 REMOTE_PATH="/home/$USER/projects/$PROJECT"
 
 # prepare folders
@@ -17,19 +17,20 @@ EOF
 
 # coping compose and bin scripts
 # !!! Copy .env manually to ./compose
-scp ../compose/sandbox.yml \
+scp ../compose/mod/conversion-service.prod.yml \
     $USER@$HOST:$REMOTE_PATH/compose/
 
-scp ../bin/main.sh ../bin/setup.sh \
+scp ../bin/setup_cs.sh \
     $USER@$HOST:$REMOTE_PATH/bin/
 
 
-
-ssh -tt $USER@$HOST << EOF
-cd $REMOTE_PATH
-bin/main.sh pull \
-&& bin/main.sh down \
-&& bin/main.sh up -d
-
-exit
-EOF
+#ssh -tt $USER@$HOST << EOF
+#cd $REMOTE_PATH
+# TODO no main.sh, should be compose
+# ALSO add project name to be line cs or conversions_service or ...
+#bin/main.sh pull \
+#&& bin/main.sh down \
+#&& bin/main.sh up -d
+#
+#exit
+#EOF
