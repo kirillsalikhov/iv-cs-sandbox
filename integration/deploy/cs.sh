@@ -20,9 +20,6 @@ EOF
 scp ../compose/mod/conversion-service.prod.yml \
     $USER@$HOST:$REMOTE_PATH/compose/
 
-scp ../bin/setup_cs.sh \
-    $USER@$HOST:$REMOTE_PATH/bin/
-
 
 #ssh -tt $USER@$HOST << EOF
 #cd $REMOTE_PATH
