@@ -20,14 +20,13 @@ EOF
 scp ../compose/mod/conversion-service.prod.yml \
     $USER@$HOST:$REMOTE_PATH/compose/
 
+scp ../bin/setup_cs_prod.sh \
+    $USER@$HOST:$REMOTE_PATH/bin/setup_cs.sh
 
-#ssh -tt $USER@$HOST << EOF
-#cd $REMOTE_PATH
-# TODO no main.sh, should be compose
-# ALSO add project name to be line cs or conversions_service or ...
-#bin/main.sh pull \
-#&& bin/main.sh down \
-#&& bin/main.sh up -d
-#
-#exit
-#EOF
+ssh -tt $USER@$HOST << EOF
+cd $REMOTE_PATH/compose
+docker compose -f conversion-service.prod.yml down
+docker compose -f conversion-service.prod.yml pull
+docker compose -f conversion-service.prod.yml -p $PROJECT up -d
+exit
+EOF
