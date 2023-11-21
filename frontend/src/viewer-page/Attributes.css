@@ -1,0 +1,23 @@
+.attributes-placement {
+    @apply absolute right-4 top-4;
+}
+
+.attributes-base {
+    @apply bg-white rounded shadow-[rgba(0,0,0,0.1)_0px_0px_8px_4px];
+}
+
+.attributes-popup__title {
+    @apply flex items-center justify-between pl-4 border-b border-gray-300;
+}
+
+.attributes-popup__content {
+    @apply max-h-96 overflow-y-scroll;
+}
+
+.attributes-list__field-name {
+    @apply py-2 px-4 w-1/2 text-sm leading-6 text-gray-600;
+}
+
+.attributes-list__field-value {
+    @apply py-2 px-4 w-1/2 text-sm leading-6 break-words text-black;
+}

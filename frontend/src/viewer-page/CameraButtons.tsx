@@ -1,7 +1,8 @@
 import { RefObject, useState } from 'react';
-import { iconCameraOrthographic, iconCameraPerspective, iconHome } from './camera-svg-icons.ts';
+import { iconCameraOrthographic, iconCameraPerspective, iconHome } from './icons.ts';
 import { Viewer } from './Viewer.tsx';
 import { CameraProjectionType } from '@wge/industrial-viewer';
+import { IconButton } from './IconButton.tsx';
 
 export interface CameraButtonsProps {
     viewerRef: RefObject<Viewer>;
@@ -14,19 +15,22 @@ export function CameraButtons({viewerRef}: CameraButtonsProps) {
         ? iconCameraOrthographic
         : iconCameraPerspective;
 
+    const projectionTitle = projectionType === CameraProjectionType.PERSPECTIVE
+        ? 'Switch to orthographic projection'
+        : 'Switch to perspective projection';
+
     return (
         <>
-            <button className={'absolute bottom-32 right-4 w-6 h-6 fill-gray-500'}
-                    dangerouslySetInnerHTML={{__html: iconHome}}
-                    title={'Move the camera to the initial position'}
-                    onClick={() => viewerRef.current?.moveCameraToHomePosition()}></button>
-            <button className={'absolute bottom-4 right-4 w-6 h-6 fill-gray-500'}
-                    dangerouslySetInnerHTML={{__html: projectionIcon}}
-                    title={projectionType === CameraProjectionType.PERSPECTIVE
-                        ? 'Switch to orthographic projection'
-                        : 'Switch to perspective projection'
-                    }
-                    onClick={() => setProjectionType(viewerRef.current?.toggleCameraProjection() ?? projectionType)}></button>
+            <div className={'absolute bottom-32 right-4'}>
+                <IconButton icon={iconHome}
+                            title={'Move the camera to the initial position'}
+                            onClick={() => viewerRef.current?.moveCameraToHomePosition()}/>
+            </div>
+            <div className={'absolute bottom-4 right-4'}>
+                <IconButton icon={projectionIcon}
+                            title={projectionTitle}
+                            onClick={() => setProjectionType(viewerRef.current?.toggleCameraProjection() ?? projectionType)}/>
+            </div>
         </>
     );
 }

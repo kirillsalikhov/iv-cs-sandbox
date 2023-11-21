@@ -1,5 +1,6 @@
 import { ConversionType, DocumentData, DocumentsAPI } from '../data/documents.js';
 import { ChangeEvent, useCallback, useEffect, useMemo, useRef, useState } from 'react';
+import './main-page.css';
 
 function Upload({ api }: { api: DocumentsAPI }) {
     const [conversionType, setConversionType] = useState<ConversionType>(ConversionType.IFC_2_WMD);

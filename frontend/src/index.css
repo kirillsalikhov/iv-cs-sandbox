@@ -15,28 +15,3 @@ canvas {
     height: 100%;
     width: 100%;
 }
-
-
-.badge--failed {
-    @apply rounded-md bg-red-50 px-2 py-1 text-xs font-medium text-red-700 ring-1 ring-inset ring-red-600/10
-}
-
-.badge--inProgress {
-    @apply rounded-md bg-gray-50 px-2 py-1 text-xs font-medium text-gray-600 not-italic ring-1 ring-inset ring-gray-500/10
-}
-
-.badge--finished {
-    @apply hidden
-}
-
-.docStyle--failed {
-    @apply text-red-900
-}
-
-.docStyle--inProgress {
-    @apply text-gray-500 italic
-}
-
-.docStyle--finished {
-    @apply font-medium
-}

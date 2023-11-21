@@ -1,0 +1,7 @@
+.icon-button {
+    @apply p-2 text-gray-400 hover:text-gray-500 hover:bg-gray-100 focus:outline-none focus:ring-0;
+}
+
+.icon-button__svg {
+    @apply w-6 h-6;
+}
