@@ -1,6 +1,6 @@
 import { createRoot } from 'react-dom/client';
-import { MainPage } from './MainPage.tsx';
 import '../index.css';
+import { MainPage } from './MainPage.tsx';
 
 const reactRootElement = document.getElementById('react-root') as HTMLDivElement;
 const reactRoot = createRoot(reactRootElement);
