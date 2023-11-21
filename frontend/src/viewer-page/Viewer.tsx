@@ -95,6 +95,7 @@ export class Viewer extends Component<ViewerProps> implements ViewerAPI {
         const envFeature = iv.addFeature(EnvironmentFeature);
 
         await iv.init();
+        this.container.current.classList.add('invisible');
 
         this.iv = iv;
         this.db = db;
@@ -132,6 +133,11 @@ export class Viewer extends Component<ViewerProps> implements ViewerAPI {
         const loader = this.iv.getFeature(LoaderFeature);
 
         await this.db.load(wofBlobURL);
+        const containerElement = this.container.current;
+        if (containerElement === null) {
+            console.warn('The Viewer component has been unmounted, but its code is still executing');
+            return;
+        }
         await loader.load('model.wmd');
 
         const moveCamera = this.iv.getFeature(MoveCameraFeature);
@@ -140,6 +146,7 @@ export class Viewer extends Component<ViewerProps> implements ViewerAPI {
         this.updateSelection();
 
         this.homePosition = moveCamera.getOptions();
+        containerElement.classList.remove('invisible');
     }
 
     componentDidUpdate(): void {
