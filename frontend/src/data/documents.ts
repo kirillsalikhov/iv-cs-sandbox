@@ -4,13 +4,14 @@ export interface DocumentData {
     id: number;
     name: string;
     status: 'failed' | 'inProgress' | 'finished';
+    created_at: number;
 }
 
 const documentsStub: DocumentData[] = [
-    {id: 1, name: 'file-1.ifc', status: 'finished'},
-    {id: 2, name: 'file-2.ifc', status: 'finished'},
-    {id: 3, name: 'file-3-failed.ifc', status: 'failed'},
-    {id: 4, name: 'file-4.ifc', status: 'inProgress'},
+    { id: 1, name: 'file-1.ifc', status: 'finished', created_at: 0 },
+    { id: 2, name: 'file-2.ifc', status: 'finished', created_at: 0 },
+    { id: 3, name: 'file-3-failed.ifc', status: 'failed', created_at: 0 },
+    { id: 4, name: 'file-4.ifc', status: 'inProgress', created_at: 0 },
 ];
 
 export enum ConversionType {
@@ -18,11 +19,22 @@ export enum ConversionType {
     IFC_2_WMD = 'ifc2wmd'
 }
 
+declare global {
+    interface Window {
+        forBrowser?: {
+            documents: DocumentData[];
+            modelUrl: string;
+        }
+    }
+}
+
 export class DocumentsAPI {
     static readonly DOCUMENTS_URL = '/api/documents';
+    static readonly FILES_URL = '/api/files';
 
     private _documents: Map<number, DocumentData>;
     private _serverIsAvailable: boolean;
+    private _sse: EventSource;
 
     onUpdateDocuments = () => undefined;
 
@@ -45,10 +57,29 @@ export class DocumentsAPI {
 
         this._documents = documents;
         this._serverIsAvailable = serverIsAvailable;
+
+        const sse = new EventSource('/sse');
+        sse.addEventListener('document_created', this._onUpdateDocument);
+        sse.addEventListener('document_update', this._onUpdateDocument);
+        sse.addEventListener('document_delete', this._onDeleteDocument);
+        this._sse = sse;
+    }
+
+    private _onUpdateDocument = async (event: MessageEvent) => {
+        const id = Number(JSON.parse(event.data).id);
+        const document = (await axios.get(`${DocumentsAPI.DOCUMENTS_URL}/${id}`)).data;
+        this._documents.set(id, document);
+        this.onUpdateDocuments();
+    }
+
+    private _onDeleteDocument = async (event: MessageEvent) => {
+        const id = Number(JSON.parse(event.data).id);
+        this._documents.delete(id);
+        this.onUpdateDocuments();
     }
 
     get list(): DocumentData[] {
-        return [...this._documents.values()];
+        return [...this._documents.values()].sort((p, n) => n.created_at - p.created_at);
     }
 
     getLink(id: number): string {
@@ -73,8 +104,7 @@ export class DocumentsAPI {
             conversionType: type
         };
 
-        await axios.post('/api/documents/convert', form);
-        await this._syncDocuments();
+        await axios.post(`${DocumentsAPI.DOCUMENTS_URL}/convert`, form);
     }
 
     async delete(id: number): Promise<void> {
@@ -85,7 +115,6 @@ export class DocumentsAPI {
 
         try {
             await axios.delete(`${DocumentsAPI.DOCUMENTS_URL}/${id}`);
-            await this._syncDocuments();
         } catch (err) {
             alert(err);
         }
@@ -109,7 +138,7 @@ export class DocumentsAPI {
     }
 
     private async _getLoadingURL(): Promise<string> {
-        return (await axios.post('api/files/create-upload')).data as string;
+        return (await axios.post(`${DocumentsAPI.FILES_URL}/create-upload`)).data as string;
     }
 
     private _saveOnDisk(name: string, data: string): void {
@@ -132,20 +161,6 @@ export class DocumentsAPI {
         } catch (err) {
             alert(err);
             return null;
-        }
-    }
-
-    private async _syncDocuments(): Promise<void> {
-        const response = await axios.get(DocumentsAPI.DOCUMENTS_URL);
-        const documents = response.data as DocumentData[];
-
-        if (documents) {
-            this._documents.clear();
-            for (const doc of documents) {
-                this._documents.set(doc.id, doc);
-            }
-
-            this.onUpdateDocuments();
         }
     }
 }
