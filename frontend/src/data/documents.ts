@@ -50,7 +50,7 @@ export class DocumentsAPI {
         let docList: DocumentInput[] = [];
         if (window.forBrowser === undefined) {
             docList = documentsStub;
-            console.warn('Your browser is offline');
+            console.warn('Standalone mode. Using static data.');
         } else {
             serverIsAvailable = true;
             docList = window.forBrowser.documents;
