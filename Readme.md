@@ -26,7 +26,7 @@ Inside folder frontend
    ```
    docker login docker.webgears3d.com
    ```
-   note: if login successful cmd bellow should work
+   Note: if login successful cmd bellow should work
    ```
    integration/bin/main.sh --mod=c pull
    ```
@@ -49,17 +49,17 @@ Open browser http://localhost:3050
 
 ### Dev modes
 
-frontend in dev mode
+Frontend in dev mode
 ```
 integration/bin/main.sh --mod=fc up
 ```
 
-backend in dev mode
+Backend in dev mode
 ```
 integration/bin/main.sh --mod=bc up
 ```
 
-frontend & backend in dev mode
+Frontend & Backend in dev mode
 ```
 integration/bin/main.sh --mod=fbc up
 ```
