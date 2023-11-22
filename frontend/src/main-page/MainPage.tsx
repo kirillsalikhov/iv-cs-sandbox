@@ -1,5 +1,5 @@
 import { ConversionType, DocumentData, DocumentsAPI } from '../data/documents.js';
-import { ChangeEvent, useCallback, useEffect, useMemo, useRef, useState } from 'react';
+import { ChangeEvent, useCallback, useEffect, useMemo, useRef, useState, MouseEvent } from 'react';
 import './main-page.css';
 import { iconDelete, iconSource } from './icons.tsx';
 
@@ -79,14 +79,22 @@ function classNames(...classes: (string | null | undefined | false)[]) {
 }
 
 function DocumentCard({ document, onDelete }: DocumentCardProps) {
+    const onClickViewer = () => {
+        location.href = document.viewerLink;
+    };
+
+    const onClickDelete = (event: MouseEvent<HTMLButtonElement>): void => {
+        event.stopPropagation();
+        onDelete(document.id);
+    };
+
     return (
-        <div className="document-card">
+        <div onClick={onClickViewer} className="document-card">
             <div className="document-card__name-and-badge">
                 <div className={classNames('document-card__badge', `document-card__badge--${document.status}`)}>{document.status}</div>
-                <a
+                <div
                     className={classNames('document-card__name', `document-card__name--${document.status}`)}
-                    href={document.viewerLink}
-                >{document.name}</a>
+                >{document.name}</div>
             </div>
             <a
                 title="Download source file"
@@ -99,7 +107,7 @@ function DocumentCard({ document, onDelete }: DocumentCardProps) {
                 type="button"
                 title="Delete file"
                 className="document-card__delete-button"
-                onClick={() => onDelete(document.id)}
+                onClick={onClickDelete}
             >
                 {iconDelete}
             </button>
