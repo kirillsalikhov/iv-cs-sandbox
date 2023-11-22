@@ -20,7 +20,7 @@ class CSClient {
 
     async getResultZipUrl(jobId){
         const { data } = await this.client.get(
-            `/jobs/${jobId}/zip??filter=iv&use_external_host=false`);
+            `/jobs/${jobId}/zip?filter=iv`);
         return data[0].url;
     }
 }
