@@ -25,13 +25,21 @@ export interface ViewerProps {
     allowMoveCamera: boolean;
 }
 
-export class Viewer extends Component<ViewerProps> implements ViewerAPI {
+interface ViewerState {
+    modelLoaded: boolean;
+}
+
+export class Viewer extends Component<ViewerProps, ViewerState> implements ViewerAPI {
     public container = createRef<HTMLDivElement>();
     public iv!: IndustrialViewer;
     public db!: WofDB;
 
     meshIds!: Set<number>;
     homePosition: MoveCameraState | null = null;
+
+    state = {
+        modelLoaded: false
+    };
 
     updateSelection(): void {
         if (!this.meshIds) return;
@@ -95,7 +103,6 @@ export class Viewer extends Component<ViewerProps> implements ViewerAPI {
         const envFeature = iv.addFeature(EnvironmentFeature);
 
         await iv.init();
-        this.container.current.classList.add('invisible');
 
         this.iv = iv;
         this.db = db;
@@ -146,7 +153,9 @@ export class Viewer extends Component<ViewerProps> implements ViewerAPI {
         this.updateSelection();
 
         this.homePosition = moveCamera.getOptions();
-        containerElement.classList.remove('invisible');
+        this.setState({
+            modelLoaded: true
+        });
     }
 
     componentDidUpdate(): void {
@@ -155,7 +164,10 @@ export class Viewer extends Component<ViewerProps> implements ViewerAPI {
 
     render(): ReactNode {
         return (
-            <div className='w-full h-full' ref={this.container}></div>
+            <>
+                <div className={`flex items-center justify-center absolute inset-0 text-lg ${this.state.modelLoaded ? 'invisible' : ''}`}>Loading...</div>
+                <div className={`w-full h-full ${this.state.modelLoaded ? '' : 'invisible'}`} ref={this.container}></div>
+            </>
         );
     }
 }
