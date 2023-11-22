@@ -32,7 +32,7 @@ Inside folder frontend
    ```
 2. Copy integration/compose/sample.env to .env and fill vars
 
-   **Note**: change __DEV_HOST_IP__ to you developer's host ip
+   **Note**: change `__DEV_HOST_IP__` to you developer's host ip
 3. Put license.lic file in integration/compose/
 4. Run setup scripts
    ```
