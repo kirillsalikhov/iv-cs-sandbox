@@ -102,7 +102,7 @@ export class Viewer extends Component<ViewerProps, ViewerState> implements Viewe
         iv.addFeature(ProgressiveRenderingFeature);
         iv.addFeature(ColorFeature);
         iv.addFeature(HoverFeature);
-        const envFeature = iv.addFeature(EnvironmentFeature);
+        const environmentFeature = iv.addFeature(EnvironmentFeature);
 
         await iv.init();
 
@@ -118,10 +118,10 @@ export class Viewer extends Component<ViewerProps, ViewerState> implements Viewe
         //NOTE: do not inline this constant. It is here to trick Vite not to transform new URL(...)
         //      without it, some combinations of development and production modes of backend & frontend don't work
         const url = '/parking.wenv';
-        const parkingTextureId = envFeature.createTextureID('wenv', new URL(url, import.meta.url).toString());
-        await envFeature.getTextureLoadedPromise(parkingTextureId);
+        const parkingTextureId = environmentFeature.createTextureID('wenv', new URL(url, import.meta.url).toString());
+        await environmentFeature.getTextureLoadedPromise(parkingTextureId);
 
-        envFeature.setOptions({
+        environmentFeature.setOptions({
             ibl: parkingTextureId
         });
         iv.setCameraEV100({
@@ -139,22 +139,23 @@ export class Viewer extends Component<ViewerProps, ViewerState> implements Viewe
 
         this.iv.setDataLoader(dataLoader);
 
-        const loader = this.iv.getFeature(LoaderFeature);
+        const loaderFeature = this.iv.getFeature(LoaderFeature);
 
         await this.db.load(wofBlobURL);
+        URL.revokeObjectURL(wofBlobURL);
         const containerElement = this.container.current;
         if (containerElement === null) {
             console.warn('The Viewer component has been unmounted, but its code is still executing');
             return;
         }
-        await loader.load('model.wmd');
+        await loaderFeature.load('model.wmd');
 
-        const moveCamera = this.iv.getFeature(MoveCameraFeature);
-        await moveCamera.toModel();
+        const moveCameraFeature = this.iv.getFeature(MoveCameraFeature);
+        await moveCameraFeature.toModel();
         this.meshIds = new Set(this.iv.getObjects());
         this.updateSelection();
 
-        this.homePosition = moveCamera.getOptions();
+        this.homePosition = moveCameraFeature.getOptions();
         this.setState({
             modelLoaded: true
         });

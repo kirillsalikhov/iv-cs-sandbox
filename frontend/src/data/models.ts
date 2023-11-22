@@ -1,5 +1,5 @@
 export function getModelURL(): string {
-    let modelURL = '/simple.zip';
+    let modelURL = '/wellness-center.zip';
     if (window.forBrowser === undefined) {
         console.warn('Standalone mode. Using static data.');
     } else {
