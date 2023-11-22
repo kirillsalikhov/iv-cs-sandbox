@@ -30,8 +30,7 @@
 .main-page__documents {
     @apply 
         col-span-full 
-        m-4 
-        min-w-fit 
+        m-4
         rounded 
         border 
         border-gray-200 
@@ -103,15 +102,17 @@
         items-center 
         gap-4 
         p-4 
-        hover:bg-gray-50;
+        hover:bg-gray-50
+        min-w-0;
 }
 
 .document-card__name-and-badge {
     @apply 
-        flex 
-        h-6 
-        w-full 
-        gap-2;
+        flex
+        flex-auto
+        h-6
+        gap-2
+        min-w-0;
 }
 
 .document-card__badge {
@@ -156,9 +157,10 @@
 
 .document-card__name {
     @apply 
-        flex-grow 
+        flex-auto
         overflow-hidden 
-        text-ellipsis;
+        truncate
+        min-w-0;
 }
 
 .document-card__name--failed {
