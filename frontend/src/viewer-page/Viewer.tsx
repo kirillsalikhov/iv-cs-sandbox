@@ -9,6 +9,7 @@ import {
     MoveCameraFeature,
     MoveCameraState,
     NavigationCubeFeature,
+    ProgressiveRenderingFeature,
     OrbitFeature
 } from '@wge/industrial-viewer';
 import { zipDataLoader } from '../data/zip-data-loader.ts';
@@ -90,6 +91,7 @@ export class Viewer extends Component<ViewerProps> implements ViewerAPI {
             yOffset: '4px'
         });
         iv.addFeature(MoveCameraFeature);
+        iv.addFeature(ProgressiveRenderingFeature);
         iv.addFeature(ColorFeature);
         iv.addFeature(HoverFeature);
         const envFeature = iv.addFeature(EnvironmentFeature);
