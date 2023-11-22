@@ -44,6 +44,7 @@ function UploadPanel({ api }: { api: DocumentsAPI }) {
                 className="upload__input"
                 id="file_input"
                 type="file"
+                accept='.ifc'
                 onChange={onChangeFile}
                 ref={inputRef}
             >
