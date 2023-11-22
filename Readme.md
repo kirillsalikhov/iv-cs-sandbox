@@ -1,43 +1,74 @@
+# Industrial viewer sandbox
+
 ## Setup
 
-1. Copy integration/compose/sample.env to .env and fill vars
-2. Run integration/bin/setup.sh
+Inside folder frontend
 
-### Setup for Conversion service
-
+Install packages
 ```
-integration/bin/setup_cs.sh
+npm ci
 ```
 ## Run
 
-Inside /integration folder
-backend + frontend
-```
-bin/main.sh up
-```
-backend + frontend + conversion service
-```
-bin/main.sh --mod=c up
-```
+Inside folder frontend
 
-## Dev
+1. Run dev Vite dev server
+   ```
+   npm run dev
+   ```
+2. Open browser http://localhost:5173/
 
-Inside integration folder
+
+# Conversion Service + Industrial viewer sandbox
+
+## Setup
+1. Docker login
+   ```
+   docker login docker.webgears3d.com
+   ```
+   note: if login successful cmd bellow should work
+   ```
+   integration/bin/main.sh --mod=c pull
+   ```
+2. Copy integration/compose/sample.env to .env and fill vars
+
+   **Note**: change __DEV_HOST_IP__ to you developer's host ip
+3. Put license.lic file in integration/compose/
+4. Run setup scripts
+   ```
+   integration/bin/setup.sh
+   integration/bin/setup_cs.sh
+   ```
+
+## Run
+
+```
+integration/bin/main.sh --mod=c up
+```
+Open browser http://localhost:3050
+
+### Dev modes
+
+frontend in dev mode
+```
+integration/bin/main.sh --mod=fc up
+```
 
 backend in dev mode
-
 ```
-bin/main.sh --mod=b up
-```
-http://localhost:3050
-
-frontend in dev mode
-```
-bin/main.sh --mod=f up
+integration/bin/main.sh --mod=bc up
 ```
 
-frontend,backend in dev mode
-frontend in dev mode
+frontend & backend in dev mode
 ```
-bin/main.sh --mod=bf up
+integration/bin/main.sh --mod=fbc up
 ```
+
+## Deploy
+
+Sandbox
+```
+integration/deploy/sanbox.sh
+```
+Note: .env not copied, 
+bin/setup.sh should be run on server manually 
