@@ -13,8 +13,6 @@
   "author": "",
   "license": "ISC",
   "dependencies": {
-    "@wge/core": "^0.12.0",
-    "@wge/objects-db": "^8.0.9",
     "react": "^18.2.0",
     "react-dom": "^18.2.0"
   },
@@ -24,7 +22,9 @@
     "@typescript-eslint/eslint-plugin": "^6.12.0",
     "@typescript-eslint/parser": "^6.12.0",
     "@vitejs/plugin-react": "^4.0.3",
-    "@wge/industrial-viewer": "^8.0.10",
+    "@wge/core": "^0.12.0",
+    "@wge/industrial-viewer": "^8.0.11",
+    "@wge/objects-db": "^8.0.9",
     "autoprefixer": "^10.4.16",
     "axios": "^1.6.2",
     "eslint": "^8.54.0",
