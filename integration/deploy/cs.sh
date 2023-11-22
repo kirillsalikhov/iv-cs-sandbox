@@ -25,8 +25,8 @@ scp ../bin/setup_cs_prod.sh \
 
 ssh -tt $USER@$HOST << EOF
 cd $REMOTE_PATH/compose
-docker compose -f conversion-service.prod.yml down
-docker compose -f conversion-service.prod.yml pull
+docker compose -f conversion-service.prod.yml -p $PROJECT down
+docker compose -f conversion-service.prod.yml -p $PROJECT pull
 docker compose -f conversion-service.prod.yml -p $PROJECT up -d
 exit
 EOF
