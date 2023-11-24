@@ -36,7 +36,7 @@ exports.seed = async function (knex) {
     ]);
 
     return Promise.all(docsData.map((data) => {
-        const docPromisses = [];
+        const docPromises = [];
 
         const doc = {
             name: data.name,
@@ -47,20 +47,20 @@ exports.seed = async function (knex) {
 
         if (data.ifcFile) {
             doc.source_file = uuid();
-            docPromisses.push(
+            docPromises.push(
                 S3Client.uploadFile(
                     doc.source_file,
                     data.ifcFile));
         }
         if (data.zipFile) {
             doc.view_file = uuid();
-            docPromisses.push(
+            docPromises.push(
                 S3Client.uploadFile(
                     doc.view_file,
                     data.zipFile));
         }
 
-        docPromisses.push(knex('documents').insert(doc));
-        return Promise.all(docPromisses);
+        docPromises.push(knex('documents').insert(doc));
+        return Promise.all(docPromises);
     }));
 };
