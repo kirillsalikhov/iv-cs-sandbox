@@ -19,7 +19,7 @@ x-converter: &converter
     mode: replicated
 services:
   manager:
-    image: docker.webgears3d.com/cs-on-premise/conversion-manager:5.9.4
+    image: docker.webgears3d.com/cs-on-premise/conversion-manager:5.9.7
     restart: on-failure
     depends_on:
       - rabbitmq
@@ -69,36 +69,15 @@ services:
   fbx2gltf:
     <<: *converter
     image: docker.webgears3d.com/cs-on-premise/fbx2gltf:2.1.3-utils3.1.1
-  wg-edge-exporter:
-    <<: *converter
-    image: docker.webgears3d.com/cs-on-premise/wg-edge-exporter:2.1.0-utils3.1.1
-  gltfMerge:
-    <<: *converter
-    image: docker.webgears3d.com/cs-on-premise/gltf_merge:2.1.1-utils3.1.1
-  gltf2glb:
-    <<: *converter
-    image: docker.webgears3d.com/cs-on-premise/gltf2glb:2.1.0-utils3.1.1
-  wgasset2web:
-    <<: *converter
-    image: docker.webgears3d.com/cs-on-premise/wgasset2web:2.1.0-utils3.1.1
-  model2industrial:
-    <<: *converter
-    image: docker.webgears3d.com/cs-on-premise/model2industrial:2.1.0-utils3.1.1
   gltf2wmd:
     <<: *converter
     image: docker.webgears3d.com/cs-on-premise/gltf2wmd:2.4.0-utils3.1.1
   objects2wof:
     <<: *converter
     image: docker.webgears3d.com/cs-on-premise/objects2wof:2.1.2-utils3.1.1
-  project2extras:
-    <<: *converter
-    image: docker.webgears3d.com/cs-on-premise/project2extras:2.1.0-utils3.1.1
   manifest-creator:
     <<: *converter
     image: docker.webgears3d.com/cs-on-premise/manifest-creator:2.1.2-utils3.1.1
-  dwfx2wbp:
-    <<: *converter
-    image: docker.webgears3d.com/cs-on-premise/dwfx2wbp:2.1.0-utils3.1.1
   optimizer:
     <<: *converter
     image: docker.webgears3d.com/cs-on-premise/optimizer:3.1.0-utils3.1.1
@@ -106,15 +85,9 @@ services:
       - type: bind
         source: ./license.lic
         target: /app/autoinstancer/license.lic
-  gltf-exchange-converter:
-    <<: *converter
-    image: docker.webgears3d.com/cs-on-premise/gltf-exchange-converter:2.1.30-utils3.1.1
   post-fbx2gltf:
     <<: *converter
     image: docker.webgears3d.com/cs-on-premise/post-fbx2gltf:3.0.1-utils3.1.1
-  unzip2folder:
-    <<: *converter
-    image: docker.webgears3d.com/cs-on-premise/unzip2folder:2.1.2-utils3.1.1
   ifc_convert:
     <<: *converter
     image: docker.webgears3d.com/cs-on-premise/ifc_convert:1.0.1-utils3.1.1
