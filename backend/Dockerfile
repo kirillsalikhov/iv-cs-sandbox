@@ -9,6 +9,7 @@ RUN mkdir -p /backend/db/data
 WORKDIR /backend
 
 COPY package* ./
+COPY cs-open-api-gen/cs-open-api-* ./cs-open-api-gen/
 RUN npm ci
 
 COPY . .
