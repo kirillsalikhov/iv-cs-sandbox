@@ -1,0 +1,16 @@
+{
+  "name": "cs-open-api-gen",
+  "version": "1.0.0",
+  "description": "Utility scripts for generating open api client for conversion service ",
+  "main": "index.js",
+  "scripts": {
+    "update-cs-client": "npm run generate-ts-client && npm run build-ts-client && npm pack ./ts-client",
+    "generate-ts-client": "openapi-generator-cli generate -i api.json -g typescript-axios -c config.json -o ./ts-client",
+    "build-ts-client": "npm i --userconfig=./.npmrc --prefix ./ts-client"
+  },
+  "author": "",
+  "license": "ISC",
+  "devDependencies": {
+    "@openapitools/openapi-generator-cli": "^2.7.0"
+  }
+}
