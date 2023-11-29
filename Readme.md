@@ -72,3 +72,12 @@ integration/deploy/sanbox.sh
 ```
 Note: .env not copied, 
 bin/setup.sh should be run on server manually 
+
+## Generate Conversion service OpenAPI client 
+
+1. cd backend/cs-open-api-gen
+2. npm ci
+
+For TS ```npm run generate-ts-client```
+
+For PHP ```npm run generate-php-client```
