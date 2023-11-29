@@ -6,7 +6,8 @@
   "scripts": {
     "update-cs-client": "npm run generate-ts-client && npm run build-ts-client && npm pack ./ts-client",
     "generate-ts-client": "openapi-generator-cli generate -i api.json -g typescript-axios -c config.json -o ./ts-client",
-    "build-ts-client": "npm i --userconfig=./.npmrc --prefix ./ts-client"
+    "build-ts-client": "npm i --userconfig=./.npmrc --prefix ./ts-client",
+    "generate-php-client": "openapi-generator-cli generate -i api.json -g php -o ./php-client"
   },
   "author": "",
   "license": "ISC",
