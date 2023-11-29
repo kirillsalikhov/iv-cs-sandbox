@@ -1,26 +1,24 @@
-const axios = require('axios');
-
+const { DefaultApi } = require('cs-open-api');
+const FormData = require('form-data');
 const config = require('../config');
 
 class CSClient {
     constructor(config) {
-        this.client = axios.create({
-            baseURL: config.host
+        this.client = new DefaultApi({
+            basePath: config.host,
+            formDataCtor: FormData // needed for node < 18,
         });
     }
 
     async createConversion(fileUrl, recipe, callback) {
-        const { data } = await this.client.post('/jobs',{
-            input: fileUrl,
-            recipe,
-            callback
-        })
+        const { data } = await this.client.createJob(recipe,fileUrl,callback);
+
         return data;
     }
 
     async getResultZipUrl(jobId){
-        const { data } = await this.client.get(
-            `/jobs/${jobId}/zip?filter=iv`);
+        const { data } = await this.client.jobZip(jobId);
+
         return data[0].url;
     }
 }

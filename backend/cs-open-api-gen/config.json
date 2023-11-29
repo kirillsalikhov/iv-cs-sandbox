@@ -1,5 +1,6 @@
 {
   "npmName": "cs-open-api",
-  "npmVersion": "1.0.0",
-  "withNodeImports": true
+  "npmVersion": "1.0.2",
+  "withNodeImports": true,
+  "supportsES6": true
 }

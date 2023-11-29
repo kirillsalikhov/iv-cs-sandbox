@@ -1,7 +1,7 @@
 {
-    "openapi": "3.0.0",
+    "openapi": "3.1.0",
     "info": {
-    "title": "Conversion service API",
+        "title": "Conversion service API",
         "version": "5.9.4"
     },
     "paths": {
@@ -20,51 +20,16 @@
                                 ],
                                 "properties": {
                                     "recipe": {
-                                        "description": "Name of a conversion recipe",
-                                        "type": "string",
-                                        "example": "fbx2wmd",
-                                        "enum": [
-                                            "fbx2wmd",
-                                            "fbx2wmdOpt",
-                                            "ifc2wmd",
-                                            "ifc2wmdOpt"
-                                        ]
+                                        "$ref": "#/components/schemas/Recipe"
+                                    },
+                                    "callback": {
+                                        "description": "Webhook called after finishing a job",
+                                        "type": "string"
                                     },
                                     "input": {
                                         "description": "Input file",
                                         "type": "string",
                                         "format": "binary"
-                                    },
-                                    "callback": {
-                                        "description": "Webhook called after finishing a job",
-                                        "type": "string"
-                                    }
-                                }
-                            }
-                        },
-                        "application/json": {
-                            "schema": {
-                                "type": "object",
-                                "properties": {
-                                    "recipe": {
-                                        "description": "Name of a conversion recipe",
-                                        "type": "string",
-                                        "example": "fbx2wmd",
-                                        "enum": [
-                                            "fbx2wmd",
-                                            "fbx2wmdOpt",
-                                            "ifc2wmd",
-                                            "ifc2wmdOpt"
-                                        ]
-                                    },
-                                    "input": {
-                                        "description": "Input file",
-                                        "type": "string",
-                                        "example": "https://github.com/KhronosGroup/glTF-Sample-Models/raw/master/sourceModels/Avocado/Avocado.fbx"
-                                    },
-                                    "callback": {
-                                        "description": "Webhook called after finishing a job",
-                                        "type": "string"
                                     }
                                 }
                             }
@@ -93,7 +58,7 @@
         },
         "/jobs/{id}/status": {
             "get": {
-                "operationId": "getJobStatus",
+                "operationId": "jobStatus",
                 "summary": "Get a conversion job status",
                 "parameters": [
                     {
@@ -112,25 +77,7 @@
                         "content": {
                             "application/json": {
                                 "schema": {
-                                    "type": "object",
-                                    "properties": {
-                                        "status": {
-                                            "type": "string",
-                                            "description": "Conversion job status",
-                                            "enum": [
-                                                "pending",
-                                                "working",
-                                                "finished",
-                                                "error",
-                                                "canceled"
-                                            ]
-                                        },
-                                        "progress": {
-                                            "type": "number",
-                                            "minimum": 0,
-                                            "maximum": 1
-                                        }
-                                    }
+                                    "$ref": "#/components/schemas/StatusResponse"
                                 },
                                 "examples": {
                                     "pending": {
@@ -172,8 +119,7 @@
                         "content": {
                             "application/json": {
                                 "schema": {
-                                    "type": "string",
-                                    "example": "job with {id} was not found"
+                                    "$ref": "#/components/schemas/Error404Response"
                                 }
                             }
                         }
@@ -183,7 +129,7 @@
         },
         "/jobs/{id}/files": {
             "get": {
-                "operationId": "getJobResultFiles",
+                "operationId": "jobFiles",
                 "summary": "Get conversion job result files",
                 "parameters": [
                     {
@@ -200,12 +146,7 @@
                         "in": "query",
                         "description": "Filter result files",
                         "schema": {
-                            "type": "string",
-                            "enum": [
-                                "iv",
-                                "gltf",
-                                "attributes"
-                            ]
+                            "$ref": "#/components/schemas/Filter"
                         }
                     }
                 ],
@@ -215,23 +156,7 @@
                         "content": {
                             "application/json": {
                                 "schema": {
-                                    "type": "array",
-                                    "items": {
-                                        "properties": {
-                                            "name": {
-                                                "type": "string",
-                                                "description": "File base name"
-                                            },
-                                            "path": {
-                                                "type": "string",
-                                                "description": "File relative path"
-                                            },
-                                            "url": {
-                                                "type": "string",
-                                                "description": "File URL"
-                                            }
-                                        }
-                                    }
+                                    "$ref": "#/components/schemas/FilesResponse"
                                 },
                                 "examples": {
                                     "files": {
@@ -329,8 +254,7 @@
                         "content": {
                             "application/json": {
                                 "schema": {
-                                    "type": "string",
-                                    "example": "job with {id} was not found"
+                                    "$ref": "#/components/schemas/Error404Response"
                                 }
                             }
                         }
@@ -351,7 +275,7 @@
         },
         "/jobs/{id}/zip": {
             "get": {
-                "operationId": "getJobResultZip",
+                "operationId": "jobZip",
                 "summary": "Get conversion job result files in zip archive",
                 "parameters": [
                     {
@@ -368,13 +292,10 @@
                         "in": "query",
                         "description": "Filter result files",
                         "schema": {
-                            "type": "string",
-                            "default": "iv",
-                            "enum": [
-                                "iv",
-                                "gltf",
-                                "attributes"
-                            ]
+                            "allOf": [{
+                                "$ref": "#/components/schemas/Filter"
+                            }],
+                            "default": "iv"
                         }
                     }
                 ],
@@ -384,34 +305,7 @@
                         "content": {
                             "application/json": {
                                 "schema": {
-                                    "type": "array",
-                                    "items": {
-                                        "properties": {
-                                            "name": {
-                                                "type": "string",
-                                                "description": "File base name"
-                                            },
-                                            "path": {
-                                                "type": "string",
-                                                "description": "File relative path"
-                                            },
-                                            "url": {
-                                                "type": "string",
-                                                "description": "File URL"
-                                            }
-                                        }
-                                    }
-                                },
-                                "examples": {
-                                    "files": {
-                                        "value": [
-                                            {
-                                                "name": "model.zip",
-                                                "path": "job-6fd39de0-2c2e-11ec-a2ac-699b0cf3defa/_job_output/model.zip",
-                                                "url": "http://{HOST}/wg-bucket/job-6fd39de0-2c2e-11ec-a2ac-699b0cf3defa/_job_output/model.zip?X-Amz-Algorithm=AWS4-HMAC-SHA256&X-Amz-Credential=minioadmin%2F20211013%2Fus-east-2%2Fs3%2Faws4_request&X-Amz-Date=20211013T140445Z&X-Amz-Expires=604800&X-Amz-SignedHeaders=host&X-Amz-Signature=1b351298b383519628a72dfb089ca07a5f922f37f38a715249f2238d34d91e2a"
-                                            }
-                                        ]
-                                    }
+                                    "$ref": "#/components/schemas/FilesResponse"
                                 }
                             }
                         }
@@ -421,8 +315,7 @@
                         "content": {
                             "application/json": {
                                 "schema": {
-                                    "type": "string",
-                                    "example": "job with {id} was not found"
+                                    "$ref": "#/components/schemas/Error404Response"
                                 }
                             }
                         }
@@ -443,7 +336,7 @@
         },
         "/jobs/{id}/logs": {
             "get": {
-                "operationId": "getJobLogs",
+                "operationId": "jobLogs",
                 "summary": "Get conversion job logs",
                 "parameters": [
                     {
@@ -461,156 +354,8 @@
                         "description": "200 response",
                         "content": {
                             "application/json": {
-                                "examples": {
-                                    "logs": {
-                                        "value": {
-                                            "id": "6fd39de0-2c2e-11ec-a2ac-699b0cf3defa",
-                                            "logs": [
-                                                {
-                                                    "inputLogs": [
-                                                        {
-                                                            "input": {
-                                                                "files": {
-                                                                    "model": "job-6fd39de0-2c2e-11ec-a2ac-699b0cf3defa/_job_input/06df6afe-b8b1-4fb5-9d18-e0a54a029ab9.stp"
-                                                                },
-                                                                "options": {
-                                                                    "angleToleranceDeg": 20,
-                                                                    "chordHeightRatio": 1000,
-                                                                    "up-direction": "z",
-                                                                    "left-direction": "x",
-                                                                    "read-hidden-objects": false,
-                                                                    "read-active-filter": false,
-                                                                    "compute-physical-properties": false,
-                                                                    "sew": false,
-                                                                    "sew-tolerance": 0.001
-                                                                }
-                                                            },
-                                                            "output": {
-                                                                "gltfFolder": "job-6fd39de0-2c2e-11ec-a2ac-699b0cf3defa/gltf-exchange-converter/98581106-4c52-4092-8b56-62d24be35f3d",
-                                                                "objects": "job-6fd39de0-2c2e-11ec-a2ac-699b0cf3defa/gltf-exchange-converter/ddb4cb3c-6c38-4671-99ff-f1b43ba4c33b.json"
-                                                            },
-                                                            "code": 0,
-                                                            "logs": {
-                                                                "stdout": "...",
-                                                                "stderr": ""
-                                                            }
-                                                        }
-                                                    ],
-                                                    "task": {
-                                                        "name": "gltf-exchange-converter",
-                                                        "status": "finished",
-                                                        "version": "2.1.30"
-                                                    }
-                                                },
-                                                {
-                                                    "inputLogs": [
-                                                        {
-                                                            "input": {
-                                                                "files": {
-                                                                    "input": "job-6fd39de0-2c2e-11ec-a2ac-699b0cf3defa/gltf-exchange-converter/98581106-4c52-4092-8b56-62d24be35f3d"
-                                                                },
-                                                                "options": {
-                                                                    "v": "0.015",
-                                                                    "d": "0.015"
-                                                                }
-                                                            },
-                                                            "output": {
-                                                                "gltf": "job-6fd39de0-2c2e-11ec-a2ac-699b0cf3defa/optimizer/9c45363d-48fd-4b59-883a-cbfde8b91f52"
-                                                            },
-                                                            "code": 0,
-                                                            "logs": {
-                                                                "stdout": "...",
-                                                                "stderr": "..."
-                                                            }
-                                                        }
-                                                    ],
-                                                    "task": {
-                                                        "name": "optimizer",
-                                                        "status": "finished",
-                                                        "version": "2.1.6"
-                                                    }
-                                                },
-                                                {
-                                                    "inputLogs": [
-                                                        {
-                                                            "input": {
-                                                                "files": {
-                                                                    "gltf": "job-6fd39de0-2c2e-11ec-a2ac-699b0cf3defa/optimizer/9c45363d-48fd-4b59-883a-cbfde8b91f52"
-                                                                },
-                                                                "options": {
-                                                                    "size": 8
-                                                                }
-                                                            },
-                                                            "output": {
-                                                                "output": "job-6fd39de0-2c2e-11ec-a2ac-699b0cf3defa/gltf2wmd/964cd14a-5126-4d7a-bc6c-89a90e4f70c3"
-                                                            },
-                                                            "code": 0,
-                                                            "logs": {
-                                                                "stdout": "...",
-                                                                "stderr": ""
-                                                            }
-                                                        }
-                                                    ],
-                                                    "task": {
-                                                        "name": "gltf2wmd",
-                                                        "status": "finished",
-                                                        "version": "2.1.4"
-                                                    }
-                                                },
-                                                {
-                                                    "inputLogs": [
-                                                        {
-                                                            "input": {
-                                                                "files": {
-                                                                    "objects": "job-6fd39de0-2c2e-11ec-a2ac-699b0cf3defa/gltf-exchange-converter/98581106-4c52-4092-8b56-62d24be35f3d/objects.json"
-                                                                },
-                                                                "options": {}
-                                                            },
-                                                            "output": {
-                                                                "wof": "job-6fd39de0-2c2e-11ec-a2ac-699b0cf3defa/objects2wof/25467203-e76c-40e1-ab70-d1c4319e8115.wof"
-                                                            },
-                                                            "code": 0,
-                                                            "logs": {
-                                                                "stdout": "",
-                                                                "stderr": ""
-                                                            }
-                                                        }
-                                                    ],
-                                                    "task": {
-                                                        "name": "objects2wof",
-                                                        "status": "finished",
-                                                        "version": "2.1.0"
-                                                    }
-                                                },
-                                                {
-                                                    "inputLogs": [
-                                                        {
-                                                            "input": {
-                                                                "files": {
-                                                                    "input": "job-6fd39de0-2c2e-11ec-a2ac-699b0cf3defa/gltf2wmd/964cd14a-5126-4d7a-bc6c-89a90e4f70c3",
-                                                                    "objects": "job-6fd39de0-2c2e-11ec-a2ac-699b0cf3defa/objects2wof/25467203-e76c-40e1-ab70-d1c4319e8115.wof"
-                                                                },
-                                                                "options": {}
-                                                            },
-                                                            "output": {
-                                                                "output": "job-6fd39de0-2c2e-11ec-a2ac-699b0cf3defa/manifest-creator/9120cca7-3daa-4068-a81a-dfa72f5096f1"
-                                                            },
-                                                            "code": 0,
-                                                            "logs": {
-                                                                "stdout": "",
-                                                                "stderr": ""
-                                                            }
-                                                        }
-                                                    ],
-                                                    "task": {
-                                                        "name": "manifest-creator",
-                                                        "status": "finished",
-                                                        "version": "2.1.2"
-                                                    }
-                                                }
-                                            ]
-                                        }
-                                    }
+                                "schema": {
+                                    "$ref": "#/components/schemas/LogsResponse"
                                 }
                             }
                         }
@@ -620,8 +365,7 @@
                         "content": {
                             "application/json": {
                                 "schema": {
-                                    "type": "string",
-                                    "example": "job with {id} was not found"
+                                    "$ref": "#/components/schemas/Error404Response"
                                 }
                             }
                         }
@@ -653,7 +397,7 @@
                                     "type": "object",
                                     "properties": {
                                         "id": {
-                                            "description": "ID of the created job",
+                                            "description": "ID of the canceled job",
                                             "type": "string"
                                         }
                                     }
@@ -666,8 +410,7 @@
                         "content": {
                             "application/json": {
                                 "schema": {
-                                    "type": "string",
-                                    "example": "job with {id} was not found"
+                                    "$ref": "#/components/schemas/Error404Response"
                                 }
                             }
                         }
@@ -678,12 +421,327 @@
                             "application/json": {
                                 "schema": {
                                     "type": "string",
-                                    "example": "error retrieving file list"
+                                    "example": "error canceling the job"
                                 }
                             }
                         }
                     }
                 }
+            }
+        }
+    },
+    "components": {
+        "schemas": {
+            "StatusResponse": {
+                "type": "object",
+                "properties": {
+                    "status": {
+                        "$ref": "#/components/schemas/Status"
+                    },
+                    "progress": {
+                        "type": "number",
+                        "minimum": 0,
+                        "maximum": 1
+                    }
+                }
+            },
+            "FilesResponse": {
+                "type": "array",
+                "items": {
+                    "properties": {
+                        "name": {
+                            "type": "string",
+                            "description": "File base name"
+                        },
+                        "path": {
+                            "type": "string",
+                            "description": "File relative path"
+                        },
+                        "url": {
+                            "type": "string",
+                            "description": "File URL"
+                        }
+                    }
+                },
+                "example": [
+                    {
+                        "name": "model.zip",
+                        "path": "job-6fd39de0-2c2e-11ec-a2ac-699b0cf3defa/_job_output/model.zip",
+                        "url": "http://{HOST}/wg-bucket/job-6fd39de0-2c2e-11ec-a2ac-699b0cf3defa/_job_output/model.zip?X-Amz-Algorithm=AWS4-HMAC-SHA256&X-Amz-Credential=minioadmin%2F20211013%2Fus-east-2%2Fs3%2Faws4_request&X-Amz-Date=20211013T140445Z&X-Amz-Expires=604800&X-Amz-SignedHeaders=host&X-Amz-Signature=1b351298b383519628a72dfb089ca07a5f922f37f38a715249f2238d34d91e2a"
+                    }
+                ]
+            },
+            "LogsResponse": {
+                "type": "object",
+                "properties": {
+                    "id": {
+                        "type": "string",
+                        "description": "The job ID"
+                    },
+                    "logs": {
+                        "type": "array",
+                        "description": "The job tasks logs",
+                        "items": {
+                            "$ref": "#/components/schemas/TaskLogs"
+                        }
+                    }
+                },
+                "example": {
+                    "id": "6fd39de0-2c2e-11ec-a2ac-699b0cf3defa",
+                    "logs": [
+                        {
+                            "inputLogs": [
+                                {
+                                    "input": {
+                                        "files": {
+                                            "model": "job-6fd39de0-2c2e-11ec-a2ac-699b0cf3defa/_job_input/06df6afe-b8b1-4fb5-9d18-e0a54a029ab9.stp"
+                                        },
+                                        "options": {
+                                            "angleToleranceDeg": 20,
+                                            "chordHeightRatio": 1000,
+                                            "up-direction": "z",
+                                            "left-direction": "x",
+                                            "read-hidden-objects": false,
+                                            "read-active-filter": false,
+                                            "compute-physical-properties": false,
+                                            "sew": false,
+                                            "sew-tolerance": 0.001
+                                        }
+                                    },
+                                    "output": {
+                                        "gltfFolder": "job-6fd39de0-2c2e-11ec-a2ac-699b0cf3defa/gltf-exchange-converter/98581106-4c52-4092-8b56-62d24be35f3d",
+                                        "objects": "job-6fd39de0-2c2e-11ec-a2ac-699b0cf3defa/gltf-exchange-converter/ddb4cb3c-6c38-4671-99ff-f1b43ba4c33b.json"
+                                    },
+                                    "code": 0,
+                                    "logs": {
+                                        "stdout": "...",
+                                        "stderr": ""
+                                    }
+                                }
+                            ],
+                            "task": {
+                                "name": "gltf-exchange-converter",
+                                "status": "finished",
+                                "version": "2.1.30"
+                            }
+                        },
+                        {
+                            "inputLogs": [
+                                {
+                                    "input": {
+                                        "files": {
+                                            "input": "job-6fd39de0-2c2e-11ec-a2ac-699b0cf3defa/gltf-exchange-converter/98581106-4c52-4092-8b56-62d24be35f3d"
+                                        },
+                                        "options": {
+                                            "v": "0.015",
+                                            "d": "0.015"
+                                        }
+                                    },
+                                    "output": {
+                                        "gltf": "job-6fd39de0-2c2e-11ec-a2ac-699b0cf3defa/optimizer/9c45363d-48fd-4b59-883a-cbfde8b91f52"
+                                    },
+                                    "code": 0,
+                                    "logs": {
+                                        "stdout": "...",
+                                        "stderr": "..."
+                                    }
+                                }
+                            ],
+                            "task": {
+                                "name": "optimizer",
+                                "status": "finished",
+                                "version": "2.1.6"
+                            }
+                        },
+                        {
+                            "inputLogs": [
+                                {
+                                    "input": {
+                                        "files": {
+                                            "gltf": "job-6fd39de0-2c2e-11ec-a2ac-699b0cf3defa/optimizer/9c45363d-48fd-4b59-883a-cbfde8b91f52"
+                                        },
+                                        "options": {
+                                            "size": 8
+                                        }
+                                    },
+                                    "output": {
+                                        "output": "job-6fd39de0-2c2e-11ec-a2ac-699b0cf3defa/gltf2wmd/964cd14a-5126-4d7a-bc6c-89a90e4f70c3"
+                                    },
+                                    "code": 0,
+                                    "logs": {
+                                        "stdout": "...",
+                                        "stderr": ""
+                                    }
+                                }
+                            ],
+                            "task": {
+                                "name": "gltf2wmd",
+                                "status": "finished",
+                                "version": "2.1.4"
+                            }
+                        },
+                        {
+                            "inputLogs": [
+                                {
+                                    "input": {
+                                        "files": {
+                                            "objects": "job-6fd39de0-2c2e-11ec-a2ac-699b0cf3defa/gltf-exchange-converter/98581106-4c52-4092-8b56-62d24be35f3d/objects.json"
+                                        },
+                                        "options": {}
+                                    },
+                                    "output": {
+                                        "wof": "job-6fd39de0-2c2e-11ec-a2ac-699b0cf3defa/objects2wof/25467203-e76c-40e1-ab70-d1c4319e8115.wof"
+                                    },
+                                    "code": 0,
+                                    "logs": {
+                                        "stdout": "",
+                                        "stderr": ""
+                                    }
+                                }
+                            ],
+                            "task": {
+                                "name": "objects2wof",
+                                "status": "finished",
+                                "version": "2.1.0"
+                            }
+                        },
+                        {
+                            "inputLogs": [
+                                {
+                                    "input": {
+                                        "files": {
+                                            "input": "job-6fd39de0-2c2e-11ec-a2ac-699b0cf3defa/gltf2wmd/964cd14a-5126-4d7a-bc6c-89a90e4f70c3",
+                                            "objects": "job-6fd39de0-2c2e-11ec-a2ac-699b0cf3defa/objects2wof/25467203-e76c-40e1-ab70-d1c4319e8115.wof"
+                                        },
+                                        "options": {}
+                                    },
+                                    "output": {
+                                        "output": "job-6fd39de0-2c2e-11ec-a2ac-699b0cf3defa/manifest-creator/9120cca7-3daa-4068-a81a-dfa72f5096f1"
+                                    },
+                                    "code": 0,
+                                    "logs": {
+                                        "stdout": "",
+                                        "stderr": ""
+                                    }
+                                }
+                            ],
+                            "task": {
+                                "name": "manifest-creator",
+                                "status": "finished",
+                                "version": "2.1.2"
+                            }
+                        }
+                    ]
+                }
+            },
+            "TaskLogs": {
+                "type": "object",
+                "description": "Task logs",
+                "properties": {
+                    "inputLogs": {
+                        "type": "array",
+                        "description": "Job input parameters",
+                        "items": {
+                            "$ref": "#/components/schemas/InputLogs"
+                        }
+                    },
+                    "task": {
+                        "type": "object",
+                        "description": "Conversion task info",
+                        "properties": {
+                            "name": {
+                                "type": "string",
+                                "description": "Conversion task name",
+                                "example": "gltf-exchange-converter"
+                            },
+                            "status": {
+                                "type": "string",
+                                "description": "Conversion task status",
+                                "enum": [
+                                    "pending",
+                                    "working",
+                                    "finished",
+                                    "error",
+                                    "canceled"
+                                ],
+                                "example": "finished"
+                            },
+                            "version": {
+                                "type": "string",
+                                "description": "Converter version",
+                                "example": "2.1.30"
+                            }
+                        }
+                    }
+                }
+            },
+            "InputLogs": {
+                "type": "object",
+                "properties": {
+                    "input": {
+                        "type": "object",
+                        "description": "Conversion job input parameters",
+                        "properties": {
+                            "files": {
+                                "type": "object"
+                            },
+                            "options": {
+                                "type": "object"
+                            }
+                        }
+                    },
+                    "output": {
+                        "type": "object",
+                        "description": "Conversion job output parameters"
+                    },
+                    "code": {
+                        "type": "integer",
+                        "description": "Process exit code"
+                    },
+                    "logs": {
+                        "type": "object",
+                        "properties": {
+                            "stdout": {
+                                "type": "string",
+                                "description": "Runtime logs from stdout"
+                            },
+                            "stderr": {
+                                "type": "string",
+                                "description": "Runtime logs from stderr"
+                            }
+                        }
+                    }
+                }
+            },
+            "Error404Response": {
+                "type": "string",
+                "description": "404 status response",
+                "example": "job with {id} was not found"
+            },
+            "Filter": {
+                "type": "string",
+                "description": "File filter",
+                "enum": [
+                    "iv",
+                    "gltf",
+                    "attributes"
+                ]
+            },
+            "Recipe": {
+                "description": "Name of a conversion recipe",
+                "type": "string",
+                "example": "fbx2wmd"
+            },
+            "Status": {
+                "type": "string",
+                "description": "Conversion job status",
+                "enum": [
+                    "pending",
+                    "working",
+                    "finished",
+                    "error",
+                    "canceled"
+                ]
             }
         }
     }
