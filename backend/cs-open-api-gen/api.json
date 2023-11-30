@@ -1,748 +1,777 @@
 {
-    "openapi": "3.1.0",
-    "info": {
-        "title": "Conversion service API",
-        "version": "5.9.4"
-    },
-    "paths": {
-        "/jobs": {
-            "post": {
-                "operationId": "createJob",
-                "summary": "Create one conversion job",
-                "requestBody": {
-                    "content": {
-                        "multipart/form-data": {
-                            "schema": {
-                                "type": "object",
-                                "required": [
-                                    "recipe",
-                                    "input"
-                                ],
-                                "properties": {
-                                    "recipe": {
-                                        "$ref": "#/components/schemas/Recipe"
-                                    },
-                                    "callback": {
-                                        "description": "Webhook called after finishing a job",
-                                        "type": "string"
-                                    },
-                                    "input": {
-                                        "description": "Input file",
-                                        "type": "string",
-                                        "format": "binary"
-                                    }
-                                }
-                            }
-                        }
-                    }
-                },
-                "responses": {
-                    "200": {
-                        "description": "200 response",
-                        "content": {
-                            "application/json": {
-                                "schema": {
-                                    "type": "object",
-                                    "properties": {
-                                        "id": {
-                                            "description": "ID of the created job",
-                                            "type": "string"
-                                        }
-                                    }
-                                }
-                            }
-                        }
-                    }
-                }
-            }
-        },
-        "/jobs/{id}/status": {
-            "get": {
-                "operationId": "jobStatus",
-                "summary": "Get a conversion job status",
-                "parameters": [
-                    {
-                        "name": "id",
-                        "in": "path",
-                        "description": "ID of a conversion job",
-                        "required": true,
-                        "schema": {
-                            "type": "string"
-                        }
-                    }
-                ],
-                "responses": {
-                    "200": {
-                        "description": "200 response",
-                        "content": {
-                            "application/json": {
-                                "schema": {
-                                    "$ref": "#/components/schemas/StatusResponse"
-                                },
-                                "examples": {
-                                    "pending": {
-                                        "value": {
-                                            "status": "pending",
-                                            "progress": 0
-                                        }
-                                    },
-                                    "working": {
-                                        "value": {
-                                            "status": "working",
-                                            "progress": 0.87
-                                        }
-                                    },
-                                    "finished": {
-                                        "value": {
-                                            "status": "finished",
-                                            "progress": 1
-                                        }
-                                    },
-                                    "error": {
-                                        "value": {
-                                            "status": "error",
-                                            "progress": 0.66
-                                        }
-                                    },
-                                    "canceled": {
-                                        "value": {
-                                            "status": "canceled",
-                                            "progress": 0.66
-                                        }
-                                    }
-                                }
-                            }
-                        }
-                    },
-                    "404": {
-                        "description": "404 response",
-                        "content": {
-                            "application/json": {
-                                "schema": {
-                                    "$ref": "#/components/schemas/Error404Response"
-                                }
-                            }
-                        }
-                    }
-                }
-            }
-        },
-        "/jobs/{id}/files": {
-            "get": {
-                "operationId": "jobFiles",
-                "summary": "Get conversion job result files",
-                "parameters": [
-                    {
-                        "name": "id",
-                        "in": "path",
-                        "description": "ID of a conversion job",
-                        "required": true,
-                        "schema": {
-                            "type": "string"
-                        }
-                    },
-                    {
-                        "name": "filter",
-                        "in": "query",
-                        "description": "Filter result files",
-                        "schema": {
-                            "$ref": "#/components/schemas/Filter"
-                        }
-                    }
-                ],
-                "responses": {
-                    "200": {
-                        "description": "200 response",
-                        "content": {
-                            "application/json": {
-                                "schema": {
-                                    "$ref": "#/components/schemas/FilesResponse"
-                                },
-                                "examples": {
-                                    "files": {
-                                        "value": [
-                                            {
-                                                "name": "buffer.bin",
-                                                "path": "job-6fd39de0-2c2e-11ec-a2ac-699b0cf3defa/_job_output/buffer.bin",
-                                                "url": "http://{HOST}/wg-bucket/job-6fd39de0-2c2e-11ec-a2ac-699b0cf3defa/_job_output/buffer.bin?X-Amz-Algorithm=AWS4-HMAC-SHA256&X-Amz-Credential=minioadmin%2F20211013%2Fus-east-2%2Fs3%2Faws4_request&X-Amz-Date=20211013T140445Z&X-Amz-Expires=604800&X-Amz-SignedHeaders=host&X-Amz-Signature=1b351298b383519628a72dfb089ca07a5f922f37f38a715249f2238d34d91e2a"
-                                            },
-                                            {
-                                                "name": "manifest.json",
-                                                "path": "job-6fd39de0-2c2e-11ec-a2ac-699b0cf3defa/_job_output/manifest.json",
-                                                "url": "http://{HOST}/wg-bucket/job-6fd39de0-2c2e-11ec-a2ac-699b0cf3defa/_job_output/manifest.json?X-Amz-Algorithm=AWS4-HMAC-SHA256&X-Amz-Credential=minioadmin%2F20211013%2Fus-east-2%2Fs3%2Faws4_request&X-Amz-Date=20211013T140445Z&X-Amz-Expires=604800&X-Amz-SignedHeaders=host&X-Amz-Signature=aa2a16767322e7f0e573ba9fffcacfc60e45c5f3ba4ad17ae64343c4fefd493c"
-                                            },
-                                            {
-                                                "name": "model.gltf",
-                                                "path": "job-6fd39de0-2c2e-11ec-a2ac-699b0cf3defa/_job_output/model.gltf",
-                                                "url": "http://{HOST}/wg-bucket/job-6fd39de0-2c2e-11ec-a2ac-699b0cf3defa/_job_output/model.gltf?X-Amz-Algorithm=AWS4-HMAC-SHA256&X-Amz-Credential=minioadmin%2F20211013%2Fus-east-2%2Fs3%2Faws4_request&X-Amz-Date=20211013T140445Z&X-Amz-Expires=604800&X-Amz-SignedHeaders=host&X-Amz-Signature=73ffad83399c8ef7f48e1c900db918896ccb723b45f3b746a7c152c354261978"
-                                            },
-                                            {
-                                                "name": "model.wmd",
-                                                "path": "job-6fd39de0-2c2e-11ec-a2ac-699b0cf3defa/_job_output/model.wmd",
-                                                "url": "http://{HOST}/wg-bucket/job-6fd39de0-2c2e-11ec-a2ac-699b0cf3defa/_job_output/model.wmd?X-Amz-Algorithm=AWS4-HMAC-SHA256&X-Amz-Credential=minioadmin%2F20211013%2Fus-east-2%2Fs3%2Faws4_request&X-Amz-Date=20211013T140445Z&X-Amz-Expires=604800&X-Amz-SignedHeaders=host&X-Amz-Signature=08addcecabe5da1051525dfa5e035d7a50e2e4b0aed1a5da3943c24a80f5a184"
-                                            },
-                                            {
-                                                "name": "objects.json",
-                                                "path": "job-6fd39de0-2c2e-11ec-a2ac-699b0cf3defa/_job_output/objects.json",
-                                                "url": "http://{HOST}/wg-bucket/job-6fd39de0-2c2e-11ec-a2ac-699b0cf3defa/_job_output/objects.json?X-Amz-Algorithm=AWS4-HMAC-SHA256&X-Amz-Credential=minioadmin%2F20211013%2Fus-east-2%2Fs3%2Faws4_request&X-Amz-Date=20211013T140445Z&X-Amz-Expires=604800&X-Amz-SignedHeaders=host&X-Amz-Signature=a074d710018406fd3bd63b4614e69c59120f64a62e09a45be8f584bff34a0c4a"
-                                            },
-                                            {
-                                                "name": "objects.wof",
-                                                "path": "job-6fd39de0-2c2e-11ec-a2ac-699b0cf3defa/_job_output/objects.wof",
-                                                "url": "http://{HOST}/wg-bucket/job-6fd39de0-2c2e-11ec-a2ac-699b0cf3defa/_job_output/objects.wof?X-Amz-Algorithm=AWS4-HMAC-SHA256&X-Amz-Credential=minioadmin%2F20211013%2Fus-east-2%2Fs3%2Faws4_request&X-Amz-Date=20211013T140445Z&X-Amz-Expires=604800&X-Amz-SignedHeaders=host&X-Amz-Signature=a92fd56729b1bf51fe9a55f093b5a9b4f2bb1fcacca1a40b41e4f6899b02ab09"
-                                            }
-                                        ]
-                                    },
-                                    "filter=iv": {
-                                        "value": [
-                                            {
-                                                "name": "manifest.json",
-                                                "path": "job-6fd39de0-2c2e-11ec-a2ac-699b0cf3defa/_job_output/manifest.json",
-                                                "url": "http://{HOST}/wg-bucket/job-6fd39de0-2c2e-11ec-a2ac-699b0cf3defa/_job_output/manifest.json?X-Amz-Algorithm=AWS4-HMAC-SHA256&X-Amz-Credential=minioadmin%2F20211013%2Fus-east-2%2Fs3%2Faws4_request&X-Amz-Date=20211013T140445Z&X-Amz-Expires=604800&X-Amz-SignedHeaders=host&X-Amz-Signature=aa2a16767322e7f0e573ba9fffcacfc60e45c5f3ba4ad17ae64343c4fefd493c"
-                                            },
-                                            {
-                                                "name": "model.wmd",
-                                                "path": "job-6fd39de0-2c2e-11ec-a2ac-699b0cf3defa/_job_output/model.wmd",
-                                                "url": "http://{HOST}/wg-bucket/job-6fd39de0-2c2e-11ec-a2ac-699b0cf3defa/_job_output/model.wmd?X-Amz-Algorithm=AWS4-HMAC-SHA256&X-Amz-Credential=minioadmin%2F20211013%2Fus-east-2%2Fs3%2Faws4_request&X-Amz-Date=20211013T140445Z&X-Amz-Expires=604800&X-Amz-SignedHeaders=host&X-Amz-Signature=08addcecabe5da1051525dfa5e035d7a50e2e4b0aed1a5da3943c24a80f5a184"
-                                            },
-                                            {
-                                                "name": "objects.wof",
-                                                "path": "job-6fd39de0-2c2e-11ec-a2ac-699b0cf3defa/_job_output/objects.wof",
-                                                "url": "http://{HOST}/wg-bucket/job-6fd39de0-2c2e-11ec-a2ac-699b0cf3defa/_job_output/objects.wof?X-Amz-Algorithm=AWS4-HMAC-SHA256&X-Amz-Credential=minioadmin%2F20211013%2Fus-east-2%2Fs3%2Faws4_request&X-Amz-Date=20211013T140445Z&X-Amz-Expires=604800&X-Amz-SignedHeaders=host&X-Amz-Signature=a92fd56729b1bf51fe9a55f093b5a9b4f2bb1fcacca1a40b41e4f6899b02ab09"
-                                            }
-                                        ]
-                                    },
-                                    "filter=gltf": {
-                                        "value": [
-                                            {
-                                                "name": "buffer.bin",
-                                                "path": "job-6fd39de0-2c2e-11ec-a2ac-699b0cf3defa/_job_output/buffer.bin",
-                                                "url": "http://$HOST/wg-bucket/job-6fd39de0-2c2e-11ec-a2ac-699b0cf3defa/_job_output/buffer.bin?X-Amz-Algorithm=AWS4-HMAC-SHA256&X-Amz-Credential=minioadmin%2F20211013%2Fus-east-2%2Fs3%2Faws4_request&X-Amz-Date=20211013T140445Z&X-Amz-Expires=604800&X-Amz-SignedHeaders=host&X-Amz-Signature=1b351298b383519628a72dfb089ca07a5f922f37f38a715249f2238d34d91e2a"
-                                            },
-                                            {
-                                                "name": "manifest.json",
-                                                "path": "job-6fd39de0-2c2e-11ec-a2ac-699b0cf3defa/_job_output/manifest.json",
-                                                "url": "http://$HOST/wg-bucket/job-6fd39de0-2c2e-11ec-a2ac-699b0cf3defa/_job_output/manifest.json?X-Amz-Algorithm=AWS4-HMAC-SHA256&X-Amz-Credential=minioadmin%2F20211013%2Fus-east-2%2Fs3%2Faws4_request&X-Amz-Date=20211013T140445Z&X-Amz-Expires=604800&X-Amz-SignedHeaders=host&X-Amz-Signature=aa2a16767322e7f0e573ba9fffcacfc60e45c5f3ba4ad17ae64343c4fefd493c"
-                                            },
-                                            {
-                                                "name": "model.gltf",
-                                                "path": "job-6fd39de0-2c2e-11ec-a2ac-699b0cf3defa/_job_output/model.gltf",
-                                                "url": "http://$HOST/wg-bucket/job-6fd39de0-2c2e-11ec-a2ac-699b0cf3defa/_job_output/model.gltf?X-Amz-Algorithm=AWS4-HMAC-SHA256&X-Amz-Credential=minioadmin%2F20211013%2Fus-east-2%2Fs3%2Faws4_request&X-Amz-Date=20211013T140445Z&X-Amz-Expires=604800&X-Amz-SignedHeaders=host&X-Amz-Signature=73ffad83399c8ef7f48e1c900db918896ccb723b45f3b746a7c152c354261978"
-                                            },
-                                            {
-                                                "name": "objects.json",
-                                                "path": "job-6fd39de0-2c2e-11ec-a2ac-699b0cf3defa/_job_output/objects.json",
-                                                "url": "http://$HOST/wg-bucket/job-6fd39de0-2c2e-11ec-a2ac-699b0cf3defa/_job_output/objects.json?X-Amz-Algorithm=AWS4-HMAC-SHA256&X-Amz-Credential=minioadmin%2F20211013%2Fus-east-2%2Fs3%2Faws4_request&X-Amz-Date=20211013T140445Z&X-Amz-Expires=604800&X-Amz-SignedHeaders=host&X-Amz-Signature=a074d710018406fd3bd63b4614e69c59120f64a62e09a45be8f584bff34a0c4a"
-                                            }
-                                        ]
-                                    },
-                                    "filter=attributes": {
-                                        "value": [
-                                            {
-                                                "name": "objects.json",
-                                                "path": "job-6fd39de0-2c2e-11ec-a2ac-699b0cf3defa/_job_output/objects.json",
-                                                "url": "http://$HOST/wg-bucket/job-6fd39de0-2c2e-11ec-a2ac-699b0cf3defa/_job_output/objects.json?X-Amz-Algorithm=AWS4-HMAC-SHA256&X-Amz-Credential=minioadmin%2F20211013%2Fus-east-2%2Fs3%2Faws4_request&X-Amz-Date=20211013T140445Z&X-Amz-Expires=604800&X-Amz-SignedHeaders=host&X-Amz-Signature=a074d710018406fd3bd63b4614e69c59120f64a62e09a45be8f584bff34a0c4a"
-                                            }
-                                        ]
-                                    }
-                                }
-                            }
-                        }
-                    },
-                    "404": {
-                        "description": "404 response",
-                        "content": {
-                            "application/json": {
-                                "schema": {
-                                    "$ref": "#/components/schemas/Error404Response"
-                                }
-                            }
-                        }
-                    },
-                    "500": {
-                        "description": "500 response",
-                        "content": {
-                            "application/json": {
-                                "schema": {
-                                    "type": "string",
-                                    "example": "error retrieving file list"
-                                }
-                            }
-                        }
-                    }
-                }
-            }
-        },
-        "/jobs/{id}/zip": {
-            "get": {
-                "operationId": "jobZip",
-                "summary": "Get conversion job result files in zip archive",
-                "parameters": [
-                    {
-                        "name": "id",
-                        "in": "path",
-                        "description": "ID of a conversion job",
-                        "required": true,
-                        "schema": {
-                            "type": "string"
-                        }
-                    },
-                    {
-                        "name": "filter",
-                        "in": "query",
-                        "description": "Filter result files",
-                        "schema": {
-                            "allOf": [{
-                                "$ref": "#/components/schemas/Filter"
-                            }],
-                            "default": "iv"
-                        }
-                    }
-                ],
-                "responses": {
-                    "200": {
-                        "description": "200 response",
-                        "content": {
-                            "application/json": {
-                                "schema": {
-                                    "$ref": "#/components/schemas/FilesResponse"
-                                }
-                            }
-                        }
-                    },
-                    "404": {
-                        "description": "404 response",
-                        "content": {
-                            "application/json": {
-                                "schema": {
-                                    "$ref": "#/components/schemas/Error404Response"
-                                }
-                            }
-                        }
-                    },
-                    "500": {
-                        "description": "500 response",
-                        "content": {
-                            "application/json": {
-                                "schema": {
-                                    "type": "string",
-                                    "example": "error retrieving file list"
-                                }
-                            }
-                        }
-                    }
-                }
-            }
-        },
-        "/jobs/{id}/logs": {
-            "get": {
-                "operationId": "jobLogs",
-                "summary": "Get conversion job logs",
-                "parameters": [
-                    {
-                        "name": "id",
-                        "in": "path",
-                        "description": "ID of a conversion job",
-                        "required": true,
-                        "schema": {
-                            "type": "string"
-                        }
-                    }
-                ],
-                "responses": {
-                    "200": {
-                        "description": "200 response",
-                        "content": {
-                            "application/json": {
-                                "schema": {
-                                    "$ref": "#/components/schemas/LogsResponse"
-                                }
-                            }
-                        }
-                    },
-                    "404": {
-                        "description": "404 response",
-                        "content": {
-                            "application/json": {
-                                "schema": {
-                                    "$ref": "#/components/schemas/Error404Response"
-                                }
-                            }
-                        }
-                    }
-                }
-            }
-        },
-        "/jobs/{id}/cancel": {
-            "get": {
-                "operationId": "cancelJob",
-                "summary": "Cancel conversion job",
-                "parameters": [
-                    {
-                        "name": "id",
-                        "in": "path",
-                        "description": "ID of a conversion job",
-                        "required": true,
-                        "schema": {
-                            "type": "string"
-                        }
-                    }
-                ],
-                "responses": {
-                    "200": {
-                        "description": "200 response",
-                        "content": {
-                            "application/json": {
-                                "schema": {
-                                    "type": "object",
-                                    "properties": {
-                                        "id": {
-                                            "description": "ID of the canceled job",
-                                            "type": "string"
-                                        }
-                                    }
-                                }
-                            }
-                        }
-                    },
-                    "404": {
-                        "description": "404 response",
-                        "content": {
-                            "application/json": {
-                                "schema": {
-                                    "$ref": "#/components/schemas/Error404Response"
-                                }
-                            }
-                        }
-                    },
-                    "500": {
-                        "description": "500 response",
-                        "content": {
-                            "application/json": {
-                                "schema": {
-                                    "type": "string",
-                                    "example": "error canceling the job"
-                                }
-                            }
-                        }
-                    }
-                }
-            }
-        }
-    },
-    "components": {
-        "schemas": {
-            "StatusResponse": {
+  "openapi": "3.1.0",
+  "info": {
+    "title": "Conversion service API",
+    "version": "5.9.4"
+  },
+  "paths": {
+    "/jobs": {
+      "post": {
+        "operationId": "createJob",
+        "summary": "Create one conversion job",
+        "requestBody": {
+          "content": {
+            "multipart/form-data": {
+              "schema": {
                 "type": "object",
+                "required": [
+                  "recipe",
+                  "input"
+                ],
                 "properties": {
-                    "status": {
-                        "$ref": "#/components/schemas/Status"
-                    },
-                    "progress": {
-                        "type": "number",
-                        "minimum": 0,
-                        "maximum": 1
-                    }
+                  "recipe": {
+                    "$ref": "#/components/schemas/Recipe"
+                  },
+                  "input": {
+                    "description": "Input file",
+                    "type": "string",
+                    "format": "binary"
+                  },
+                  "callback": {
+                    "$ref": "#/components/schemas/Callback"
+                  }
                 }
+              }
             },
-            "FilesResponse": {
-                "type": "array",
-                "items": {
-                    "properties": {
-                        "name": {
-                            "type": "string",
-                            "description": "File base name"
-                        },
-                        "path": {
-                            "type": "string",
-                            "description": "File relative path"
-                        },
-                        "url": {
-                            "type": "string",
-                            "description": "File URL"
-                        }
-                    }
-                },
-                "example": [
-                    {
-                        "name": "model.zip",
-                        "path": "job-6fd39de0-2c2e-11ec-a2ac-699b0cf3defa/_job_output/model.zip",
-                        "url": "http://{HOST}/wg-bucket/job-6fd39de0-2c2e-11ec-a2ac-699b0cf3defa/_job_output/model.zip?X-Amz-Algorithm=AWS4-HMAC-SHA256&X-Amz-Credential=minioadmin%2F20211013%2Fus-east-2%2Fs3%2Faws4_request&X-Amz-Date=20211013T140445Z&X-Amz-Expires=604800&X-Amz-SignedHeaders=host&X-Amz-Signature=1b351298b383519628a72dfb089ca07a5f922f37f38a715249f2238d34d91e2a"
-                    }
-                ]
-            },
-            "LogsResponse": {
+            "application/json": {
+              "schema": {
                 "type": "object",
+                "required": [
+                  "recipe",
+                  "input"
+                ],
                 "properties": {
+                  "recipe": {
+                    "$ref": "#/components/schemas/Recipe"
+                  },
+                  "input": {
+                    "description": "Input file",
+                    "type": "string"
+                  },
+                  "callback": {
+                    "$ref": "#/components/schemas/Callback"
+                  }
+                }
+              },
+              "examples": {
+                "input": {
+                  "value": {
+                    "recipe": "fbx2wmd",
+                    "input": "https://github.com/KhronosGroup/glTF-Sample-Models/raw/master/sourceModels/Avocado/Avocado.fbx"
+                  }
+                }
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "200 response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
                     "id": {
-                        "type": "string",
-                        "description": "The job ID"
-                    },
-                    "logs": {
-                        "type": "array",
-                        "description": "The job tasks logs",
-                        "items": {
-                            "$ref": "#/components/schemas/TaskLogs"
-                        }
+                      "description": "ID of the created job",
+                      "type": "string"
                     }
-                },
-                "example": {
-                    "id": "6fd39de0-2c2e-11ec-a2ac-699b0cf3defa",
-                    "logs": [
-                        {
-                            "inputLogs": [
-                                {
-                                    "input": {
-                                        "files": {
-                                            "model": "job-6fd39de0-2c2e-11ec-a2ac-699b0cf3defa/_job_input/06df6afe-b8b1-4fb5-9d18-e0a54a029ab9.stp"
-                                        },
-                                        "options": {
-                                            "angleToleranceDeg": 20,
-                                            "chordHeightRatio": 1000,
-                                            "up-direction": "z",
-                                            "left-direction": "x",
-                                            "read-hidden-objects": false,
-                                            "read-active-filter": false,
-                                            "compute-physical-properties": false,
-                                            "sew": false,
-                                            "sew-tolerance": 0.001
-                                        }
-                                    },
-                                    "output": {
-                                        "gltfFolder": "job-6fd39de0-2c2e-11ec-a2ac-699b0cf3defa/gltf-exchange-converter/98581106-4c52-4092-8b56-62d24be35f3d",
-                                        "objects": "job-6fd39de0-2c2e-11ec-a2ac-699b0cf3defa/gltf-exchange-converter/ddb4cb3c-6c38-4671-99ff-f1b43ba4c33b.json"
-                                    },
-                                    "code": 0,
-                                    "logs": {
-                                        "stdout": "...",
-                                        "stderr": ""
-                                    }
-                                }
-                            ],
-                            "task": {
-                                "name": "gltf-exchange-converter",
-                                "status": "finished",
-                                "version": "2.1.30"
-                            }
-                        },
-                        {
-                            "inputLogs": [
-                                {
-                                    "input": {
-                                        "files": {
-                                            "input": "job-6fd39de0-2c2e-11ec-a2ac-699b0cf3defa/gltf-exchange-converter/98581106-4c52-4092-8b56-62d24be35f3d"
-                                        },
-                                        "options": {
-                                            "v": "0.015",
-                                            "d": "0.015"
-                                        }
-                                    },
-                                    "output": {
-                                        "gltf": "job-6fd39de0-2c2e-11ec-a2ac-699b0cf3defa/optimizer/9c45363d-48fd-4b59-883a-cbfde8b91f52"
-                                    },
-                                    "code": 0,
-                                    "logs": {
-                                        "stdout": "...",
-                                        "stderr": "..."
-                                    }
-                                }
-                            ],
-                            "task": {
-                                "name": "optimizer",
-                                "status": "finished",
-                                "version": "2.1.6"
-                            }
-                        },
-                        {
-                            "inputLogs": [
-                                {
-                                    "input": {
-                                        "files": {
-                                            "gltf": "job-6fd39de0-2c2e-11ec-a2ac-699b0cf3defa/optimizer/9c45363d-48fd-4b59-883a-cbfde8b91f52"
-                                        },
-                                        "options": {
-                                            "size": 8
-                                        }
-                                    },
-                                    "output": {
-                                        "output": "job-6fd39de0-2c2e-11ec-a2ac-699b0cf3defa/gltf2wmd/964cd14a-5126-4d7a-bc6c-89a90e4f70c3"
-                                    },
-                                    "code": 0,
-                                    "logs": {
-                                        "stdout": "...",
-                                        "stderr": ""
-                                    }
-                                }
-                            ],
-                            "task": {
-                                "name": "gltf2wmd",
-                                "status": "finished",
-                                "version": "2.1.4"
-                            }
-                        },
-                        {
-                            "inputLogs": [
-                                {
-                                    "input": {
-                                        "files": {
-                                            "objects": "job-6fd39de0-2c2e-11ec-a2ac-699b0cf3defa/gltf-exchange-converter/98581106-4c52-4092-8b56-62d24be35f3d/objects.json"
-                                        },
-                                        "options": {}
-                                    },
-                                    "output": {
-                                        "wof": "job-6fd39de0-2c2e-11ec-a2ac-699b0cf3defa/objects2wof/25467203-e76c-40e1-ab70-d1c4319e8115.wof"
-                                    },
-                                    "code": 0,
-                                    "logs": {
-                                        "stdout": "",
-                                        "stderr": ""
-                                    }
-                                }
-                            ],
-                            "task": {
-                                "name": "objects2wof",
-                                "status": "finished",
-                                "version": "2.1.0"
-                            }
-                        },
-                        {
-                            "inputLogs": [
-                                {
-                                    "input": {
-                                        "files": {
-                                            "input": "job-6fd39de0-2c2e-11ec-a2ac-699b0cf3defa/gltf2wmd/964cd14a-5126-4d7a-bc6c-89a90e4f70c3",
-                                            "objects": "job-6fd39de0-2c2e-11ec-a2ac-699b0cf3defa/objects2wof/25467203-e76c-40e1-ab70-d1c4319e8115.wof"
-                                        },
-                                        "options": {}
-                                    },
-                                    "output": {
-                                        "output": "job-6fd39de0-2c2e-11ec-a2ac-699b0cf3defa/manifest-creator/9120cca7-3daa-4068-a81a-dfa72f5096f1"
-                                    },
-                                    "code": 0,
-                                    "logs": {
-                                        "stdout": "",
-                                        "stderr": ""
-                                    }
-                                }
-                            ],
-                            "task": {
-                                "name": "manifest-creator",
-                                "status": "finished",
-                                "version": "2.1.2"
-                            }
-                        }
-                    ]
+                  }
                 }
-            },
-            "TaskLogs": {
-                "type": "object",
-                "description": "Task logs",
-                "properties": {
-                    "inputLogs": {
-                        "type": "array",
-                        "description": "Job input parameters",
-                        "items": {
-                            "$ref": "#/components/schemas/InputLogs"
-                        }
-                    },
-                    "task": {
-                        "type": "object",
-                        "description": "Conversion task info",
-                        "properties": {
-                            "name": {
-                                "type": "string",
-                                "description": "Conversion task name",
-                                "example": "gltf-exchange-converter"
-                            },
-                            "status": {
-                                "type": "string",
-                                "description": "Conversion task status",
-                                "enum": [
-                                    "pending",
-                                    "working",
-                                    "finished",
-                                    "error",
-                                    "canceled"
-                                ],
-                                "example": "finished"
-                            },
-                            "version": {
-                                "type": "string",
-                                "description": "Converter version",
-                                "example": "2.1.30"
-                            }
-                        }
-                    }
-                }
-            },
-            "InputLogs": {
-                "type": "object",
-                "properties": {
-                    "input": {
-                        "type": "object",
-                        "description": "Conversion job input parameters",
-                        "properties": {
-                            "files": {
-                                "type": "object"
-                            },
-                            "options": {
-                                "type": "object"
-                            }
-                        }
-                    },
-                    "output": {
-                        "type": "object",
-                        "description": "Conversion job output parameters"
-                    },
-                    "code": {
-                        "type": "integer",
-                        "description": "Process exit code"
-                    },
-                    "logs": {
-                        "type": "object",
-                        "properties": {
-                            "stdout": {
-                                "type": "string",
-                                "description": "Runtime logs from stdout"
-                            },
-                            "stderr": {
-                                "type": "string",
-                                "description": "Runtime logs from stderr"
-                            }
-                        }
-                    }
-                }
-            },
-            "Error404Response": {
-                "type": "string",
-                "description": "404 status response",
-                "example": "job with {id} was not found"
-            },
-            "Filter": {
-                "type": "string",
-                "description": "File filter",
-                "enum": [
-                    "iv",
-                    "gltf",
-                    "attributes"
-                ]
-            },
-            "Recipe": {
-                "description": "Name of a conversion recipe",
-                "type": "string",
-                "example": "fbx2wmd"
-            },
-            "Status": {
-                "type": "string",
-                "description": "Conversion job status",
-                "enum": [
-                    "pending",
-                    "working",
-                    "finished",
-                    "error",
-                    "canceled"
-                ]
+              }
             }
+          }
         }
+      }
+    },
+    "/jobs/{id}/status": {
+      "get": {
+        "operationId": "jobStatus",
+        "summary": "Get a conversion job status",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "description": "ID of a conversion job",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "200 response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/StatusResponse"
+                },
+                "examples": {
+                  "pending": {
+                    "value": {
+                      "status": "pending",
+                      "progress": 0
+                    }
+                  },
+                  "working": {
+                    "value": {
+                      "status": "working",
+                      "progress": 0.87
+                    }
+                  },
+                  "finished": {
+                    "value": {
+                      "status": "finished",
+                      "progress": 1
+                    }
+                  },
+                  "error": {
+                    "value": {
+                      "status": "error",
+                      "progress": 0.66
+                    }
+                  },
+                  "canceled": {
+                    "value": {
+                      "status": "canceled",
+                      "progress": 0.66
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "404 response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error404Response"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/jobs/{id}/files": {
+      "get": {
+        "operationId": "jobFiles",
+        "summary": "Get conversion job result files",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "description": "ID of a conversion job",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "filter",
+            "in": "query",
+            "description": "Filter result files",
+            "schema": {
+              "$ref": "#/components/schemas/Filter"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "200 response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/FilesResponse"
+                },
+                "examples": {
+                  "files": {
+                    "value": [
+                      {
+                        "name": "buffer.bin",
+                        "path": "job-6fd39de0-2c2e-11ec-a2ac-699b0cf3defa/_job_output/buffer.bin",
+                        "url": "http://{HOST}/wg-bucket/job-6fd39de0-2c2e-11ec-a2ac-699b0cf3defa/_job_output/buffer.bin?X-Amz-Algorithm=AWS4-HMAC-SHA256&X-Amz-Credential=minioadmin%2F20211013%2Fus-east-2%2Fs3%2Faws4_request&X-Amz-Date=20211013T140445Z&X-Amz-Expires=604800&X-Amz-SignedHeaders=host&X-Amz-Signature=1b351298b383519628a72dfb089ca07a5f922f37f38a715249f2238d34d91e2a"
+                      },
+                      {
+                        "name": "manifest.json",
+                        "path": "job-6fd39de0-2c2e-11ec-a2ac-699b0cf3defa/_job_output/manifest.json",
+                        "url": "http://{HOST}/wg-bucket/job-6fd39de0-2c2e-11ec-a2ac-699b0cf3defa/_job_output/manifest.json?X-Amz-Algorithm=AWS4-HMAC-SHA256&X-Amz-Credential=minioadmin%2F20211013%2Fus-east-2%2Fs3%2Faws4_request&X-Amz-Date=20211013T140445Z&X-Amz-Expires=604800&X-Amz-SignedHeaders=host&X-Amz-Signature=aa2a16767322e7f0e573ba9fffcacfc60e45c5f3ba4ad17ae64343c4fefd493c"
+                      },
+                      {
+                        "name": "model.gltf",
+                        "path": "job-6fd39de0-2c2e-11ec-a2ac-699b0cf3defa/_job_output/model.gltf",
+                        "url": "http://{HOST}/wg-bucket/job-6fd39de0-2c2e-11ec-a2ac-699b0cf3defa/_job_output/model.gltf?X-Amz-Algorithm=AWS4-HMAC-SHA256&X-Amz-Credential=minioadmin%2F20211013%2Fus-east-2%2Fs3%2Faws4_request&X-Amz-Date=20211013T140445Z&X-Amz-Expires=604800&X-Amz-SignedHeaders=host&X-Amz-Signature=73ffad83399c8ef7f48e1c900db918896ccb723b45f3b746a7c152c354261978"
+                      },
+                      {
+                        "name": "model.wmd",
+                        "path": "job-6fd39de0-2c2e-11ec-a2ac-699b0cf3defa/_job_output/model.wmd",
+                        "url": "http://{HOST}/wg-bucket/job-6fd39de0-2c2e-11ec-a2ac-699b0cf3defa/_job_output/model.wmd?X-Amz-Algorithm=AWS4-HMAC-SHA256&X-Amz-Credential=minioadmin%2F20211013%2Fus-east-2%2Fs3%2Faws4_request&X-Amz-Date=20211013T140445Z&X-Amz-Expires=604800&X-Amz-SignedHeaders=host&X-Amz-Signature=08addcecabe5da1051525dfa5e035d7a50e2e4b0aed1a5da3943c24a80f5a184"
+                      },
+                      {
+                        "name": "objects.json",
+                        "path": "job-6fd39de0-2c2e-11ec-a2ac-699b0cf3defa/_job_output/objects.json",
+                        "url": "http://{HOST}/wg-bucket/job-6fd39de0-2c2e-11ec-a2ac-699b0cf3defa/_job_output/objects.json?X-Amz-Algorithm=AWS4-HMAC-SHA256&X-Amz-Credential=minioadmin%2F20211013%2Fus-east-2%2Fs3%2Faws4_request&X-Amz-Date=20211013T140445Z&X-Amz-Expires=604800&X-Amz-SignedHeaders=host&X-Amz-Signature=a074d710018406fd3bd63b4614e69c59120f64a62e09a45be8f584bff34a0c4a"
+                      },
+                      {
+                        "name": "objects.wof",
+                        "path": "job-6fd39de0-2c2e-11ec-a2ac-699b0cf3defa/_job_output/objects.wof",
+                        "url": "http://{HOST}/wg-bucket/job-6fd39de0-2c2e-11ec-a2ac-699b0cf3defa/_job_output/objects.wof?X-Amz-Algorithm=AWS4-HMAC-SHA256&X-Amz-Credential=minioadmin%2F20211013%2Fus-east-2%2Fs3%2Faws4_request&X-Amz-Date=20211013T140445Z&X-Amz-Expires=604800&X-Amz-SignedHeaders=host&X-Amz-Signature=a92fd56729b1bf51fe9a55f093b5a9b4f2bb1fcacca1a40b41e4f6899b02ab09"
+                      }
+                    ]
+                  },
+                  "filter=iv": {
+                    "value": [
+                      {
+                        "name": "manifest.json",
+                        "path": "job-6fd39de0-2c2e-11ec-a2ac-699b0cf3defa/_job_output/manifest.json",
+                        "url": "http://{HOST}/wg-bucket/job-6fd39de0-2c2e-11ec-a2ac-699b0cf3defa/_job_output/manifest.json?X-Amz-Algorithm=AWS4-HMAC-SHA256&X-Amz-Credential=minioadmin%2F20211013%2Fus-east-2%2Fs3%2Faws4_request&X-Amz-Date=20211013T140445Z&X-Amz-Expires=604800&X-Amz-SignedHeaders=host&X-Amz-Signature=aa2a16767322e7f0e573ba9fffcacfc60e45c5f3ba4ad17ae64343c4fefd493c"
+                      },
+                      {
+                        "name": "model.wmd",
+                        "path": "job-6fd39de0-2c2e-11ec-a2ac-699b0cf3defa/_job_output/model.wmd",
+                        "url": "http://{HOST}/wg-bucket/job-6fd39de0-2c2e-11ec-a2ac-699b0cf3defa/_job_output/model.wmd?X-Amz-Algorithm=AWS4-HMAC-SHA256&X-Amz-Credential=minioadmin%2F20211013%2Fus-east-2%2Fs3%2Faws4_request&X-Amz-Date=20211013T140445Z&X-Amz-Expires=604800&X-Amz-SignedHeaders=host&X-Amz-Signature=08addcecabe5da1051525dfa5e035d7a50e2e4b0aed1a5da3943c24a80f5a184"
+                      },
+                      {
+                        "name": "objects.wof",
+                        "path": "job-6fd39de0-2c2e-11ec-a2ac-699b0cf3defa/_job_output/objects.wof",
+                        "url": "http://{HOST}/wg-bucket/job-6fd39de0-2c2e-11ec-a2ac-699b0cf3defa/_job_output/objects.wof?X-Amz-Algorithm=AWS4-HMAC-SHA256&X-Amz-Credential=minioadmin%2F20211013%2Fus-east-2%2Fs3%2Faws4_request&X-Amz-Date=20211013T140445Z&X-Amz-Expires=604800&X-Amz-SignedHeaders=host&X-Amz-Signature=a92fd56729b1bf51fe9a55f093b5a9b4f2bb1fcacca1a40b41e4f6899b02ab09"
+                      }
+                    ]
+                  },
+                  "filter=gltf": {
+                    "value": [
+                      {
+                        "name": "buffer.bin",
+                        "path": "job-6fd39de0-2c2e-11ec-a2ac-699b0cf3defa/_job_output/buffer.bin",
+                        "url": "http://$HOST/wg-bucket/job-6fd39de0-2c2e-11ec-a2ac-699b0cf3defa/_job_output/buffer.bin?X-Amz-Algorithm=AWS4-HMAC-SHA256&X-Amz-Credential=minioadmin%2F20211013%2Fus-east-2%2Fs3%2Faws4_request&X-Amz-Date=20211013T140445Z&X-Amz-Expires=604800&X-Amz-SignedHeaders=host&X-Amz-Signature=1b351298b383519628a72dfb089ca07a5f922f37f38a715249f2238d34d91e2a"
+                      },
+                      {
+                        "name": "manifest.json",
+                        "path": "job-6fd39de0-2c2e-11ec-a2ac-699b0cf3defa/_job_output/manifest.json",
+                        "url": "http://$HOST/wg-bucket/job-6fd39de0-2c2e-11ec-a2ac-699b0cf3defa/_job_output/manifest.json?X-Amz-Algorithm=AWS4-HMAC-SHA256&X-Amz-Credential=minioadmin%2F20211013%2Fus-east-2%2Fs3%2Faws4_request&X-Amz-Date=20211013T140445Z&X-Amz-Expires=604800&X-Amz-SignedHeaders=host&X-Amz-Signature=aa2a16767322e7f0e573ba9fffcacfc60e45c5f3ba4ad17ae64343c4fefd493c"
+                      },
+                      {
+                        "name": "model.gltf",
+                        "path": "job-6fd39de0-2c2e-11ec-a2ac-699b0cf3defa/_job_output/model.gltf",
+                        "url": "http://$HOST/wg-bucket/job-6fd39de0-2c2e-11ec-a2ac-699b0cf3defa/_job_output/model.gltf?X-Amz-Algorithm=AWS4-HMAC-SHA256&X-Amz-Credential=minioadmin%2F20211013%2Fus-east-2%2Fs3%2Faws4_request&X-Amz-Date=20211013T140445Z&X-Amz-Expires=604800&X-Amz-SignedHeaders=host&X-Amz-Signature=73ffad83399c8ef7f48e1c900db918896ccb723b45f3b746a7c152c354261978"
+                      },
+                      {
+                        "name": "objects.json",
+                        "path": "job-6fd39de0-2c2e-11ec-a2ac-699b0cf3defa/_job_output/objects.json",
+                        "url": "http://$HOST/wg-bucket/job-6fd39de0-2c2e-11ec-a2ac-699b0cf3defa/_job_output/objects.json?X-Amz-Algorithm=AWS4-HMAC-SHA256&X-Amz-Credential=minioadmin%2F20211013%2Fus-east-2%2Fs3%2Faws4_request&X-Amz-Date=20211013T140445Z&X-Amz-Expires=604800&X-Amz-SignedHeaders=host&X-Amz-Signature=a074d710018406fd3bd63b4614e69c59120f64a62e09a45be8f584bff34a0c4a"
+                      }
+                    ]
+                  },
+                  "filter=attributes": {
+                    "value": [
+                      {
+                        "name": "objects.json",
+                        "path": "job-6fd39de0-2c2e-11ec-a2ac-699b0cf3defa/_job_output/objects.json",
+                        "url": "http://$HOST/wg-bucket/job-6fd39de0-2c2e-11ec-a2ac-699b0cf3defa/_job_output/objects.json?X-Amz-Algorithm=AWS4-HMAC-SHA256&X-Amz-Credential=minioadmin%2F20211013%2Fus-east-2%2Fs3%2Faws4_request&X-Amz-Date=20211013T140445Z&X-Amz-Expires=604800&X-Amz-SignedHeaders=host&X-Amz-Signature=a074d710018406fd3bd63b4614e69c59120f64a62e09a45be8f584bff34a0c4a"
+                      }
+                    ]
+                  }
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "404 response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error404Response"
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "500 response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "string",
+                  "example": "error retrieving file list"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/jobs/{id}/zip": {
+      "get": {
+        "operationId": "jobZip",
+        "summary": "Get conversion job result files in zip archive",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "description": "ID of a conversion job",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "filter",
+            "in": "query",
+            "description": "Filter result files",
+            "schema": {
+              "$ref": "#/components/schemas/Filter"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "200 response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/FilesResponse"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "404 response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error404Response"
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "500 response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "string",
+                  "example": "error retrieving file list"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/jobs/{id}/logs": {
+      "get": {
+        "operationId": "jobLogs",
+        "summary": "Get conversion job logs",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "description": "ID of a conversion job",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "200 response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/LogsResponse"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "404 response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error404Response"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/jobs/{id}/cancel": {
+      "get": {
+        "operationId": "cancelJob",
+        "summary": "Cancel conversion job",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "description": "ID of a conversion job",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "200 response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "id": {
+                      "description": "ID of the canceled job",
+                      "type": "string"
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "404 response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error404Response"
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "500 response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "string",
+                  "example": "error canceling the job"
+                }
+              }
+            }
+          }
+        }
+      }
     }
+  },
+  "components": {
+    "schemas": {
+      "StatusResponse": {
+        "type": "object",
+        "properties": {
+          "status": {
+            "$ref": "#/components/schemas/Status"
+          },
+          "progress": {
+            "type": "number",
+            "minimum": 0,
+            "maximum": 1
+          }
+        }
+      },
+      "FilesResponse": {
+        "type": "array",
+        "items": {
+          "properties": {
+            "name": {
+              "type": "string",
+              "description": "File base name"
+            },
+            "path": {
+              "type": "string",
+              "description": "File relative path"
+            },
+            "url": {
+              "type": "string",
+              "description": "File URL"
+            }
+          }
+        },
+        "example": [
+          {
+            "name": "model.zip",
+            "path": "job-6fd39de0-2c2e-11ec-a2ac-699b0cf3defa/_job_output/model.zip",
+            "url": "http://{HOST}/wg-bucket/job-6fd39de0-2c2e-11ec-a2ac-699b0cf3defa/_job_output/model.zip?X-Amz-Algorithm=AWS4-HMAC-SHA256&X-Amz-Credential=minioadmin%2F20211013%2Fus-east-2%2Fs3%2Faws4_request&X-Amz-Date=20211013T140445Z&X-Amz-Expires=604800&X-Amz-SignedHeaders=host&X-Amz-Signature=1b351298b383519628a72dfb089ca07a5f922f37f38a715249f2238d34d91e2a"
+          }
+        ]
+      },
+      "LogsResponse": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "string",
+            "description": "The job ID"
+          },
+          "logs": {
+            "type": "array",
+            "description": "The job tasks logs",
+            "items": {
+              "$ref": "#/components/schemas/TaskLogs"
+            }
+          }
+        },
+        "example": {
+          "id": "6fd39de0-2c2e-11ec-a2ac-699b0cf3defa",
+          "logs": [
+            {
+              "inputLogs": [
+                {
+                  "input": {
+                    "files": {
+                      "model": "job-6fd39de0-2c2e-11ec-a2ac-699b0cf3defa/_job_input/06df6afe-b8b1-4fb5-9d18-e0a54a029ab9.stp"
+                    },
+                    "options": {
+                      "angleToleranceDeg": 20,
+                      "chordHeightRatio": 1000,
+                      "up-direction": "z",
+                      "left-direction": "x",
+                      "read-hidden-objects": false,
+                      "read-active-filter": false,
+                      "compute-physical-properties": false,
+                      "sew": false,
+                      "sew-tolerance": 0.001
+                    }
+                  },
+                  "output": {
+                    "gltfFolder": "job-6fd39de0-2c2e-11ec-a2ac-699b0cf3defa/gltf-exchange-converter/98581106-4c52-4092-8b56-62d24be35f3d",
+                    "objects": "job-6fd39de0-2c2e-11ec-a2ac-699b0cf3defa/gltf-exchange-converter/ddb4cb3c-6c38-4671-99ff-f1b43ba4c33b.json"
+                  },
+                  "code": 0,
+                  "logs": {
+                    "stdout": "...",
+                    "stderr": ""
+                  }
+                }
+              ],
+              "task": {
+                "name": "gltf-exchange-converter",
+                "status": "finished",
+                "version": "2.1.30"
+              }
+            },
+            {
+              "inputLogs": [
+                {
+                  "input": {
+                    "files": {
+                      "input": "job-6fd39de0-2c2e-11ec-a2ac-699b0cf3defa/gltf-exchange-converter/98581106-4c52-4092-8b56-62d24be35f3d"
+                    },
+                    "options": {
+                      "v": "0.015",
+                      "d": "0.015"
+                    }
+                  },
+                  "output": {
+                    "gltf": "job-6fd39de0-2c2e-11ec-a2ac-699b0cf3defa/optimizer/9c45363d-48fd-4b59-883a-cbfde8b91f52"
+                  },
+                  "code": 0,
+                  "logs": {
+                    "stdout": "...",
+                    "stderr": "..."
+                  }
+                }
+              ],
+              "task": {
+                "name": "optimizer",
+                "status": "finished",
+                "version": "2.1.6"
+              }
+            },
+            {
+              "inputLogs": [
+                {
+                  "input": {
+                    "files": {
+                      "gltf": "job-6fd39de0-2c2e-11ec-a2ac-699b0cf3defa/optimizer/9c45363d-48fd-4b59-883a-cbfde8b91f52"
+                    },
+                    "options": {
+                      "size": 8
+                    }
+                  },
+                  "output": {
+                    "output": "job-6fd39de0-2c2e-11ec-a2ac-699b0cf3defa/gltf2wmd/964cd14a-5126-4d7a-bc6c-89a90e4f70c3"
+                  },
+                  "code": 0,
+                  "logs": {
+                    "stdout": "...",
+                    "stderr": ""
+                  }
+                }
+              ],
+              "task": {
+                "name": "gltf2wmd",
+                "status": "finished",
+                "version": "2.1.4"
+              }
+            },
+            {
+              "inputLogs": [
+                {
+                  "input": {
+                    "files": {
+                      "objects": "job-6fd39de0-2c2e-11ec-a2ac-699b0cf3defa/gltf-exchange-converter/98581106-4c52-4092-8b56-62d24be35f3d/objects.json"
+                    },
+                    "options": {}
+                  },
+                  "output": {
+                    "wof": "job-6fd39de0-2c2e-11ec-a2ac-699b0cf3defa/objects2wof/25467203-e76c-40e1-ab70-d1c4319e8115.wof"
+                  },
+                  "code": 0,
+                  "logs": {
+                    "stdout": "",
+                    "stderr": ""
+                  }
+                }
+              ],
+              "task": {
+                "name": "objects2wof",
+                "status": "finished",
+                "version": "2.1.0"
+              }
+            },
+            {
+              "inputLogs": [
+                {
+                  "input": {
+                    "files": {
+                      "input": "job-6fd39de0-2c2e-11ec-a2ac-699b0cf3defa/gltf2wmd/964cd14a-5126-4d7a-bc6c-89a90e4f70c3",
+                      "objects": "job-6fd39de0-2c2e-11ec-a2ac-699b0cf3defa/objects2wof/25467203-e76c-40e1-ab70-d1c4319e8115.wof"
+                    },
+                    "options": {}
+                  },
+                  "output": {
+                    "output": "job-6fd39de0-2c2e-11ec-a2ac-699b0cf3defa/manifest-creator/9120cca7-3daa-4068-a81a-dfa72f5096f1"
+                  },
+                  "code": 0,
+                  "logs": {
+                    "stdout": "",
+                    "stderr": ""
+                  }
+                }
+              ],
+              "task": {
+                "name": "manifest-creator",
+                "status": "finished",
+                "version": "2.1.2"
+              }
+            }
+          ]
+        }
+      },
+      "TaskLogs": {
+        "type": "object",
+        "description": "Task logs",
+        "properties": {
+          "inputLogs": {
+            "type": "array",
+            "description": "Job input parameters",
+            "items": {
+              "$ref": "#/components/schemas/InputLogs"
+            }
+          },
+          "task": {
+            "type": "object",
+            "description": "Conversion task info",
+            "properties": {
+              "name": {
+                "type": "string",
+                "description": "Conversion task name",
+                "example": "gltf-exchange-converter"
+              },
+              "status": {
+                "type": "string",
+                "description": "Conversion task status",
+                "enum": [
+                  "pending",
+                  "working",
+                  "finished",
+                  "error",
+                  "canceled"
+                ],
+                "example": "finished"
+              },
+              "version": {
+                "type": "string",
+                "description": "Converter version",
+                "example": "2.1.30"
+              }
+            }
+          }
+        }
+      },
+      "InputLogs": {
+        "type": "object",
+        "properties": {
+          "input": {
+            "type": "object",
+            "description": "Conversion job input parameters",
+            "properties": {
+              "files": {
+                "type": "object"
+              },
+              "options": {
+                "type": "object"
+              }
+            }
+          },
+          "output": {
+            "type": "object",
+            "description": "Conversion job output parameters"
+          },
+          "code": {
+            "type": "integer",
+            "description": "Process exit code"
+          },
+          "logs": {
+            "type": "object",
+            "properties": {
+              "stdout": {
+                "type": "string",
+                "description": "Runtime logs from stdout"
+              },
+              "stderr": {
+                "type": "string",
+                "description": "Runtime logs from stderr"
+              }
+            }
+          }
+        }
+      },
+      "Error404Response": {
+        "type": "string",
+        "description": "404 status response",
+        "example": "job with {id} was not found"
+      },
+      "Filter": {
+        "type": "string",
+        "description": "File filter",
+        "enum": [
+          "iv",
+          "gltf",
+          "attributes"
+        ]
+      },
+      "Recipe": {
+        "description": "Name of a conversion recipe",
+        "type": "string",
+        "example": "fbx2wmd"
+      },
+      "Callback": {
+        "description": "Webhook called after finishing a job",
+        "type": "string"
+      },
+      "Status": {
+        "type": "string",
+        "description": "Conversion job status",
+        "enum": [
+          "pending",
+          "working",
+          "finished",
+          "error",
+          "canceled"
+        ]
+      }
+    }
+  }
 }
