@@ -57,7 +57,7 @@ export class Viewer extends Component<ViewerProps, ViewerState> implements Viewe
         if (!this.meshIds) return;
         const { selectedId = -1, allowMoveCamera } = this.props;
         if (this.meshIds.has(selectedId) && allowMoveCamera) {
-            await this.iv.getFeature(MoveCameraFeature).toObjects([selectedId], 400);
+            await this.iv.getFeature(MoveCameraFeature).toObjects([selectedId], { duration: 400 });
         }
     }
 
@@ -88,9 +88,6 @@ export class Viewer extends Component<ViewerProps, ViewerState> implements Viewe
 
         const db = new WofDB();
         const iv = new IndustrialViewer(this.container.current);
-        iv.setCameraProjection({
-            yfov: Math.PI / 180 * 24
-        })
 
         iv.addFeature(LoaderFeature);
         iv.addFeature(OrbitFeature);
@@ -151,7 +148,12 @@ export class Viewer extends Component<ViewerProps, ViewerState> implements Viewe
         await loaderFeature.load('model.wmd');
 
         const moveCameraFeature = this.iv.getFeature(MoveCameraFeature);
-        await moveCameraFeature.toModel();
+        await moveCameraFeature.toObjects(null, {
+            direction: {
+                polar: Math.PI / 3,
+                azimuthal: 2 * Math.PI / 3
+            }
+        });
         this.meshIds = new Set(this.iv.getObjects());
         this.updateSelection();
 
