@@ -56,6 +56,8 @@ function UploadPanel({ api }: { api: DocumentsAPI }) {
             >
                 <option value={ConversionType.IFC_2_WMD_Optimized}>IFC to WMD optimized</option>
                 <option value={ConversionType.IFC_2_WMD}>IFC to WMD</option>
+                <option value={ConversionType.IFC_2_WMD_Optimized_node}>IFC to WMD optimized (new)</option>
+                <option value={ConversionType.IFC_2_WMD_node}>IFC to WMD (new)</option>
             </select>
             <button
                 type="button"

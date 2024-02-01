@@ -21,7 +21,9 @@ const documentsStub: DocumentInput[] = [
 
 export enum ConversionType {
     IFC_2_WMD_Optimized = 'ifc2wmdOpt',
-    IFC_2_WMD = 'ifc2wmd'
+    IFC_2_WMD = 'ifc2wmd',
+    IFC_2_WMD_Optimized_node = 'ifc2wmdOpt_node',
+    IFC_2_WMD_node = 'ifc2wmd_node'
 }
 
 declare global {

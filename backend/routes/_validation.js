@@ -16,7 +16,7 @@ const convertRequestSchema = Joi.object().keys({
 
     conversionType: Joi.string()
         .required()
-        .valid('ifc2wmd', 'ifc2wmdOpt')
+        .valid('ifc2wmd', 'ifc2wmdOpt', 'ifc2wmd_node', 'ifc2wmdOpt_node')
 });
 
 exports.validateConvert = (params) =>  Joi.assert(params, convertRequestSchema);
