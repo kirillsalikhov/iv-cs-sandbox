@@ -2,6 +2,7 @@ version: "3.7"
 
 services:
   backend:
+    image: backend_dev
     command: npm run dev
     volumes:
       - ../../backend:/backend

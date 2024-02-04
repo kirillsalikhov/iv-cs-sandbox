@@ -6,6 +6,7 @@ services:
       VITE_DEV_HOST: ${VITE_DEV_HOST}
 
   frontend:
+    image: frontend_dev
     command: npm run dev -- --host
     ports:
       - "5173:5173"
