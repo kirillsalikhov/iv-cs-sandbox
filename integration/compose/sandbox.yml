@@ -23,7 +23,7 @@ services:
 
   frontend:
     build: ../../frontend
-    image: docker.webgears3d.com/iv-cs-sandbox/frontend:1.0.4
+    image: docker.webgears3d.com/iv-cs-sandbox/frontend:1.0.6
     command: npm run prod:move-assets
     volumes:
       - web_static:/frontend/static:wo
