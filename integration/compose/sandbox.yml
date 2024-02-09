@@ -3,7 +3,7 @@ version: '3.7'
 services:
   backend:
     build: ../../backend
-    image: docker.webgears3d.com/iv-cs-sandbox/backend:1.0.3
+    image: docker.webgears3d.com/iv-cs-sandbox/backend:1.0.4
     ports:
       - "3050:3050"
     environment:
@@ -23,7 +23,7 @@ services:
 
   frontend:
     build: ../../frontend
-    image: docker.webgears3d.com/iv-cs-sandbox/frontend:1.0.3
+    image: docker.webgears3d.com/iv-cs-sandbox/frontend:1.0.6
     command: npm run prod:move-assets
     volumes:
       - web_static:/frontend/static:wo

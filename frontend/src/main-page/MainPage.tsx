@@ -4,7 +4,7 @@ import './main-page.css';
 import { iconDelete, iconSource } from './icons.tsx';
 
 function UploadPanel({ api }: { api: DocumentsAPI }) {
-    const [conversionType, setConversionType] = useState<ConversionType>(ConversionType.IFC_2_WMD);
+    const [conversionType, setConversionType] = useState<ConversionType>(ConversionType.IFC_2_WMD_node);
     const [isUploading, setUploading] = useState<boolean>(false);
     const [file, setFile] = useState<File | null>(null);
     const inputRef = useRef<HTMLInputElement>(null);
@@ -54,10 +54,10 @@ function UploadPanel({ api }: { api: DocumentsAPI }) {
                 defaultValue={conversionType}
                 onChange={onChangeSelect}
             >
-                <option value={ConversionType.IFC_2_WMD_Optimized}>IFC to WMD optimized</option>
-                <option value={ConversionType.IFC_2_WMD}>IFC to WMD</option>
                 <option value={ConversionType.IFC_2_WMD_Optimized_node}>IFC to WMD optimized (new)</option>
                 <option value={ConversionType.IFC_2_WMD_node}>IFC to WMD (new)</option>
+                <option value={ConversionType.IFC_2_WMD_Optimized}>IFC to WMD optimized</option>
+                <option value={ConversionType.IFC_2_WMD}>IFC to WMD</option>
             </select>
             <button
                 type="button"
