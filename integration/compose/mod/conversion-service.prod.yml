@@ -19,7 +19,7 @@ x-converter: &converter
     mode: replicated
 services:
   manager:
-    image: docker.webgears3d.com/cs-on-premise/conversion-manager:5.13.1
+    image: docker.webgears3d.com/cs-on-premise/conversion-manager:5.14.0
     restart: on-failure
     depends_on:
       - rabbitmq
@@ -93,10 +93,10 @@ services:
     image: docker.webgears3d.com/cs-on-premise/ifc_convert:2.1.0-utils4.0.0
   post_ifc_convert:
     <<: *converter
-    image: docker.webgears3d.com/cs-on-premise/post_ifc_convert:2.1.0-utils4.0.0
+    image: docker.webgears3d.com/cs-on-premise/post_ifc_convert:2.2.0-utils4.0.0
   post_ifc_convert_node:
     <<: *converter
-    image: docker.webgears3d.com/cs-on-premise/post_ifc_convert_node:1.1.0-utils4.0.0
+    image: docker.webgears3d.com/cs-on-premise/post_ifc_convert_node:1.2.0-utils4.0.0
 
 volumes:
   minio_data:
