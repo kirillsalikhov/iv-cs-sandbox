@@ -2,7 +2,7 @@
   "openapi": "3.1.0",
   "info": {
     "title": "Conversion service API",
-    "version": "5.9.4"
+    "version": "5.16.0"
   },
   "paths": {
     "/jobs": {
@@ -27,6 +27,9 @@
                     "type": "string",
                     "format": "binary"
                   },
+                  "conversion_parameters": {
+                    "$ref": "#/components/schemas/ConversionParameters"
+                  },
                   "callback": {
                     "$ref": "#/components/schemas/Callback"
                   }
@@ -47,6 +50,9 @@
                   "input": {
                     "description": "Input file",
                     "type": "string"
+                  },
+                  "conversion_parameters": {
+                    "$ref": "#/components/schemas/ConversionParameters"
                   },
                   "callback": {
                     "$ref": "#/components/schemas/Callback"
@@ -771,6 +777,10 @@
           "error",
           "canceled"
         ]
+      },
+      "ConversionParameters": {
+        "description": "Parameters to pass to converter. Must be JSON string",
+        "type": "string"
       }
     }
   }
