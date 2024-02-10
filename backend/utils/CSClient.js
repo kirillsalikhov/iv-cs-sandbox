@@ -1,6 +1,5 @@
 const { DefaultApi } = require('cs-open-api');
-// TODO remove
-const FormData = require('form-data');
+
 const config = require('../config');
 
 class CSClient {

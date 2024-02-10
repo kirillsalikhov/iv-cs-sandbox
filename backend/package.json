@@ -16,7 +16,6 @@
     "better-sse": "^0.10.0",
     "cs-open-api": "file:cs-open-api-gen/cs-open-api-2.1.5.tgz",
     "ejs": "^3.1.9",
-    "form-data": "^4.0.0",
     "joi": "^17.11.0",
     "knex": "^3.0.1",
     "koa": "^2.14.2",
