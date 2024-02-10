@@ -12,9 +12,9 @@
     "setup": "npm run migrate && npm run seed"
   },
   "dependencies": {
-    "axios": "^1.6.2",
+    "axios": "^1.6.7",
     "better-sse": "^0.10.0",
-    "cs-open-api": "file:cs-open-api-gen/cs-open-api-1.0.3.tgz",
+    "cs-open-api": "file:cs-open-api-gen/cs-open-api-2.1.4.tgz",
     "ejs": "^3.1.9",
     "form-data": "^4.0.0",
     "joi": "^17.11.0",

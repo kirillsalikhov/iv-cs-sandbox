@@ -1,17 +1,17 @@
 const { DefaultApi } = require('cs-open-api');
+// TODO remove
 const FormData = require('form-data');
 const config = require('../config');
 
 class CSClient {
     constructor(config) {
         this.client = new DefaultApi({
-            basePath: config.host,
-            formDataCtor: FormData // needed for node < 18,
+            basePath: config.host
         });
     }
 
     async createConversion(fileUrl, recipe, callback) {
-        const { data } = await this.client.createJob(recipe,fileUrl,callback);
+        const { data } = await this.client.createJob(recipe,fileUrl,null, callback);
 
         return data;
     }
