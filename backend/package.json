@@ -14,7 +14,7 @@
   "dependencies": {
     "axios": "^1.6.7",
     "better-sse": "^0.10.0",
-    "cs-open-api": "file:cs-open-api-gen/cs-open-api-2.1.4.tgz",
+    "cs-open-api": "file:cs-open-api-gen/cs-open-api-2.1.5.tgz",
     "ejs": "^3.1.9",
     "form-data": "^4.0.0",
     "joi": "^17.11.0",

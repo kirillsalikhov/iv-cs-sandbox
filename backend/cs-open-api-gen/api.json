@@ -11,31 +11,6 @@
         "summary": "Create one conversion job",
         "requestBody": {
           "content": {
-            "multipart/form-data": {
-              "schema": {
-                "type": "object",
-                "required": [
-                  "recipe",
-                  "input"
-                ],
-                "properties": {
-                  "recipe": {
-                    "$ref": "#/components/schemas/Recipe"
-                  },
-                  "input": {
-                    "description": "Input file",
-                    "type": "string",
-                    "format": "binary"
-                  },
-                  "conversion_parameters": {
-                    "$ref": "#/components/schemas/ConversionParameters"
-                  },
-                  "callback": {
-                    "$ref": "#/components/schemas/Callback"
-                  }
-                }
-              }
-            },
             "application/json": {
               "schema": {
                 "type": "object",

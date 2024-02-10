@@ -11,7 +11,12 @@ class CSClient {
     }
 
     async createConversion(fileUrl, recipe, callback) {
-        const { data } = await this.client.createJob(recipe,fileUrl,null, callback);
+        const { data } = await this.client.createJob({
+            recipe,
+            callback,
+            conversion_parameters: JSON.stringify({serializer: "erp"}),
+            input: fileUrl
+        });
 
         return data;
     }
