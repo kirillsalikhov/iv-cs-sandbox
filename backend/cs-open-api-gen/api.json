@@ -779,8 +779,9 @@
         ]
       },
       "ConversionParameters": {
-        "description": "Parameters to pass to converter. Must be JSON string",
-        "type": "string"
+        "description": "Parameters to pass to converter",
+        "type": "object",
+        "additionalProperties": {}
       }
     }
   }
