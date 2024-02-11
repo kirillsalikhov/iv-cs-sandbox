@@ -4,6 +4,7 @@ services:
   backend:
     build: ../../backend
     image: docker.webgears3d.com/iv-cs-sandbox/backend:1.0.4
+    command: npm run start
     ports:
       - "3050:3050"
     environment:

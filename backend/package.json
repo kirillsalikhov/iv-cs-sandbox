@@ -6,7 +6,8 @@
     "node": ">=16.0.0"
   },
   "scripts": {
-    "dev": "nodemon app.js",
+    "dev": "npm run migrate && nodemon app.js",
+    "start": "npm run migrate && node app.js",
     "migrate": "knex migrate:latest --knexfile db/knexfile.js",
     "seed": "knex seed:run --knexfile db/knexfile.js",
     "setup": "npm run migrate && npm run seed"
