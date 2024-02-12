@@ -96,7 +96,7 @@ services:
     image: docker.webgears3d.com/cs-on-premise/post_ifc_convert:2.2.0-utils4.0.0
   post_ifc_convert_node:
     <<: *converter
-    image: docker.webgears3d.com/cs-on-premise/post_ifc_convert_node:1.3.0-utils4.0.0
+    image: docker.webgears3d.com/cs-on-premise/post_ifc_convert_node:1.3.2-utils4.0.0
 
 volumes:
   minio_data:
