@@ -22,8 +22,7 @@ class CSClient {
     }
 
     async getResultZipUrl(jobId){
-        // TODO add filter iv
-        const { data } = await this.client.jobZip(jobId);
+        const { data } = await this.client.jobZip(jobId, "iv");
 
         return data[0].url;
     }
