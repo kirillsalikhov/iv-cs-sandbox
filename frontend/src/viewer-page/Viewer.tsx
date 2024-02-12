@@ -21,8 +21,8 @@ export interface ViewerAPI {
 }
 
 export interface ViewerProps {
-    onClickObject?: (id: number) => void;
-    selectedId?: number;
+    onClickObject?: (id: string) => void;
+    selectedId?: string;
     allowMoveCamera: boolean;
 }
 
@@ -35,6 +35,9 @@ export class Viewer extends Component<ViewerProps, ViewerState> implements Viewe
     public iv!: IndustrialViewer;
     public db!: WofDB;
 
+    private _glob2int = new Map<string, number>();
+    private _int2glob = new Map<number, string>();
+
     meshIds!: Set<number>;
     homePosition: MoveCameraState | null = null;
 
@@ -42,22 +45,32 @@ export class Viewer extends Component<ViewerProps, ViewerState> implements Viewe
         modelLoaded: false
     };
 
+    toInternalID(id: string): number {
+        return this._glob2int.get(id) || -1;
+    }
+
+    toGlobalID(id: number): string {
+        return this._int2glob.get(id) || '';
+    }
+
     updateSelection(): void {
         if (!this.meshIds) return;
-        const { selectedId = -1 } = this.props;
+        const { selectedId = '' } = this.props;
+        const id = this.toInternalID(selectedId);
         this.iv.getFeature(ColorFeature).color([
             {
                 color: '#3A55F9',
-                ids: this.meshIds.has(selectedId) ? [selectedId] : []
+                ids: this.meshIds.has(id) ? [id] : []
             }
         ]);
     }
 
     async moveCameraToSelection(): Promise<void> {
         if (!this.meshIds) return;
-        const { selectedId = -1, allowMoveCamera } = this.props;
-        if (this.meshIds.has(selectedId) && allowMoveCamera) {
-            await this.iv.getFeature(MoveCameraFeature).toObjects([selectedId], { duration: 400 });
+        const { selectedId = '', allowMoveCamera } = this.props;
+        const id = this.toInternalID(selectedId);
+        if (this.meshIds.has(id) && allowMoveCamera) {
+            await this.iv.getFeature(MoveCameraFeature).toObjects([id], { duration: 400 });
         }
     }
 
@@ -108,7 +121,8 @@ export class Viewer extends Component<ViewerProps, ViewerState> implements Viewe
 
         iv.addEventListener('click', (e: IVPointerEvent): void => {
             if (this.props.onClickObject) {
-                this.props.onClickObject(e.id ?? -1);
+                const id = this.toGlobalID(e.id ?? -1);
+                this.props.onClickObject(id);
             }
         });
 
@@ -139,6 +153,7 @@ export class Viewer extends Component<ViewerProps, ViewerState> implements Viewe
         const loaderFeature = this.iv.getFeature(LoaderFeature);
 
         await this.db.load(wofBlobURL);
+        await this._buildIdMaps();
         URL.revokeObjectURL(wofBlobURL);
         const containerElement = this.container.current;
         if (containerElement === null) {
@@ -161,6 +176,15 @@ export class Viewer extends Component<ViewerProps, ViewerState> implements Viewe
         this.setState({
             modelLoaded: true
         });
+    }
+
+    private async _buildIdMaps(): Promise<void> {
+        type DBResponse = { GlobalId: string; _id: number };
+        const response = (await this.db.request(null, ['_id', 'GlobalId'])) as DBResponse[];
+        for (const { GlobalId, _id: internalID } of response) {
+            this._glob2int.set(GlobalId, internalID);
+            this._int2glob.set(internalID, GlobalId);
+        }
     }
 
     componentDidUpdate(): void {

@@ -27,8 +27,8 @@ function Node({ node, style }: NodeRendererProps<HierarchyData>): ReactNode {
 
 export interface HierarchyProps {
     data: HierarchyData[];
-    selectedId: number;
-    onSelectNode?: (id: number) => void;
+    selectedId: string;
+    onSelectNode?: (globalId: string) => void;
     onClickClose?: MouseEventHandler<HTMLButtonElement>;
 }
 
@@ -60,12 +60,12 @@ export function Hierarchy({data, selectedId, onSelectNode, onClickClose}: Hierar
     const selectHandler = useMemo(() => onSelectNode && ((nodes: NodeApi<HierarchyData>[]): void => {
         onSelectNode(
             nodes.length > 0
-                ? nodes[0].data._id
-                : -1
+                ? nodes[0].data.globalId
+                : ''
         );
     }), [onSelectNode]);
 
-    const idAccessor = useMemo(() => (node: HierarchyData): string => node._id.toString(), []);
+    const idAccessor = useMemo(() => (node: HierarchyData): string => node.globalId, []);
 
     return (
         <div className={'hierarchy'}>
@@ -82,7 +82,7 @@ export function Hierarchy({data, selectedId, onSelectNode, onClickClose}: Hierar
                     width={width}
                     height={height}
                     openByDefault={false}
-                    selection={selectedId.toString()}
+                    selection={selectedId}
                     onSelect={selectHandler}
                     rowHeight={40}>
                     {Node}

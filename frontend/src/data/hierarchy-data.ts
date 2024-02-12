@@ -2,18 +2,19 @@ import WofDB from '@wge/objects-db';
 
 interface DBRecord {
     _id: number;
+    GlobalId: string;
     originalName: string;
     children?: number[];
 }
 
 export interface HierarchyData {
-    _id: number;
+    globalId: string;
     originalName: string;
     children?: HierarchyData[];
 }
 
 export const createHierarchyData = async (db: WofDB): Promise<HierarchyData[]> => {
-    const allDbRecords = await db.request(null, ['_id', 'originalName', 'children']) as unknown as DBRecord[];
+    const allDbRecords = await db.request(null, ['_id', 'GlobalId', 'originalName', 'children']) as unknown as DBRecord[];
     const objectById: Record<number, DBRecord> = {};
     const rootIds: Set<number> = new Set();
 
@@ -33,7 +34,7 @@ export const createHierarchyData = async (db: WofDB): Promise<HierarchyData[]> =
     function getBranch(id: number): HierarchyData {
         const obj = objectById[id];
         const result: HierarchyData = {
-            _id: obj._id,
+            globalId: obj.GlobalId,
             originalName: obj.originalName
         };
 
