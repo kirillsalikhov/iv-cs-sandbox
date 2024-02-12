@@ -35,9 +35,9 @@ exports.convert = async (ctx) => {
     const conversionParams = ctx.request.body;
     validateConvert(conversionParams);
 
-    const { documentId, jobId } = await createConversion(conversionParams);
+    const { documentId, ivJobId, attrsJobId } = await createConversion(conversionParams);
 
-    console.log(`Conversion job ${jobId} for document ${documentId} created`);
+    console.log(`Conversion jobs (iv: ${ivJobId}, attrs: ${attrsJobId}) for document ${documentId} created`);
 
     createdEvent(documentId);
 

@@ -45,13 +45,21 @@ exports.createConversion = async ({fileKey, fileName, conversionType}) => {
     const fileUrl = await S3Client.signForConversion(fileKey);
 
     const completeHook = `${config.host}/api/documents/${documentId}/conversion-complete`;
+    const [ivJob, attrsJob] = await Promise.all([
+        CSClient.createConversion(
+            fileUrl,
+            conversionType,
+            {serializer: "min"},
+            completeHook),
+        // TODO hook
+        CSClient.createConversion(
+            fileUrl,
+            "ifc_attributes",
+            {serializer: "erp"},
+        )
+    ]);
 
-    const job = await CSClient.createConversion(
-        fileUrl,
-        conversionType,
-        completeHook);
-
-    return {documentId, jobId: job.id};
+    return {documentId, jobId: ivJob.id, attrsJobId: attrsJob.id};
 }
 
 exports.completeConversion = async (documentId, jobId, status ) => {
