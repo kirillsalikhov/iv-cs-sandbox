@@ -24,6 +24,20 @@ exports.sourceDownload = async (ctx) => {
     }
 }
 
+exports.attributesDownload = async (ctx) => {
+    const document = await getDocument(ctx.params.id);
+    if (document.source_file) {
+
+        const downloadUrl =  await S3Client.signForDownload(
+            document.attributes_file,
+            document.name.replace('.ifc', '.json'));
+
+        ctx.redirect(downloadUrl);
+    } else {
+        throw createNotFoundError(`Source file not found for document with id: ${document.id}`);
+    }
+}
+
 exports.remove = async (ctx) => {
     const documentId = ctx.params.id;
     await removeDocument(documentId);

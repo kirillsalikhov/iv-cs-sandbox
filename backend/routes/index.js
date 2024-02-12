@@ -28,6 +28,7 @@ const apiRouter = new Router({
     .get('/documents', documents.index)
     .get('/documents/:id', documents.show)
     .get('/documents/:id/source', documents.sourceDownload)
+    .get('/documents/:id/attributes', documents.attributesDownload)
     .post('/documents/convert', documents.convert)
     .post('/documents/:id/conversion-complete', documents.conversionComplete)
     .post('/documents/:id/attrs-complete', documents.attrsConversionComplete)
