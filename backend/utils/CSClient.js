@@ -9,12 +9,12 @@ class CSClient {
         });
     }
 
-    async createConversion(fileUrl, recipe, conversion_parameters, callback) {
+    async createConversion(fileUrl, recipe, conversion_parameters = null, callback) {
         const { data } = await this.client.createJob({
             recipe,
             callback,
             // TODO remove when JSON.stringify is not needed
-            conversion_parameters: conversion_parameters ? JSON.stringify(conversion_parameters) : null,
+            conversion_parameters,
             input: fileUrl
         });
 
