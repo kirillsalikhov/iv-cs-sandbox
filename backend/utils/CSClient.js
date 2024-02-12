@@ -27,6 +27,12 @@ class CSClient {
 
         return data[0].url;
     }
+
+    async getFirstResultFile(jobId) {
+        const { data } = await this.client.jobFiles(jobId)
+        return data[0].url;
+    }
+
 }
 
 module.exports = new CSClient(config.conversion);

@@ -30,6 +30,7 @@ const apiRouter = new Router({
     .get('/documents/:id/source', documents.sourceDownload)
     .post('/documents/convert', documents.convert)
     .post('/documents/:id/conversion-complete', documents.conversionComplete)
+    .post('/documents/:id/attrs-complete', documents.attrsConversionComplete)
     .delete('/documents/:id', documents.remove)
     // files
     .post('/files/create-upload', files.createDirectUpload);
