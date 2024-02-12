@@ -39,10 +39,44 @@ function gatherObjectProps(source: object): { values: ObjectPropertyValue[]; gro
     return { values, groups };
 }
 
-export async function getObjectAttributes(id: number, db: WofDB): Promise<ObjectDetailsProps> {
-    const response = await db.request([id]);
-    const { originalName, ...restProps } = response[0];
+export interface DBAttribute {
+    GlobalId: string;
+    id: string;
+    originalName: string;
+    parent_id: string;
+}
+
+export interface ExtendedAttribute extends DBAttribute {
+    [key: string]: unknown
+}
+
+export type AttributesMap = Map<string, ExtendedAttribute>;
+
+export async function getObjectAttributes(id: number, attrmap: AttributesMap, db: WofDB): Promise<ObjectDetailsProps> {
+    const dbAttr = (await db.request([id]))[0] as unknown as DBAttribute;
+
+    const attribute = attrmap.get(dbAttr.id);
+    if (attribute === undefined) {
+        return { title: dbAttr.originalName, values: [], groups: [] };
+    }
+
+    const { originalName, ...restProps } = attribute;
     const { values, groups } = gatherObjectProps(restProps);
 
-    return { title: String(originalName), values, groups };
+    return { title: originalName, values, groups };
+}
+
+export async function loadAttributesMap(url: string): Promise<AttributesMap> {
+    const response = await fetch(url);
+    if (!response.ok) {
+        throw new Error();
+    }
+
+    const attributes: AttributesMap = new Map();
+    const attribArray = await response.json();
+    for (const attr of attribArray) {
+        attributes.set(attr.id, attr);
+    }
+
+    return attributes;
 }

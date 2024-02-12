@@ -99,12 +99,21 @@ function DocumentCard({ document, onDelete }: DocumentCardProps) {
                     className={classNames('document-card__name', `document-card__name--${document.status}`)}
                 >{document.name}</div>
             </div>
+            {document.attribLink !== null ? (
+                <a
+                    title="Download source file"
+                    className="document-card__source-button"
+                    href={document.attribLink}
+            >
+                {iconSource}<div className="document-card__source-button-text">Attributes</div>
+            </a>
+            ) : null}
             <a
                 title="Download source file"
                 className="document-card__source-button"
-                href={document.sourceLink}>
-                {iconSource}
-                <div className="document-card__source-button-text">Source</div>
+                href={document.sourceLink}
+            >
+                {iconSource}<div className="document-card__source-button-text">Source</div>
             </a>
             <button
                 type="button"

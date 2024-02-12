@@ -40,7 +40,7 @@ function AttributeGroups({ groups }: { groups: ObjectPropertyGroup[] }): ReactNo
 
 export function AttributesPopup({ title, values, groups, onClickClose }: ObjectDetailsProps): ReactNode {
     return (
-        <div className={'attributes-placement min-w-[20rem] attributes-base'}>
+        <div className={'attributes-placement max-w-[50%] min-w-[20rem] attributes-base'}>
             <div className='attributes-popup__title'>
                 <h2 className={'text-lg truncate'}>{title || '<empty name>'}</h2>
                 <IconButton onClick={onClickClose} icon={iconClose} />

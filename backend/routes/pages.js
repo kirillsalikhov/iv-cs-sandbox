@@ -22,8 +22,13 @@ exports.viewer = async (ctx) => {
     }
     const modelUrl = await S3Client.signForViewer(document.view_file);
 
+    let attributesUrl = null;
+    if (document.attributes_file) {
+        attributesUrl = await S3Client.signForViewer(document.attributes_file);
+    }
+
     return ctx.render('layout', layoutVars({
         appEntry: entries.viewer,
-        forBrowser: {document, modelUrl}
+        forBrowser: {document, modelUrl, attributesUrl}
     }));
 }

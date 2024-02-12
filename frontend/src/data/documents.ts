@@ -4,12 +4,14 @@ export interface DocumentInput {
     id: number;
     name: string;
     status: 'failed' | 'inProgress' | 'finished';
+    attributes_file?: string | null;
     created_at: number;
 }
 
 export interface DocumentData extends DocumentInput {
     viewerLink: string;
     sourceLink: string;
+    attribLink: string | null;
 }
 
 const documentsStub: DocumentInput[] = [
@@ -31,6 +33,7 @@ declare global {
         forBrowser?: {
             documents: DocumentInput[];
             modelUrl: string;
+            attributesUrl: string | null;
         }
     }
 }
@@ -118,10 +121,12 @@ export class DocumentsAPI {
     }
 
     private _prepareDocument(input: DocumentInput): DocumentData {
+        const { DOCUMENTS_URL } = DocumentsAPI;
         const viewerLink = input.status === 'finished' ? `${input.id}/viewer`: '#';
-        const sourceLink = `${DocumentsAPI.DOCUMENTS_URL}/${input.id}/source`;
+        const sourceLink = `${DOCUMENTS_URL}/${input.id}/source`;
+        const attribLink = input.attributes_file ? `${DOCUMENTS_URL}/${input.id}/attributes` : null;
 
-        return { ...input, viewerLink, sourceLink };
+        return { ...input, viewerLink, sourceLink, attribLink };
     }
 
     private _getKeyFromURL(url: string): string {
