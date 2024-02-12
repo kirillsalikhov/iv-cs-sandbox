@@ -62,7 +62,7 @@ exports.createConversion = async ({fileKey, fileName, conversionType}) => {
         )
     ]);
 
-    return {documentId, jobId: ivJob.id, attrsJobId: attrsJob.id};
+    return {documentId, ivJobId: ivJob.id, attrsJobId: attrsJob.id};
 }
 
 exports.completeConversion = async (documentId, jobId, status ) => {
