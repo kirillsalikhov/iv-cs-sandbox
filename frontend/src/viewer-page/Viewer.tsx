@@ -21,8 +21,8 @@ export interface ViewerAPI {
 }
 
 export interface ViewerProps {
-    onClickObject?: (id: string) => void;
-    selectedId?: string;
+    onClickObject?: (id: number) => void;
+    selectedId?: number;
     allowMoveCamera: boolean;
 }
 
@@ -46,31 +46,29 @@ export class Viewer extends Component<ViewerProps, ViewerState> implements Viewe
     };
 
     toInternalID(id: string): number {
-        return this._glob2int.get(id) || -1;
+        return this._glob2int.get(id) ?? -1;
     }
 
     toGlobalID(id: number): string {
-        return this._int2glob.get(id) || '';
+        return this._int2glob.get(id) ?? '';
     }
 
     updateSelection(): void {
         if (!this.meshIds) return;
-        const { selectedId = '' } = this.props;
-        const id = this.toInternalID(selectedId);
+        const { selectedId = -1 } = this.props;
         this.iv.getFeature(ColorFeature).color([
             {
                 color: '#3A55F9',
-                ids: this.meshIds.has(id) ? [id] : []
+                ids: this.meshIds.has(selectedId) ? [selectedId] : []
             }
         ]);
     }
 
     async moveCameraToSelection(): Promise<void> {
         if (!this.meshIds) return;
-        const { selectedId = '', allowMoveCamera } = this.props;
-        const id = this.toInternalID(selectedId);
-        if (this.meshIds.has(id) && allowMoveCamera) {
-            await this.iv.getFeature(MoveCameraFeature).toObjects([id], { duration: 400 });
+        const { selectedId = -1, allowMoveCamera } = this.props;
+        if (this.meshIds.has(selectedId) && allowMoveCamera) {
+            await this.iv.getFeature(MoveCameraFeature).toObjects([selectedId], { duration: 400 });
         }
     }
 
@@ -121,8 +119,7 @@ export class Viewer extends Component<ViewerProps, ViewerState> implements Viewe
 
         iv.addEventListener('click', (e: IVPointerEvent): void => {
             if (this.props.onClickObject) {
-                const id = this.toGlobalID(e.id ?? -1);
-                this.props.onClickObject(id);
+                this.props.onClickObject(e.id ?? -1);
             }
         });
 

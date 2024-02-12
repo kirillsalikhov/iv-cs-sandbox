@@ -57,9 +57,12 @@ export function ViewerPage(): ReactElement {
         }, 10);
     }, [])
 
-    const handleClickViewerObject = useCallback((globalId: string) => {
+    const handleClickViewerObject = useCallback((internalID: number) => {
+        const viewer = vref.current;
+        if (!viewer) { return; }
+
         muteArborist();
-        setSelectedId(globalId);
+        setSelectedId(viewer.toGlobalID(internalID));
         setAllowMoveCamera(false);
     }, []);
 
@@ -73,7 +76,7 @@ export function ViewerPage(): ReactElement {
 
     return (
         <>
-            <Viewer selectedId={selectedId}
+            <Viewer selectedId={vref.current?.toInternalID(selectedId) ?? -1}
                     onClickObject={handleClickViewerObject}
                     allowMoveCamera={allowMoveCamera}
                     ref={vref} />

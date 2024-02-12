@@ -32,7 +32,7 @@ function getAttributesURL(): string {
     return '';
 }
 
-// Note: imitation of server request to get data for single attribute
+// Note: imitation of server request to get data for a single object
 export async function fetchAttributeData(id: string): Promise<AttributeData> {
     const url = getAttributesURL();
     const attributes = await getAttributesMap(url);
