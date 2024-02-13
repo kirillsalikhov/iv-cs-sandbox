@@ -37,6 +37,7 @@ export class Viewer extends Component<ViewerProps, ViewerState> implements Viewe
 
     private _glob2int = new Map<string, number>();
     private _int2glob = new Map<number, string>();
+    private _envPromise!: Promise<void>;
 
     meshIds!: Set<number>;
     homePosition: MoveCameraState | null = null;
@@ -110,7 +111,7 @@ export class Viewer extends Component<ViewerProps, ViewerState> implements Viewe
         iv.addFeature(ProgressiveRenderingFeature);
         iv.addFeature(ColorFeature);
         iv.addFeature(HoverFeature);
-        const environmentFeature = iv.addFeature(EnvironmentFeature);
+        iv.addFeature(EnvironmentFeature);
 
         await iv.init();
 
@@ -123,15 +124,18 @@ export class Viewer extends Component<ViewerProps, ViewerState> implements Viewe
             }
         });
 
-        //NOTE: do not inline this constant. It is here to trick Vite not to transform new URL(...)
-        //      without it, some combinations of development and production modes of backend & frontend don't work
-        const url = '/parking.wenv';
-        const parkingTextureId = environmentFeature.createTextureID('wenv', new URL(url, import.meta.url).toString());
-        await environmentFeature.getTextureLoadedPromise(parkingTextureId);
+        this._envPromise = (async () => {
+            //NOTE: do not inline this constant. It is here to trick Vite not to transform new URL(...)
+            //      without it, some combinations of development and production modes of backend & frontend don't work
+            const url = '/parking.wenv';
+            const environmentFeature = this.iv.getFeature(EnvironmentFeature);
+            const parkingTextureId = environmentFeature.createTextureID('wenv', new URL(url, import.meta.url).toString());
+            await environmentFeature.getTextureLoadedPromise(parkingTextureId);
+            environmentFeature.setOptions({
+                ibl: parkingTextureId
+            });
+        })();
 
-        environmentFeature.setOptions({
-            ibl: parkingTextureId
-        });
         iv.setCameraEV100({
             aperture: 6.4,
             shutterSpeed: 0.008,
@@ -149,6 +153,7 @@ export class Viewer extends Component<ViewerProps, ViewerState> implements Viewe
 
         const loaderFeature = this.iv.getFeature(LoaderFeature);
 
+        await this._envPromise;
         await this.db.load(wofBlobURL);
         await this._buildIdMaps();
         URL.revokeObjectURL(wofBlobURL);
